@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Peduli Pasal</string>
+    <string name="welcome">Welcome</string>
+    <string name="login">Login</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="sign_up">Sign up</string>
+    <string name="welcome_app_text">Peduli pasal adalah aplikasi ChatBot pintar yang dapat mengetahui pasal yang sesuai dengan kejahatan atau tindak pidana yang kamu berikan</string>
+    <string name="login_page_text">Masukkan email dan password atau login menggunakan Google</string>
+    <string name="email_warning">Format email invalid</string>
+    <string name="email">Email</string>
+    <string name="email_hint">email@gmail.com</string>
+    <string name="password">Password</string>
+    <string name="password_hint">password</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_settings">Settings</string>
+    <string name="signup">Sign up</string>
+    <string name="signup_with_google">Sign up with Google</string>
+    <string name="name">Nama</string>
+    <string name="signup_page_text">Masukkan data yang diperlukan</string>
+    <string name="name_hint">nama</string>
+    <string name="profile">Profil</string>
+    <string name="logout">Logout</string>
+    <string name="user_email">c14220311@john.petra.ac.id</string>
+    <string name="user_name">Satriya Wibowo</string>
+    <string name="news">News</string>
+    <string name="news_api_errror">Error dalam mengambil data berita</string>
+    <string name="dark_mode">Mode gelap</string>
+    <string name="enable_dark_mode">Nyalakan mode gelap</string>
+    <string name="daily_reminder">Daily news</string>
+    <string name="enable_notifications">Nyalakan notifikasi untuk berita harian</string>
+</resources>
