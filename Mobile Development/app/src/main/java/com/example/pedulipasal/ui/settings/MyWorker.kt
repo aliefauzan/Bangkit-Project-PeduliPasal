@@ -7,12 +7,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.pedulipasal.R
 import com.example.pedulipasal.data.NewsRepository
 import com.example.pedulipasal.di.Injection
+import com.example.pedulipasal.page.detail.DetailNewsActivity
 import kotlinx.coroutines.runBlocking
 
 class MyWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
@@ -46,12 +48,15 @@ class MyWorker(context: Context, workerParams: WorkerParameters) : Worker(contex
     }
 
     fun showNotification(title: String, description: String, link: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        val intent = Intent(applicationContext, DetailNewsActivity::class.java)
+        Log.d("MyWorker", link)
+        intent.putExtra("WEB_URL", link)
         val pendingIntent = PendingIntent.getActivity(
             applicationContext,
             0,
             intent,
-            PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification: NotificationCompat.Builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)

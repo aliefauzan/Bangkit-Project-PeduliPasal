@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.pedulipasal.data.model.NewsItem
 import com.example.pedulipasal.databinding.ItemNewsBinding
+import com.example.pedulipasal.page.detail.DetailNewsActivity
 
 class NewsAdapter : ListAdapter<NewsItem, NewsAdapter.MyViewHolder>(DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -31,9 +32,12 @@ class NewsAdapter : ListAdapter<NewsItem, NewsAdapter.MyViewHolder>(DIFF_CALLBAC
             binding.tvDescription.text = "${review.description}"
 
             binding.root.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse(review.url)
-                }
+//                val intent = Intent(Intent.ACTION_VIEW).apply {
+//                    data = Uri.parse(review.url)
+//                }
+                val context = it.context
+                val intent = Intent(context, DetailNewsActivity::class.java)
+                intent.putExtra("WEB_URL", review.url)
                 context.startActivity(intent)
             }
         }

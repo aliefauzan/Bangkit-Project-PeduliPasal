@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -17,7 +15,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.example.pedulipasal.databinding.FragmentSettingsBinding
 import com.example.pedulipasal.helper.ViewModelFactory
-import com.example.pedulipasal.ui.news.NewsViewModel
 import java.util.concurrent.TimeUnit
 
 class SettingsFragment : Fragment() {
@@ -85,7 +82,7 @@ class SettingsFragment : Fragment() {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        periodicWorkRequest = PeriodicWorkRequest.Builder(MyWorker::class.java, 15, TimeUnit.MINUTES)
+        periodicWorkRequest = PeriodicWorkRequest.Builder(MyWorker::class.java, 1, TimeUnit.DAYS)
             .setConstraints(constraints)
             .build()
 

@@ -1,0 +1,28 @@
+/build
+
+# Ignore Android Studio and IntelliJ files
+.idea/
+.gradle/
+.build/
+
+# Ignore build output directories
+**/build/
+
+# Ignore Gradle build files and Kotlin build files
+*.gradle
+*.gradle.kts
+
+# Ignore dependency lock files
+*.toml
+
+# Ignore local properties
+local.properties
+
+# Ignore APKs and generated files
+*.apk
+*.ap_
+*.aab
+
+# Ignore OS-specific files
+*.DS_Store
+Thumbs.db
