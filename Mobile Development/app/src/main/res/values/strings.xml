@@ -30,4 +30,7 @@
     <string name="enable_dark_mode">Nyalakan mode gelap</string>
     <string name="daily_reminder">Daily news</string>
     <string name="enable_notifications">Nyalakan notifikasi untuk berita harian</string>
+    <string name="created_at">Created at</string>
+    <string name="updated_at">Updated at</string>
+    <string name="please_input_new_chat_topic">Masukkan topic chat baru</string>
 </resources>

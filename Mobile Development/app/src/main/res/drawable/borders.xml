@@ -1,0 +1,13 @@
+<!-- res/drawable/border.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Set the background color of the LinearLayout -->
+    <!-- Optional: Use this for a background color -->
+
+    <!-- Define the border color and width -->
+    <stroke
+        android:width="2dp"
+        android:color="#000000"/> <!-- Change to your desired color and width -->
+
+    <!-- Optional: Round the corners -->
+    <corners android:radius="8dp"/>
+</shape>
