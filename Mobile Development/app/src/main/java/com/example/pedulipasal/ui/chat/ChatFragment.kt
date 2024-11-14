@@ -3,6 +3,7 @@ package com.example.pedulipasal.ui.chat
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,8 @@ import com.example.pedulipasal.adapter.ChatAdapter
 import com.example.pedulipasal.data.model.ChatResponse
 import com.example.pedulipasal.data.model.Message
 import com.example.pedulipasal.databinding.FragmentChatBinding
-import com.example.pedulipasal.page.message.MessageActivity
+import com.example.pedulipasal.page.messagehistory.MessageHistoryActivity
+import com.example.pedulipasal.page.newmessage.NewMessageActivity
 import java.util.Date
 
 class ChatFragment : Fragment() {
@@ -62,7 +64,7 @@ class ChatFragment : Fragment() {
                         title = "Chat Title ${chatIndex + 1}",
                         createdAt = Date(),
                         updateAt = Date(),
-                        messages = List(10) { messageIndex ->
+                        messages = List(30) { messageIndex ->
                             Message(
                                 messageId = "msg${chatIndex + 1}_${messageIndex + 1}",
                                 isByHuman = messageIndex % 2 == 0, // Alternate between human and bot
@@ -76,8 +78,9 @@ class ChatFragment : Fragment() {
         }
 
         chatAdapter = ChatAdapter(requireActivity(), chatList, object : ChatAdapter.OnItemSelected {
-            override fun onItemClicked(chatId: String?, messageList: List<Message?>?) {
-                Toast.makeText(requireActivity(), "chat id: $chatId", Toast.LENGTH_SHORT).show()
+            override fun onItemClicked(chatResponse: ChatResponse) {
+                Toast.makeText(requireActivity(), "chat id: ${chatResponse.chatId}", Toast.LENGTH_SHORT).show()
+                moveToMessageHistoryActivity(chatResponse)
             }
         })
 
@@ -96,11 +99,19 @@ class ChatFragment : Fragment() {
         val dialogLayout = inflater.inflate(R.layout.dialog_layout, null)
 
         AlertDialog.Builder(context).apply {
-            setTitle("Add new chat")
+            setTitle(getString(R.string.add_new_chat))
             setView(dialogLayout)
-            setPositiveButton("Create") {_, _, ->
-                val text = dialogLayout.findViewById<EditText>(R.id.ed_new_topics).text.toString()
-                Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+            setPositiveButton(R.string.create) {_, _, ->
+                val topic = dialogLayout.findViewById<EditText>(R.id.ed_new_topics).text.toString()
+                if (topic.isNotEmpty()) {
+                    moveToNewMessageActivity(topic)
+                    Toast.makeText(context, topic, Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, getString(R.string.empty_topic_warning), Toast.LENGTH_SHORT).show()
+                }
+            }
+            setNegativeButton(R.string.cancel) {_,_, ->
+
             }
             create()
             show()
@@ -108,10 +119,15 @@ class ChatFragment : Fragment() {
 
     }
 
-    private fun moveToMessageActivity() {
-        val intent = Intent(requireActivity(), MessageActivity::class.java)
+    private fun moveToNewMessageActivity(topic: String) {
+        val intent = Intent(requireActivity(), NewMessageActivity::class.java)
+        intent.putExtra("topic_key", topic)
         startActivity(intent)
     }
 
-
+    private fun moveToMessageHistoryActivity(chatResponse: ChatResponse) {
+        val intent = Intent(requireActivity(), MessageHistoryActivity::class.java)
+        intent.putExtra("detail_chat_key", chatResponse)
+        startActivity(intent)
+    }
 }

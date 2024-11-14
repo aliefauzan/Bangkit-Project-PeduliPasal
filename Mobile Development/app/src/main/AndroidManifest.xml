@@ -18,7 +18,10 @@
         android:theme="@style/Theme.PeduliPasal"
         tools:targetApi="31">
         <activity
-            android:name=".page.message.MessageActivity"
+            android:name=".page.messagehistory.MessageHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".page.newmessage.NewMessageActivity"
             android:exported="false" />
         <activity
             android:name=".page.detail.DetailNewsActivity"

@@ -164,21 +164,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="40dp"
-        android:textSize="16sp"
-        android:backgroundTint="@color/brown_dark"/>
+        android:textSize="16sp"/>
 
-    <Button
-        android:id="@+id/btn_signup_with_google"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/signup_with_google"
-        app:layout_constraintTop_toBottomOf="@id/btn_signup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:textSize="16sp"
-        android:backgroundTint="@color/brown_light"
-        android:textColor="@color/black"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

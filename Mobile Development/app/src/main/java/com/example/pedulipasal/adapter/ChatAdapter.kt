@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
 import com.example.pedulipasal.data.model.ChatResponse
-import com.example.pedulipasal.data.model.Message
 import com.example.pedulipasal.databinding.ItemChatLayoutBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -19,7 +18,7 @@ class ChatAdapter(
 ): RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     interface OnItemSelected {
-        fun onItemClicked(chatId: String?, messageList: List<Message?>?)
+        fun onItemClicked(chatResponse: ChatResponse)
     }
 
     class ViewHolder(val binding: ItemChatLayoutBinding): RecyclerView.ViewHolder(binding.root)
@@ -43,7 +42,7 @@ class ChatAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            onItemSelectedCallback.onItemClicked(chatList[position].chatId, chatList[position].messages)
+            onItemSelectedCallback.onItemClicked(chatList[position])
         }
     }
 
