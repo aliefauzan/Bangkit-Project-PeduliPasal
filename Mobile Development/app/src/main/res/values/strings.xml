@@ -33,4 +33,10 @@
     <string name="created_at">Created at</string>
     <string name="updated_at">Updated at</string>
     <string name="please_input_new_chat_topic">Masukkan topic chat baru</string>
+    <string name="save">Simpan</string>
+    <string name="empty_topic_warning">Topic chat tidak boleh kosong</string>
+    <string name="add_new_chat">Add new chat</string>
+    <string name="create">Buat</string>
+    <string name="cancel">Batalkan</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -24,7 +24,6 @@ class NewsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var newsAdapter: NewsAdapter
-    private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
