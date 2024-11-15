@@ -3,10 +3,7 @@ package com.example.pedulipasal.ui.chat
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -17,30 +14,28 @@ import com.example.pedulipasal.adapter.ChatAdapter
 import com.example.pedulipasal.data.model.ChatResponse
 import com.example.pedulipasal.data.model.Message
 import com.example.pedulipasal.databinding.FragmentChatBinding
-import com.example.pedulipasal.page.messagehistory.MessageHistoryActivity
-import com.example.pedulipasal.page.newmessage.NewMessageActivity
-import java.util.Date
+import com.example.pedulipasal.page.chat.ChatActivity
+import java.util.*
 
 class ChatFragment : Fragment() {
 
     private lateinit var chatAdapter: ChatAdapter
-    private lateinit var layoutManager: LinearLayoutManager
 
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
 
+    companion object {
+        private const val TOPIC_KEY = "topic_key"
+        private const val DETAIL_CHAT_KEY = "detail_chat_key"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-//        val dashboardViewModel =
-//            ViewModelProvider(this).get(DashboardViewModel::class.java)
-
         _binding = FragmentChatBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,32 +50,11 @@ class ChatFragment : Fragment() {
     }
 
     private fun initializeData() {
-        val chatList = ArrayList<ChatResponse>().apply {
-            repeat(10) { chatIndex ->
-                add(
-                    ChatResponse(
-                        chatId = "chat${chatIndex + 1}",
-                        userId = "user${chatIndex + 1}",
-                        title = "Chat Title ${chatIndex + 1}",
-                        createdAt = Date(),
-                        updateAt = Date(),
-                        messages = List(30) { messageIndex ->
-                            Message(
-                                messageId = "msg${chatIndex + 1}_${messageIndex + 1}",
-                                isByHuman = messageIndex % 2 == 0, // Alternate between human and bot
-                                content = "Message content ${messageIndex + 1} from Chat ${chatIndex + 1}",
-                                timestamp = Date()
-                            )
-                        }
-                    )
-                )
-            }
-        }
+        val chatList = generateMockChatData()
 
         chatAdapter = ChatAdapter(requireActivity(), chatList, object : ChatAdapter.OnItemSelected {
             override fun onItemClicked(chatResponse: ChatResponse) {
-                Toast.makeText(requireActivity(), "chat id: ${chatResponse.chatId}", Toast.LENGTH_SHORT).show()
-                moveToMessageHistoryActivity(chatResponse)
+                moveToChatActivity(chatResponse = chatResponse)
             }
         })
 
@@ -90,44 +64,72 @@ class ChatFragment : Fragment() {
         }
     }
 
+    private fun generateMockChatData(): List<ChatResponse> {
+        val chatList = mutableListOf<ChatResponse>()
+        val calendar = Calendar.getInstance()
+
+        for (chatIndex in 1..10) {
+            calendar.add(Calendar.DAY_OF_YEAR, -chatIndex)
+
+            val messages = mutableListOf<Message>()
+            for (messageIndex in 1..30) {
+                calendar.add(Calendar.MINUTE, -messageIndex)
+                messages.add(
+                    Message(
+                        messageId = "msg${chatIndex}_$messageIndex",
+                        isByHuman = messageIndex % 2 == 0,
+                        content = "Message content $messageIndex from Chat $chatIndex",
+                        timestamp = calendar.time
+                    )
+                )
+            }
+
+            chatList.add(
+                ChatResponse(
+                    chatId = "chat$chatIndex",
+                    userId = "user$chatIndex",
+                    title = "Chat Title $chatIndex",
+                    createdAt = calendar.time,
+                    updateAt = Date(),
+                    messages = messages
+                )
+            )
+        }
+        return chatList
+    }
     private fun setupAction() {
-        binding.fabAddNewChat.setOnClickListener { showDialog(requireActivity()) }
+        binding.fabAddNewChat.setOnClickListener {
+            showDialog(requireActivity())
+        }
     }
 
     private fun showDialog(context: Context) {
         val inflater = LayoutInflater.from(context)
         val dialogLayout = inflater.inflate(R.layout.dialog_layout, null)
+        val editText = dialogLayout.findViewById<EditText>(R.id.ed_new_topics)
 
         AlertDialog.Builder(context).apply {
             setTitle(getString(R.string.add_new_chat))
             setView(dialogLayout)
-            setPositiveButton(R.string.create) {_, _, ->
-                val topic = dialogLayout.findViewById<EditText>(R.id.ed_new_topics).text.toString()
+            setPositiveButton(R.string.create) { _, _ ->
+                val topic = editText.text.toString().trim()
                 if (topic.isNotEmpty()) {
-                    moveToNewMessageActivity(topic)
-                    Toast.makeText(context, topic, Toast.LENGTH_SHORT).show()
+                    moveToChatActivity(topic = topic)
                 } else {
                     Toast.makeText(context, getString(R.string.empty_topic_warning), Toast.LENGTH_SHORT).show()
                 }
             }
-            setNegativeButton(R.string.cancel) {_,_, ->
-
-            }
+            setNegativeButton(R.string.cancel, null)
             create()
             show()
         }
-
     }
 
-    private fun moveToNewMessageActivity(topic: String) {
-        val intent = Intent(requireActivity(), NewMessageActivity::class.java)
-        intent.putExtra("topic_key", topic)
-        startActivity(intent)
-    }
-
-    private fun moveToMessageHistoryActivity(chatResponse: ChatResponse) {
-        val intent = Intent(requireActivity(), MessageHistoryActivity::class.java)
-        intent.putExtra("detail_chat_key", chatResponse)
+    private fun moveToChatActivity(topic: String? = null, chatResponse: ChatResponse? = null) {
+        val intent = Intent(requireActivity(), ChatActivity::class.java).apply {
+            topic?.let { putExtra(TOPIC_KEY, it) }
+            chatResponse?.let { putExtra(DETAIL_CHAT_KEY, it) }
+        }
         startActivity(intent)
     }
 }

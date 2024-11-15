@@ -11,29 +11,24 @@ import com.example.pedulipasal.data.model.ChatResponse
 import com.example.pedulipasal.data.model.Message
 import com.example.pedulipasal.helper.getProfileIcon
 
-class MessageAdapter: RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
+
+class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     private val messages = ArrayList<Message>()
-    private lateinit var userMessageText: TextView
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val userProfile: ImageView = view.findViewById(R.id.iv_userProfile)
+        val userMessageText: TextView = view.findViewById(R.id.tv_userMessageText)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val messageItemView =
-            LayoutInflater.from(parent.context).inflate(viewType, parent, false) as ViewGroup
-        return ViewHolder(messageItemView)
-    }
-
-    override fun getItemCount(): Int {
-        return messages.size
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val userProfile = holder.itemView.findViewById<ImageView>(R.id.iv_userProfile)
-        userMessageText = holder.itemView.findViewById<TextView>(R.id.tv_userMessageText)
-        val message = messages[position]
-        userProfile.setImageDrawable(getProfileIcon(userProfile.context, message.isByHuman ?: false))
-        userMessageText.text = message.content
+        val layoutId = if (viewType == R.layout.item_message_local) {
+            R.layout.item_message_local
+        } else {
+            R.layout.item_message_another_user
+        }
+        val view = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
+        return ViewHolder(view)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -44,16 +39,22 @@ class MessageAdapter: RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
         }
     }
 
-    fun setMessages(chatResponse: ChatResponse) {
-        chatResponse.messages?.forEach {
-            if (it != null) {
-                messages.add(it)
-            }
-        }
+    override fun getItemCount(): Int = messages.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val message = messages[position]
+        holder.userProfile.setImageDrawable(getProfileIcon(holder.userProfile.context, message.isByHuman ?: false))
+        holder.userMessageText.text = message.content
     }
 
-    fun addMessages(message: Message) {
-        messages.add(message)
+    fun setMessages(messagesList: List<Message>) {
+        messages.clear()
+        messages.addAll(messagesList)
         notifyDataSetChanged()
+    }
+
+    fun addMessage(message: Message) {
+        messages.add(message)
+        notifyItemInserted(messages.size - 1)
     }
 }
