@@ -72,3 +72,7 @@ data class Message(
         override fun newArray(size: Int): Array<Message?> = arrayOfNulls(size)
     }
 }
+
+data class MessageResponse(
+    val message: String? = null
+)

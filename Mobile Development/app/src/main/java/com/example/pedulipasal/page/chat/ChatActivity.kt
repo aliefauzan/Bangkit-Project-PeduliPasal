@@ -2,18 +2,24 @@ package com.example.pedulipasal.page.chat
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.MessageAdapter
 import com.example.pedulipasal.data.model.ChatResponse
 import com.example.pedulipasal.data.model.Message
 import com.example.pedulipasal.databinding.ActivityChatBinding
+import com.example.pedulipasal.helper.Result
+import com.example.pedulipasal.helper.ViewModelFactory
+import com.example.pedulipasal.ui.news.NewsViewModel
 import java.util.Date
 
 class ChatActivity : AppCompatActivity() {
@@ -22,6 +28,10 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
     private var chatResponse: ChatResponse? = null
     private val messages: MutableList<Message> = mutableListOf()
+
+    private val chatViewModel by viewModels<ChatViewModel> {
+        ViewModelFactory.getInstance(this@ChatActivity)
+    }
 
     companion object {
         const val DETAIL_CHAT_KEY = "detail_chat_key"
@@ -69,7 +79,7 @@ class ChatActivity : AppCompatActivity() {
             supportActionBar?.title = topic
 
             // Initialize a new ChatResponse
-            chatResponse = ChatResponse(
+            val newChatResponse = ChatResponse(
                 chatId = "chat_new",
                 userId = "user_id", // Replace with actual user ID
                 title = topic,
@@ -77,6 +87,24 @@ class ChatActivity : AppCompatActivity() {
                 updateAt = Date(),
                 messages = messages
             )
+
+            chatViewModel.createChat(newChatResponse).observe(this) { result ->
+                if (result != null) {
+                    when(result) {
+                        is Result.Loading -> {
+
+                        }
+                        is Result.Success -> {
+                            Toast.makeText(this, "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
+                            Log.d("chatActivity", "${result.data.chatId}")
+                        }
+                        is Result.Error -> {
+                            Toast.makeText(this, "Gagal membuat chat baru dengan id ${result.error}", Toast.LENGTH_SHORT).show()
+                            Log.d("chatActivity", "${result.error}")
+                        }
+                    }
+                }
+            }
         } else {
             // No data provided
             Toast.makeText(this, "No chat data provided", Toast.LENGTH_SHORT).show()
