@@ -6,10 +6,10 @@ const createChat = async (req, res) => {
   try {
     // Generate a unique chat ID if not provided
     const chatId = req.body.chatId || nanoid(16);
-    const { userId, title, messages } = req.body;
+    const { userId, title } = req.body;
 
     // Validate request body
-    if (!userId || !title || !messages || !Array.isArray(messages)) {
+    if (!userId || !title) {
       return res.status(400).json({ error: "Data tidak valid" });
     }
 
@@ -18,19 +18,10 @@ const createChat = async (req, res) => {
       chatId,
       userId,
       title,
+      messages: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     });
-
-    const batch = admin.firestore().batch();
-    messages.forEach(message => {
-      const messageRef = chatRef.collection('messages').doc();
-      batch.set(messageRef, {
-        ...message,
-        timestamp: new Date().toISOString()
-      });
-    });
-    await batch.commit();
 
     res.status(201).json({ chatId: chatRef.id });
   } catch (error) {
