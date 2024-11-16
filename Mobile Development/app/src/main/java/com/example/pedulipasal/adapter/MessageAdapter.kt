@@ -1,5 +1,6 @@
 package com.example.pedulipasal.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
-import com.example.pedulipasal.data.model.Message
+import com.example.pedulipasal.data.model.response.Message
 import com.example.pedulipasal.helper.getProfileIcon
 
 
@@ -31,7 +32,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (messages[position].isByHuman == true) {
+        return if (messages[position].isByHuman) {
             R.layout.item_message_local
         } else {
             R.layout.item_message_another_user
@@ -54,6 +55,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     fun addMessage(message: Message) {
         messages.add(message)
+        Log.d("MessageAdapter", "addMessageDipanggil ${message.content}")
         notifyItemInserted(messages.size - 1)
     }
 }

@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.adapter.NewsAdapter
-import com.example.pedulipasal.data.model.NewsItem
+import com.example.pedulipasal.data.model.response.NewsItem
 import com.example.pedulipasal.databinding.FragmentNewsBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory

@@ -1,26 +1,45 @@
 package com.example.pedulipasal.data.api
 
-import com.example.pedulipasal.data.model.ChatResponse
-import com.example.pedulipasal.data.model.Message
-import com.example.pedulipasal.data.model.MessageResponse
+import com.example.pedulipasal.data.model.request.CreateChatRequest
+import com.example.pedulipasal.data.model.request.LoginRequest
+import com.example.pedulipasal.data.model.request.RegisterRequest
+import com.example.pedulipasal.data.model.response.ChatResponse
+import com.example.pedulipasal.data.model.response.LoginResponse
+import com.example.pedulipasal.data.model.response.Message
+import com.example.pedulipasal.data.model.response.MessageResponse
+import com.example.pedulipasal.data.model.response.RegisterResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface CloudApiService {
-    @POST("/")
-    suspend fun createChat(@Body chatResponse: ChatResponse) : ChatResponse
 
-    @POST("/{chatId}")
+    @POST("users/login")
+    suspend fun login(
+        @Body loginRequest: LoginRequest
+    ): LoginResponse
+
+    @POST("users/reg")
+    suspend fun register(
+        @Body registerRequest: RegisterRequest
+    ): RegisterResponse
+
+    @POST("chats")
+    suspend fun createChat(
+        @Header("Authorization") token: String,
+        @Body createChatRequest: CreateChatRequest
+    ): ChatResponse
+
+    @POST("chats/{chatId}")
     suspend fun addMessageToChat(
         @Path("chatId") chatId: String,
         @Body messageData: Message
     ): MessageResponse
 
-    @GET("/{chatId}")
+    @GET("chats/{chatId}")
     suspend fun getChatMessageById(
         @Path("chatId") chatId: String
     ): ChatResponse
-
 }

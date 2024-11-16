@@ -3,10 +3,12 @@ package com.example.pedulipasal.helper
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.pedulipasal.MainViewModel
 import com.example.pedulipasal.data.CloudRepository
 import com.example.pedulipasal.data.NewsRepository
 import com.example.pedulipasal.di.Injection
 import com.example.pedulipasal.page.chat.ChatViewModel
+import com.example.pedulipasal.page.login.LoginViewModel
 import com.example.pedulipasal.ui.news.NewsViewModel
 import com.example.pedulipasal.ui.settings.SettingsPreferences
 import com.example.pedulipasal.ui.settings.SettingsViewModel
@@ -28,6 +30,12 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(ChatViewModel::class.java) -> {
                 ChatViewModel(cloudRepository) as T
+            }
+            modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
+                LoginViewModel(cloudRepository) as T
+            }
+            modelClass.isAssignableFrom(MainViewModel::class.java) -> {
+                MainViewModel(cloudRepository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

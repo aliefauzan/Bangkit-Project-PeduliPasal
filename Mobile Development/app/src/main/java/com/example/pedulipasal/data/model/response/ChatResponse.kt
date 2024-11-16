@@ -1,20 +1,18 @@
-package com.example.pedulipasal.data.model
+package com.example.pedulipasal.data.model.response
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.datastore.preferences.protobuf.Timestamp
-import androidx.versionedparcelable.ParcelField
 import java.util.Date
 
 
 
 data class ChatResponse(
-    val chatId: String,
-    val userId: String,
-    val title: String,
-    val createdAt: Date,
-    val updateAt: Date,
-    val messages: List<Message>
+    val chatId: String? = null,
+    val userId: String? = null,
+    val title: String? = null,
+    val createdAt: Date? = null,
+    val updateAt: Date? = null,
+    val messages: List<Message>?=null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
@@ -23,7 +21,7 @@ data class ChatResponse(
         Date(parcel.readLong()),
         Date(parcel.readLong()),
         mutableListOf<Message>().apply {
-            parcel.readTypedList(this, Message.CREATOR)
+            parcel.readTypedList(this, Message)
         }
     )
 
@@ -31,8 +29,8 @@ data class ChatResponse(
         parcel.writeString(chatId)
         parcel.writeString(userId)
         parcel.writeString(title)
-        parcel.writeLong(createdAt.time)
-        parcel.writeLong(updateAt.time)
+        createdAt?.let { parcel.writeLong(it.time) }
+        updateAt?.let { parcel.writeLong(it.time) }
         parcel.writeTypedList(messages)
     }
 
@@ -76,3 +74,4 @@ data class Message(
 data class MessageResponse(
     val message: String? = null
 )
+

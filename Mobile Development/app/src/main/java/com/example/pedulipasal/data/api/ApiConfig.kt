@@ -1,6 +1,7 @@
 package com.example.pedulipasal.data.api
 
 import com.example.pedulipasal.BuildConfig
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -25,11 +26,20 @@ class ApiConfig {
             return retrofit.create(NewsApiService::class.java)
         }
 
-        fun provideCloudApiService(): CloudApiService {
+        fun provideCloudApiService(getToken:() -> String): CloudApiService {
             val loggingInterceptor =
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+
+            val authInterceptor = Interceptor { chain ->
+                val req = chain.request()
+                val requestHeaders = req.newBuilder()
+                    .addHeader("Authorization", "Bearer ${getToken()}")
+                    .build()
+                chain.proceed(requestHeaders)
+            }
             val client = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
+                .addInterceptor(authInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
                 .baseUrl(BuildConfig.CLOUD_BASE_URL)

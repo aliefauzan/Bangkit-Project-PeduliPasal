@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.ChatAdapter
-import com.example.pedulipasal.data.model.ChatResponse
-import com.example.pedulipasal.data.model.Message
+import com.example.pedulipasal.data.model.response.ChatResponse
+import com.example.pedulipasal.data.model.response.Message
 import com.example.pedulipasal.databinding.FragmentChatBinding
 import com.example.pedulipasal.page.chat.ChatActivity
 import java.util.*
@@ -26,7 +26,7 @@ class ChatFragment : Fragment() {
 
     companion object {
         private const val TOPIC_KEY = "topic_key"
-        private const val DETAIL_CHAT_KEY = "detail_chat_key"
+        private const val CHAT_ID_KEY = "detail_chat_key"
     }
 
     override fun onCreateView(
@@ -53,8 +53,8 @@ class ChatFragment : Fragment() {
         val chatList = generateMockChatData()
 
         chatAdapter = ChatAdapter(requireActivity(), chatList, object : ChatAdapter.OnItemSelected {
-            override fun onItemClicked(chatResponse: ChatResponse) {
-                moveToChatActivity(chatResponse = chatResponse)
+            override fun onItemClicked(chatId: String) {
+                moveToChatActivity(chatId = chatId)
             }
         })
 
@@ -125,10 +125,10 @@ class ChatFragment : Fragment() {
         }
     }
 
-    private fun moveToChatActivity(topic: String? = null, chatResponse: ChatResponse? = null) {
+    private fun moveToChatActivity(topic: String? = null, chatId: String? = null) {
         val intent = Intent(requireActivity(), ChatActivity::class.java).apply {
             topic?.let { putExtra(TOPIC_KEY, it) }
-            chatResponse?.let { putExtra(DETAIL_CHAT_KEY, it) }
+            chatId?.let { putExtra(CHAT_ID_KEY, it) }
         }
         startActivity(intent)
     }

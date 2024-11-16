@@ -1,7 +1,7 @@
 package com.example.pedulipasal.data.api
 
 import com.example.pedulipasal.BuildConfig
-import com.example.pedulipasal.data.model.NewsResponse
+import com.example.pedulipasal.data.model.response.NewsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

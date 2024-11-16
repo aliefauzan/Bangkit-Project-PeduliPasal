@@ -10,16 +10,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.MessageAdapter
-import com.example.pedulipasal.data.model.ChatResponse
-import com.example.pedulipasal.data.model.Message
+import com.example.pedulipasal.data.model.request.CreateChatRequest
+import com.example.pedulipasal.data.model.response.ChatResponse
+import com.example.pedulipasal.data.model.response.Message
 import com.example.pedulipasal.databinding.ActivityChatBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
-import com.example.pedulipasal.ui.news.NewsViewModel
 import java.util.Date
 
 class ChatActivity : AppCompatActivity() {
@@ -28,13 +27,14 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
     private var chatResponse: ChatResponse? = null
     private val messages: MutableList<Message> = mutableListOf()
+    private var newChatId: String? = null
 
     private val chatViewModel by viewModels<ChatViewModel> {
         ViewModelFactory.getInstance(this@ChatActivity)
     }
 
     companion object {
-        const val DETAIL_CHAT_KEY = "detail_chat_key"
+        const val CHAT_ID_KEY = "detail_chat_key"
         const val TOPIC_KEY = "topic_key"
     }
 
@@ -51,56 +51,51 @@ class ChatActivity : AppCompatActivity() {
         }
 
         setupView()
-        setupAction()
     }
 
     private fun setupView() {
         supportActionBar?.show()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if (intent.hasExtra(DETAIL_CHAT_KEY)) {
+        if (intent.hasExtra(CHAT_ID_KEY)) {
             // Existing chat
-            chatResponse = if (Build.VERSION.SDK_INT >= 33) {
-                intent.getParcelableExtra(DETAIL_CHAT_KEY, ChatResponse::class.java)
+            val chatID = if (Build.VERSION.SDK_INT >= 33) {
+                intent.getStringExtra(CHAT_ID_KEY)
             } else {
                 @Suppress("DEPRECATION")
-                intent.getParcelableExtra(DETAIL_CHAT_KEY)
+                intent.getStringExtra(CHAT_ID_KEY)
             }
 
-            val title = chatResponse?.title ?: "No title"
-            supportActionBar?.title = title
-
-            // Initialize messages with existing chat messages
-            chatResponse?.messages?.let { messages.addAll(it) }
-            binding.messageInputLayout.visibility = View.GONE
+            if (chatID != null) {
+                showMessageHistory(chatID)
+            }
         } else if (intent.hasExtra(TOPIC_KEY)) {
             // New chat
-            val topic = intent.getStringExtra(TOPIC_KEY) ?: "New Chat"
-            supportActionBar?.title = topic
-
-            // Initialize a new ChatResponse
-            val newChatResponse = ChatResponse(
-                chatId = "chat_new",
-                userId = "user_id", // Replace with actual user ID
-                title = topic,
-                createdAt = Date(),
-                updateAt = Date(),
-                messages = messages
+            val title = intent.getStringExtra(TOPIC_KEY) ?: "New Chat"
+            supportActionBar?.title = title
+            val createChatRequest = CreateChatRequest(
+                userId = "D10TTY3YHMRKEWH",
+                title = "dari AVD bowo"
             )
-
-            chatViewModel.createChat(newChatResponse).observe(this) { result ->
+            val hash = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkQxMFRUWTNZSE1SS0VXSCIsImlhdCI6MTczMTc3MzU2NCwiZXhwIjoxNzMxNzc3MTY0fQ.pbHbnrEmEmvUolrDFgNja4tk1hfGbmy657_Gov52jQg"
+            val token = "Bearer $hash"
+            chatViewModel.createChat(token, createChatRequest).observe(this) { result ->
                 if (result != null) {
                     when(result) {
                         is Result.Loading -> {
-
+                            binding.progressBar.visibility = View.VISIBLE
                         }
                         is Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            val chatId = result.data.chatId ?: "001"
+                            chatWithBot(chatId)
+                            Log.d("ChatActivity", "Berhasil membuat chat baru dengan id ${result.data.chatId}")
                             Toast.makeText(this, "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
-                            Log.d("chatActivity", "${result.data.chatId}")
                         }
                         is Result.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            Log.d("ChatActivity", "Gagal membuat chat baru dengan id ${result.error}")
                             Toast.makeText(this, "Gagal membuat chat baru dengan id ${result.error}", Toast.LENGTH_SHORT).show()
-                            Log.d("chatActivity", "${result.error}")
                         }
                     }
                 }
@@ -111,26 +106,24 @@ class ChatActivity : AppCompatActivity() {
             finish()
             return
         }
-
-        // Initialize RecyclerView and Adapter
-        messageAdapter = MessageAdapter()
-        messageAdapter.setMessages(messages)
-        binding.rvMessageHistory.apply {
-            layoutManager = LinearLayoutManager(this@ChatActivity)
-            adapter = messageAdapter
-        }
     }
 
-    private fun setupAction() {
+    private fun chatWithBot(chatId: String) {
+        messageAdapter = MessageAdapter()
+        setupAction(chatId)
+    }
+
+    private fun setupAction(chatId: String) {
         // Send button click listener
+        Log.d("chatActivity", "setup action jalan")
         binding.btnSendMessage.setOnClickListener {
-            sendMessage()
+            sendMessage(chatId)
         }
 
         // Handle 'Done' action in the keyboard
         binding.etMessageInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_DONE) {
-                sendMessage()
+                sendMessage(chatId)
                 true
             } else {
                 false
@@ -138,19 +131,23 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendMessage() {
+    private fun sendMessage(chatId: String) {
         val content = binding.etMessageInput.text.toString().trim()
         if (content.isNotEmpty()) {
             val newMessage = Message(
-                messageId = "msg${messages.size + 1}",
+                messageId = "0001",
                 isByHuman = true,
                 content = content,
                 timestamp = Date()
             )
-            messages.add(newMessage)
             messageAdapter.addMessage(newMessage)
+            binding.rvMessageHistory.apply {
+                layoutManager = LinearLayoutManager(this@ChatActivity)
+                adapter = messageAdapter
+            }
             binding.rvMessageHistory.scrollToPosition(messages.size - 1)
             binding.etMessageInput.text?.clear()
+            chatViewModel.addMessageToChat(chatId,newMessage).removeObservers(this)
 
             // TODO: Handle sending the message to the bot or API
         } else {
@@ -158,8 +155,48 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
+    }
+
+    private fun showMessageHistory(chatId: String) {
+        chatViewModel.getChatMessageById(chatId).observe(this) { result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        this.chatResponse = result.data
+                        supportActionBar?.title = result.data.title
+
+                        // Initialize RecyclerView and Adapter
+                        messageAdapter = MessageAdapter()
+                        result.data.messages?.let { messageAdapter.setMessages(it) }
+                        binding.rvMessageHistory.apply {
+                            layoutManager = LinearLayoutManager(this@ChatActivity)
+                            adapter = messageAdapter
+                        }
+                        binding.messageInputLayout.visibility = View.GONE
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 }

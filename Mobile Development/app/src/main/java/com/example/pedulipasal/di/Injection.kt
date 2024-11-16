@@ -4,8 +4,11 @@ import android.content.Context
 import com.example.pedulipasal.data.CloudRepository
 import com.example.pedulipasal.data.NewsRepository
 import com.example.pedulipasal.data.api.ApiConfig
+import com.example.pedulipasal.data.user.UserPreference
 import com.example.pedulipasal.ui.settings.SettingsPreferences
 import com.example.pedulipasal.ui.settings.dataStore
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
 object Injection {
     fun provideNewsRepository(context: Context): NewsRepository {
@@ -24,7 +27,10 @@ object Injection {
     }
 
     fun provideCloudRepository(context: Context): CloudRepository {
-        val cloudApiService = ApiConfig.provideCloudApiService()
-        return CloudRepository.getInstance(cloudApiService)
+        val pref = UserPreference.getInstance(context.dataStore)
+        val cloudApiService = ApiConfig.provideCloudApiService {
+            runBlocking { pref.getSession().first().token }
+        }
+        return CloudRepository.getInstance(cloudApiService, pref)
     }
 }

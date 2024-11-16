@@ -3,7 +3,7 @@ package com.example.pedulipasal.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.example.pedulipasal.data.api.NewsApiService
-import com.example.pedulipasal.data.model.NewsItem
+import com.example.pedulipasal.data.model.response.NewsItem
 import com.example.pedulipasal.helper.Result
 import retrofit2.HttpException
 

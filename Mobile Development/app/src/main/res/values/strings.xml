@@ -42,4 +42,10 @@
     <string name="type_your_message">type your message</string>
     <string name="send">Send</string>
     <string name="empty_message_warning">There is no message</string>
+    <string name="success_title_login">Berhasil</string>
+    <string name="success_login_message">Selamat anda berhasil login ke akun anda</string>
+    <string name="positive_reply">Lanjutkan</string>
+    <string name="failed_title_login">Gagal</string>
+    <string name="failed_login_message">Gagal masuk ke akun</string>
+    <string name="negative_reply">Kembali</string>
 </resources>
