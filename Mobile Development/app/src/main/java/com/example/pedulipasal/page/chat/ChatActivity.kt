@@ -118,7 +118,7 @@ class ChatActivity : AppCompatActivity() {
                 timestamp = Date()
             )
             messages.add(newMessage)
-            messageAdapter.notifyItemInserted(messages.size - 1)
+            messageAdapter.addMessage(newMessage)
             binding.rvMessageHistory.scrollToPosition(messages.size - 1)
             binding.etMessageInput.text?.clear()
 
