@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
-import com.example.pedulipasal.data.model.ChatResponse
 import com.example.pedulipasal.data.model.Message
 import com.example.pedulipasal.helper.getProfileIcon
 

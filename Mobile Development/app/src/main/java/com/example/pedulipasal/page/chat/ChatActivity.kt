@@ -2,6 +2,7 @@ package com.example.pedulipasal.page.chat
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -61,6 +62,7 @@ class ChatActivity : AppCompatActivity() {
 
             // Initialize messages with existing chat messages
             chatResponse?.messages?.let { messages.addAll(it) }
+            binding.messageInputLayout.visibility = View.GONE
         } else if (intent.hasExtra(TOPIC_KEY)) {
             // New chat
             val topic = intent.getStringExtra(TOPIC_KEY) ?: "New Chat"
