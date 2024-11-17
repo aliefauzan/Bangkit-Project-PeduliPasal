@@ -3,9 +3,10 @@ package com.example.pedulipasal.data.api
 import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.request.LoginRequest
 import com.example.pedulipasal.data.model.request.RegisterRequest
-import com.example.pedulipasal.data.model.response.ChatResponse
+import com.example.pedulipasal.data.model.response.ChatItem
+import com.example.pedulipasal.data.model.response.HistoryChatResponse
 import com.example.pedulipasal.data.model.response.LoginResponse
-import com.example.pedulipasal.data.model.response.Message
+import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.data.model.response.MessageResponse
 import com.example.pedulipasal.data.model.response.RegisterResponse
 import com.example.pedulipasal.data.model.response.UserResponse
@@ -34,16 +35,21 @@ interface CloudApiService {
     @POST("chats")
     suspend fun createChat(
         @Body createChatRequest: CreateChatRequest
-    ): ChatResponse
+    ): ChatItem
 
     @POST("chats/{chatId}")
     suspend fun addMessageToChat(
         @Path("chatId") chatId: String,
-        @Body messageData: Message
+        @Body messageItemData: MessageItem
     ): MessageResponse
 
     @GET("chats/{chatId}")
     suspend fun getChatMessageById(
         @Path("chatId") chatId: String
-    ): ChatResponse
+    ): ChatItem
+
+    @GET("users/chats/{userId}")
+    suspend fun getUserChatHistory (
+        @Path("userId") userId: String
+    ): HistoryChatResponse
 }

@@ -6,14 +6,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
-import com.example.pedulipasal.data.model.response.ChatResponse
+import com.example.pedulipasal.data.model.response.ChatItem
 import com.example.pedulipasal.databinding.ItemChatLayoutBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class ChatAdapter(
     private val context: Context,
-    private val chatList: List<ChatResponse>,
+    private val chatList: List<ChatItem>,
     private val onItemSelectedCallback: OnItemSelected
 ): RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
@@ -42,7 +42,9 @@ class ChatAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            chatList[position].chatId?.let { it1 -> onItemSelectedCallback.onItemClicked(it1) }
+            chatList[position].chatId?.let { it1 ->
+                onItemSelectedCallback.onItemClicked(it1)
+            }
         }
     }
 

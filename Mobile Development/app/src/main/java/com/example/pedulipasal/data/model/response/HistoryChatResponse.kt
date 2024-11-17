@@ -5,14 +5,18 @@ import android.os.Parcelable
 import java.util.Date
 
 
+data class HistoryChatResponse(
+    val chats: List<ChatItem>
+)
 
-data class ChatResponse(
+
+data class ChatItem(
     val chatId: String? = null,
     val userId: String? = null,
     val title: String? = null,
     val createdAt: Date? = null,
     val updateAt: Date? = null,
-    val messages: List<Message>?=null
+    val messageItems: List<MessageItem>?=null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
@@ -20,8 +24,8 @@ data class ChatResponse(
         parcel.readString() ?: "",
         Date(parcel.readLong()),
         Date(parcel.readLong()),
-        mutableListOf<Message>().apply {
-            parcel.readTypedList(this, Message)
+        mutableListOf<MessageItem>().apply {
+            parcel.readTypedList(this, MessageItem)
         }
     )
 
@@ -31,19 +35,19 @@ data class ChatResponse(
         parcel.writeString(title)
         createdAt?.let { parcel.writeLong(it.time) }
         updateAt?.let { parcel.writeLong(it.time) }
-        parcel.writeTypedList(messages)
+        parcel.writeTypedList(messageItems)
     }
 
     override fun describeContents(): Int = 0
 
-    companion object CREATOR : Parcelable.Creator<ChatResponse> {
-        override fun createFromParcel(parcel: Parcel): ChatResponse = ChatResponse(parcel)
-        override fun newArray(size: Int): Array<ChatResponse?> = arrayOfNulls(size)
+    companion object CREATOR : Parcelable.Creator<ChatItem> {
+        override fun createFromParcel(parcel: Parcel): ChatItem = ChatItem(parcel)
+        override fun newArray(size: Int): Array<ChatItem?> = arrayOfNulls(size)
     }
 }
 
 
-data class Message(
+data class MessageItem (
     val messageId: String,
     val isByHuman: Boolean,
     val content: String,
@@ -65,9 +69,9 @@ data class Message(
 
     override fun describeContents(): Int = 0
 
-    companion object CREATOR : Parcelable.Creator<Message> {
-        override fun createFromParcel(parcel: Parcel): Message = Message(parcel)
-        override fun newArray(size: Int): Array<Message?> = arrayOfNulls(size)
+    companion object CREATOR : Parcelable.Creator<MessageItem> {
+        override fun createFromParcel(parcel: Parcel): MessageItem = MessageItem(parcel)
+        override fun newArray(size: Int): Array<MessageItem?> = arrayOfNulls(size)
     }
 }
 

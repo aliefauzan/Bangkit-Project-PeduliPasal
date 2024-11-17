@@ -6,9 +6,9 @@ import com.example.pedulipasal.data.api.CloudApiService
 import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.request.LoginRequest
 import com.example.pedulipasal.data.model.request.RegisterRequest
-import com.example.pedulipasal.data.model.response.ChatResponse
+import com.example.pedulipasal.data.model.response.ChatItem
 import com.example.pedulipasal.data.model.response.LoginResponse
-import com.example.pedulipasal.data.model.response.Message
+import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.data.model.response.MessageResponse
 import com.example.pedulipasal.data.model.response.RegisterResponse
 import com.example.pedulipasal.data.model.response.UserResponse
@@ -22,6 +22,18 @@ class CloudRepository(
     private val cloudApiService: CloudApiService,
     private val userPreference: UserPreference
 ) {
+
+    fun getUserChatHistory(userId: String): LiveData<Result<List<ChatItem>>> = liveData {
+        emit(Result.Loading)
+        try {
+            val client = cloudApiService.getUserChatHistory(userId).chats
+            emit(Result.Success(client))
+        } catch (e: HttpException) {
+            emit(Result.Error(e.toString()))
+        } catch (e: Exception) {
+            emit(Result.Error(e.toString()))
+        }
+    }
 
     fun getUserProfileData(userId: String): LiveData<Result<UserResponse>> = liveData {
         emit(Result.Loading)
@@ -72,7 +84,7 @@ class CloudRepository(
     }
 
 
-    fun createChat(createChatRequest: CreateChatRequest): LiveData<Result<ChatResponse>> = liveData {
+    fun createChat(createChatRequest: CreateChatRequest): LiveData<Result<ChatItem>> = liveData {
         emit(Result.Loading)
         try {
             val client = cloudApiService.createChat(createChatRequest)
@@ -84,10 +96,10 @@ class CloudRepository(
         }
     }
 
-    fun addMessageToChat(chatId: String, messageData: Message): LiveData<Result<MessageResponse>> = liveData {
+    fun addMessageToChat(chatId: String, messageItemData: MessageItem): LiveData<Result<MessageResponse>> = liveData {
         emit(Result.Loading)
         try {
-            val client = cloudApiService.addMessageToChat(chatId,messageData)
+            val client = cloudApiService.addMessageToChat(chatId,messageItemData)
             emit(Result.Success(client))
         } catch (e: HttpException) {
             emit(Result.Error(e.toString()))
@@ -96,7 +108,7 @@ class CloudRepository(
         }
     }
 
-    fun getChatMessageById(chatId: String): LiveData<Result<ChatResponse>> = liveData {
+    fun getChatMessageById(chatId: String): LiveData<Result<ChatItem>> = liveData {
         emit(Result.Loading)
         try {
             val client = cloudApiService.getChatMessageById(chatId)
