@@ -8,13 +8,16 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.ChatAdapter
 import com.example.pedulipasal.data.model.response.ChatResponse
 import com.example.pedulipasal.data.model.response.Message
 import com.example.pedulipasal.databinding.FragmentChatBinding
+import com.example.pedulipasal.helper.ViewModelFactory
 import com.example.pedulipasal.page.chat.ChatActivity
+import com.example.pedulipasal.ui.news.NewsViewModel
 import java.util.*
 
 class ChatFragment : Fragment() {
@@ -24,9 +27,14 @@ class ChatFragment : Fragment() {
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
 
+    private val chatViewModel by viewModels<ChatViewModel> {
+        ViewModelFactory.getInstance(requireActivity())
+    }
+
     companion object {
         private const val TOPIC_KEY = "topic_key"
         private const val CHAT_ID_KEY = "detail_chat_key"
+        private const val USER_ID_KEY = "user_id_key"
     }
 
     override fun onCreateView(
@@ -97,6 +105,7 @@ class ChatFragment : Fragment() {
         }
         return chatList
     }
+
     private fun setupAction() {
         binding.fabAddNewChat.setOnClickListener {
             showDialog(requireActivity())
@@ -114,7 +123,9 @@ class ChatFragment : Fragment() {
             setPositiveButton(R.string.create) { _, _ ->
                 val topic = editText.text.toString().trim()
                 if (topic.isNotEmpty()) {
-                    moveToChatActivity(topic = topic)
+                    chatViewModel.getSession().observe(viewLifecycleOwner) {user ->
+                        moveToChatActivity(topic = topic, userId = user.userId)
+                    }
                 } else {
                     Toast.makeText(context, getString(R.string.empty_topic_warning), Toast.LENGTH_SHORT).show()
                 }
@@ -125,10 +136,11 @@ class ChatFragment : Fragment() {
         }
     }
 
-    private fun moveToChatActivity(topic: String? = null, chatId: String? = null) {
+    private fun moveToChatActivity(topic: String? = null, chatId: String? = null, userId: String? = null) {
         val intent = Intent(requireActivity(), ChatActivity::class.java).apply {
             topic?.let { putExtra(TOPIC_KEY, it) }
             chatId?.let { putExtra(CHAT_ID_KEY, it) }
+            userId?.let { putExtra(USER_ID_KEY, it) }
         }
         startActivity(intent)
     }

@@ -27,7 +27,8 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
     private var chatResponse: ChatResponse? = null
     private val messages: MutableList<Message> = mutableListOf()
-    private var newChatId: String? = null
+    private var isChatCreated = false
+
 
     private val chatViewModel by viewModels<ChatViewModel> {
         ViewModelFactory.getInstance(this@ChatActivity)
@@ -36,6 +37,7 @@ class ChatActivity : AppCompatActivity() {
     companion object {
         const val CHAT_ID_KEY = "detail_chat_key"
         const val TOPIC_KEY = "topic_key"
+        const val USER_ID_KEY = "user_id_key"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,21 +67,21 @@ class ChatActivity : AppCompatActivity() {
                 @Suppress("DEPRECATION")
                 intent.getStringExtra(CHAT_ID_KEY)
             }
-
             if (chatID != null) {
                 showMessageHistory(chatID)
             }
-        } else if (intent.hasExtra(TOPIC_KEY)) {
+
+        } else if (intent.hasExtra(TOPIC_KEY) && intent.hasExtra(USER_ID_KEY) && !isChatCreated) {
             // New chat
-            val title = intent.getStringExtra(TOPIC_KEY) ?: "New Chat"
+            isChatCreated = true
+            val userId = intent.getStringExtra(USER_ID_KEY) ?: "-1"
+            val title = intent.getStringExtra(TOPIC_KEY) ?: "-1"
             supportActionBar?.title = title
-            val createChatRequest = CreateChatRequest(
-                userId = "D10TTY3YHMRKEWH",
-                title = "dari AVD bowo"
+            val createChatRequest = CreateChatRequest (
+                userId = userId,
+                title = title
             )
-            val hash = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkQxMFRUWTNZSE1SS0VXSCIsImlhdCI6MTczMTc3MzU2NCwiZXhwIjoxNzMxNzc3MTY0fQ.pbHbnrEmEmvUolrDFgNja4tk1hfGbmy657_Gov52jQg"
-            val token = "Bearer $hash"
-            chatViewModel.createChat(token, createChatRequest).observe(this) { result ->
+            chatViewModel.createChat(createChatRequest).observe(this) { result ->
                 if (result != null) {
                     when(result) {
                         is Result.Loading -> {
@@ -87,7 +89,7 @@ class ChatActivity : AppCompatActivity() {
                         }
                         is Result.Success -> {
                             binding.progressBar.visibility = View.GONE
-                            val chatId = result.data.chatId ?: "001"
+                            val chatId = result.data.chatId ?: "-1"
                             chatWithBot(chatId)
                             Log.d("ChatActivity", "Berhasil membuat chat baru dengan id ${result.data.chatId}")
                             Toast.makeText(this, "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
@@ -155,16 +157,6 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
@@ -198,5 +190,15 @@ class ChatActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isChatCreated", isChatCreated)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        isChatCreated = savedInstanceState.getBoolean("isChatCreated", false)
     }
 }

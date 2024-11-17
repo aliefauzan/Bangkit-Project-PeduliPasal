@@ -8,13 +8,18 @@ import com.example.pedulipasal.data.model.response.LoginResponse
 import com.example.pedulipasal.data.model.response.Message
 import com.example.pedulipasal.data.model.response.MessageResponse
 import com.example.pedulipasal.data.model.response.RegisterResponse
+import com.example.pedulipasal.data.model.response.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface CloudApiService {
+
+    @GET("users/{userId}")
+    suspend fun getUserProfileData(
+        @Path("userId") userId: String
+    ): UserResponse
 
     @POST("users/login")
     suspend fun login(
@@ -28,7 +33,6 @@ interface CloudApiService {
 
     @POST("chats")
     suspend fun createChat(
-        @Header("Authorization") token: String,
         @Body createChatRequest: CreateChatRequest
     ): ChatResponse
 

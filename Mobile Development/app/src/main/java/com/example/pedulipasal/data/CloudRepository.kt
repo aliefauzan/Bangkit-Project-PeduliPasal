@@ -11,6 +11,7 @@ import com.example.pedulipasal.data.model.response.LoginResponse
 import com.example.pedulipasal.data.model.response.Message
 import com.example.pedulipasal.data.model.response.MessageResponse
 import com.example.pedulipasal.data.model.response.RegisterResponse
+import com.example.pedulipasal.data.model.response.UserResponse
 import com.example.pedulipasal.data.user.UserModel
 import com.example.pedulipasal.data.user.UserPreference
 import com.example.pedulipasal.helper.Result
@@ -21,6 +22,18 @@ class CloudRepository(
     private val cloudApiService: CloudApiService,
     private val userPreference: UserPreference
 ) {
+
+    fun getUserProfileData(userId: String): LiveData<Result<UserResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val client = cloudApiService.getUserProfileData(userId)
+            emit(Result.Success(client))
+        } catch (e: HttpException) {
+            emit(Result.Error(e.toString()))
+        } catch (e: Exception) {
+            emit(Result.Error(e.toString()))
+        }
+    }
 
     suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
@@ -59,10 +72,10 @@ class CloudRepository(
     }
 
 
-    fun createChat(token: String, createChatRequest: CreateChatRequest): LiveData<Result<ChatResponse>> = liveData {
+    fun createChat(createChatRequest: CreateChatRequest): LiveData<Result<ChatResponse>> = liveData {
         emit(Result.Loading)
         try {
-            val client = cloudApiService.createChat(token, createChatRequest)
+            val client = cloudApiService.createChat(createChatRequest)
             emit(Result.Success(client))
         } catch (e: HttpException) {
             emit(Result.Error(e.toString()))
