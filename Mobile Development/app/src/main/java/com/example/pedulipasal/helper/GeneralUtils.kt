@@ -29,6 +29,7 @@ fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
         override fun onChanged(value: T) {
             removeObserver(this)
             observer.onChanged(value)
+
         }
     })
 }
