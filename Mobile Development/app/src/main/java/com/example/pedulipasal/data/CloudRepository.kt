@@ -3,6 +3,7 @@ package com.example.pedulipasal.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.example.pedulipasal.data.api.CloudApiService
+import com.example.pedulipasal.data.model.request.AddMessageRequest
 import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.request.LoginRequest
 import com.example.pedulipasal.data.model.request.RegisterRequest
@@ -96,10 +97,10 @@ class CloudRepository(
         }
     }
 
-    fun addMessageToChat(chatId: String, messageItemData: MessageItem): LiveData<Result<MessageResponse>> = liveData {
+    fun addMessageToChat(chatId: String, addMessageRequest: AddMessageRequest): LiveData<Result<MessageResponse>> = liveData {
         emit(Result.Loading)
         try {
-            val client = cloudApiService.addMessageToChat(chatId,messageItemData)
+            val client = cloudApiService.addMessageToChat(chatId, addMessageRequest)
             emit(Result.Success(client))
         } catch (e: HttpException) {
             emit(Result.Error(e.toString()))

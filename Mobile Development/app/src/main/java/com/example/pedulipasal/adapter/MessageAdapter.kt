@@ -32,7 +32,9 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (messageItems[position].isByHuman) {
+        val isByHuman = messageItems[position].isHuman
+        Log.d("MessageAdapter", "getItemViewType - position: $position, isByHuman: $isByHuman")
+        return if (isByHuman) {
             R.layout.item_message_local
         } else {
             R.layout.item_message_another_user
@@ -43,7 +45,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val message = messageItems[position]
-        holder.userProfile.setImageDrawable(getProfileIcon(holder.userProfile.context, message.isByHuman ?: false))
+        holder.userProfile.setImageDrawable(getProfileIcon(holder.userProfile.context, message.isHuman ?: false))
         holder.userMessageText.text = message.content
     }
 
@@ -55,7 +57,6 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     fun addMessage(messageItem: MessageItem) {
         messageItems.add(messageItem)
-        Log.d("MessageAdapter", "addMessageDipanggil ${messageItem.content}")
         notifyItemInserted(messageItems.size - 1)
     }
 }

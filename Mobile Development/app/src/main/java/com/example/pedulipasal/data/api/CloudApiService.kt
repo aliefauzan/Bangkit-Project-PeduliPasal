@@ -1,5 +1,6 @@
 package com.example.pedulipasal.data.api
 
+import com.example.pedulipasal.data.model.request.AddMessageRequest
 import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.request.LoginRequest
 import com.example.pedulipasal.data.model.request.RegisterRequest
@@ -40,7 +41,7 @@ interface CloudApiService {
     @POST("chats/{chatId}")
     suspend fun addMessageToChat(
         @Path("chatId") chatId: String,
-        @Body messageItemData: MessageItem
+        @Body addMessageRequest: AddMessageRequest
     ): MessageResponse
 
     @GET("chats/{chatId}")

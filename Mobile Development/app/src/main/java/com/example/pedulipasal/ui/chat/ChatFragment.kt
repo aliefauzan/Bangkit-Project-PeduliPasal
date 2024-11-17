@@ -17,7 +17,8 @@ import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.databinding.FragmentChatBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
-import com.example.pedulipasal.page.Message.MessageActivity
+import com.example.pedulipasal.helper.observeOnce
+import com.example.pedulipasal.page.message.MessageActivity
 
 class ChatFragment : Fragment() {
 
@@ -114,7 +115,7 @@ class ChatFragment : Fragment() {
             setPositiveButton(R.string.create) { _, _ ->
                 val title = editText.text.toString().trim()
                 if (title.isNotEmpty()) {
-                    chatViewModel.getSession().observe(viewLifecycleOwner) {user ->
+                    chatViewModel.getSession().observeOnce(viewLifecycleOwner) {user ->
                         createNewChat(title = title, userId = user.userId)
                     }
                 } else {

@@ -5,6 +5,9 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.example.pedulipasal.R
 
 fun getProfileIcon(context: Context, isLocalUser: Boolean): Drawable {
@@ -19,4 +22,13 @@ fun getProfileIcon(context: Context, isLocalUser: Boolean): Drawable {
     }
 
     return drawable
+}
+
+fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
+    observe(owner, object : Observer<T> {
+        override fun onChanged(value: T) {
+            removeObserver(this)
+            observer.onChanged(value)
+        }
+    })
 }

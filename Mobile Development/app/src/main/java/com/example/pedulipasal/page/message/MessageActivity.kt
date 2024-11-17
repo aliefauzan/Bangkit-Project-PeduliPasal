@@ -1,4 +1,4 @@
-package com.example.pedulipasal.page.Message
+package com.example.pedulipasal.page.message
 
 import android.os.Bundle
 import android.util.Log
@@ -12,18 +12,16 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.MessageAdapter
-import com.example.pedulipasal.data.model.response.ChatItem
+import com.example.pedulipasal.data.model.request.AddMessageRequest
 import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.databinding.ActivityMessageBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
-import java.util.Date
 
 class MessageActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMessageBinding
     private lateinit var messageAdapter: MessageAdapter
-    private var chatItem: ChatItem? = null
     private val messageItems: MutableList<MessageItem> = mutableListOf()
 
 
@@ -33,8 +31,6 @@ class MessageActivity : AppCompatActivity() {
 
     companion object {
         const val CHAT_ID_KEY = "detail_chat_key"
-        const val TOPIC_KEY = "topic_key"
-        const val USER_ID_KEY = "user_id_key"
     }
 
 
@@ -74,30 +70,29 @@ class MessageActivity : AppCompatActivity() {
                     is Result.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
-
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        this.chatItem = result.data
                         supportActionBar?.title = result.data.chatId
-
-                        // Initialize RecyclerView and Adapter
                         messageAdapter = MessageAdapter()
-                        result.data.messageItems.let {
+                        Log.d("MessageActivity", "${result.data.chatId}")
+                        result.data.messages.let {
                             if (it != null) {
                                 messageAdapter.setMessages(it)
                             }
                         }
+                        binding.rvMessageHistory.scrollToPosition(messageItems.size - 1)
                         binding.rvMessageHistory.apply {
                             layoutManager = LinearLayoutManager(this@MessageActivity)
                             adapter = messageAdapter
                         }
-                        result.data.chatId?.let { setupAction(it) }
-                        Toast.makeText(this, "${result.data.title}", Toast.LENGTH_SHORT).show()
+                        result.data.chatId?.let {
+                            setupAction(it)
+                        }
                     }
-
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                        Log.d("MessageActivity", "${result.error}")
                     }
                 }
             }
@@ -125,24 +120,48 @@ class MessageActivity : AppCompatActivity() {
     private fun sendMessage(chatId: String) {
         val content = binding.etMessageInput.text.toString().trim()
         if (content.isNotEmpty()) {
-            val newMessageItem = MessageItem(
-                messageId = "0001",
-                isByHuman = true,
-                content = content,
-                timestamp = Date()
-            )
-            messageAdapter.addMessage(newMessageItem)
-            binding.rvMessageHistory.apply {
-                layoutManager = LinearLayoutManager(this@MessageActivity)
-                adapter = messageAdapter
-            }
-            binding.rvMessageHistory.scrollToPosition(messageItems.size - 1)
-            binding.etMessageInput.text?.clear()
-            messageViewModel.addMessageToChat(chatId,newMessageItem).removeObservers(this)
-
-            // TODO: Handle sending the message to the bot or API
+            sendMessageFromHuman(chatId, content)
         } else {
             Toast.makeText(this, getString(R.string.empty_message_warning), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun sendMessageFromHuman(chatId: String, content: String) {
+        val addMessageRequest = AddMessageRequest (
+            isHuman = true,
+            content = content
+        )
+        if (messageAdapter.itemCount == 0) {
+            messageAdapter.addMessage(
+                MessageItem(
+                    isHuman = addMessageRequest.isHuman,
+                    content = addMessageRequest.content
+                )
+            )
+        }
+        binding.rvMessageHistory.apply {
+            layoutManager = LinearLayoutManager(this@MessageActivity)
+            adapter = messageAdapter
+        }
+        binding.etMessageInput.text?.clear()
+        Log.d("MessageActivity", "value from process: ${chatId} ${addMessageRequest.isHuman} ${addMessageRequest.content}")
+        messageViewModel.addMessageToChat(chatId,addMessageRequest).removeObservers(this)
+        messageViewModel.addMessageToChat(chatId, addMessageRequest).observe(this) {result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        showListMessages(chatId)
+                        Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 

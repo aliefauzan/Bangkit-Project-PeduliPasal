@@ -7,7 +7,7 @@ import com.example.pedulipasal.MainViewModel
 import com.example.pedulipasal.data.CloudRepository
 import com.example.pedulipasal.data.NewsRepository
 import com.example.pedulipasal.di.Injection
-import com.example.pedulipasal.page.Message.MessageViewModel
+import com.example.pedulipasal.page.message.MessageViewModel
 import com.example.pedulipasal.page.login.LoginViewModel
 import com.example.pedulipasal.page.profile.ProfileViewModel
 import com.example.pedulipasal.page.signup.SignUpViewModel
