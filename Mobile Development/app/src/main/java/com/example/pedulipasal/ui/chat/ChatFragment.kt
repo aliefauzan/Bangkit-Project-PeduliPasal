@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.R
@@ -19,7 +18,6 @@ import com.example.pedulipasal.databinding.FragmentChatBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
 import com.example.pedulipasal.page.Message.MessageActivity
-import com.example.pedulipasal.page.Message.MessageViewModel
 
 class ChatFragment : Fragment() {
 
@@ -29,10 +27,6 @@ class ChatFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val chatViewModel by viewModels<ChatViewModel> {
-        ViewModelFactory.getInstance(requireActivity())
-    }
-
-    private val messageViewModel by viewModels<MessageViewModel> {
         ViewModelFactory.getInstance(requireActivity())
     }
 
@@ -61,7 +55,6 @@ class ChatFragment : Fragment() {
     }
 
     private fun initializeData() {
-        //val chatList = generateMockChatData()
         chatViewModel.getSession().observe(viewLifecycleOwner) {user ->
             getHistoryChat(user.userId)
         }

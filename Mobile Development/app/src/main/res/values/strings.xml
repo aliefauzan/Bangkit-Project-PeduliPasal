@@ -48,4 +48,8 @@
     <string name="failed_title_login">Gagal</string>
     <string name="failed_login_message">Gagal masuk ke akun</string>
     <string name="negative_reply">Kembali</string>
+    <string name="success_title_signup">Berhasil</string>
+    <string name="success_signup_message">Akun berhasil dibuat</string>
+    <string name="failed_title_signup">Gagal</string>
+    <string name="failed_signup_message">Akun gagal dibuat</string>
 </resources>
