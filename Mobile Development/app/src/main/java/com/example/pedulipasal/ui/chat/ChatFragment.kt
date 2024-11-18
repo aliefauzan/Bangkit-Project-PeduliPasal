@@ -73,6 +73,10 @@ class ChatFragment : Fragment() {
                             override fun onItemClicked(chatId: String) {
                                 moveToMessageActivity(chatId = chatId)
                             }
+
+                            override fun onButtonDeleteClick(chatId: String) {
+                                showDeleteDialog(chatId)
+                            }
                         })
                         binding.rvChats.apply {
                             layoutManager = LinearLayoutManager(requireActivity())
@@ -98,18 +102,48 @@ class ChatFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun setupAction() {
-        binding.fabAddNewChat.setOnClickListener {
-            showDialog(requireActivity())
+    private fun showDeleteDialog(chatId: String) {
+        AlertDialog.Builder(requireActivity()).apply {
+            setTitle(getString(R.string.delete_chat))
+            setMessage(R.string.delete_chat_confirmation)
+            setPositiveButton(R.string.create) { _, _ ->
+                chatViewModel.deleteChatById(chatId).observe(viewLifecycleOwner) {result ->
+                    if (result != null) {
+                        when(result) {
+                            is Result.Loading -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+                            is Result.Success -> {
+                                chatAdapter.deleteItem(chatId)
+                                Toast.makeText(requireActivity(), "Berhasil menghapus chat", Toast.LENGTH_SHORT).show()
+                                binding.progressBar.visibility = View.GONE
+                            }
+                            is Result.Error -> {
+                                Toast.makeText(requireActivity(), "Gagal menghapus chat dengan id ${result.error}", Toast.LENGTH_SHORT).show()
+                                binding.progressBar.visibility = View.GONE
+                            }
+                        }
+                    }
+                }
+            }
+            setNegativeButton(R.string.cancel, null)
+            create()
+            show()
         }
     }
 
-    private fun showDialog(context: Context) {
-        val inflater = LayoutInflater.from(context)
+    private fun setupAction() {
+        binding.fabAddNewChat.setOnClickListener {
+            showDialog()
+        }
+    }
+
+    private fun showDialog() {
+        val inflater = LayoutInflater.from(requireActivity())
         val dialogLayout = inflater.inflate(R.layout.dialog_layout, null)
         val editText = dialogLayout.findViewById<EditText>(R.id.ed_new_topics)
 
-        AlertDialog.Builder(context).apply {
+        AlertDialog.Builder(requireActivity()).apply {
             setTitle(getString(R.string.add_new_chat))
             setView(dialogLayout)
             setPositiveButton(R.string.create) { _, _ ->

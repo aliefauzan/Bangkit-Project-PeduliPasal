@@ -16,4 +16,6 @@ class ChatViewModel(private val cloudRepository: CloudRepository): ViewModel() {
     fun createChat(createChatRequest: CreateChatRequest) = cloudRepository.createChat(createChatRequest)
 
     fun getUserHistoryChat(userId: String) = cloudRepository.getUserChatHistory(userId)
+
+    fun deleteChatById(chatId: String) = cloudRepository.deleteChat(chatId)
 }

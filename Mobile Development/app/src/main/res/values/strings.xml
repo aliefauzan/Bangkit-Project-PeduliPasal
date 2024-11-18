@@ -52,4 +52,6 @@
     <string name="success_signup_message">Akun berhasil dibuat</string>
     <string name="failed_title_signup">Gagal</string>
     <string name="failed_signup_message">Akun gagal dibuat</string>
+    <string name="delete_chat">Hapus chat</string>
+    <string name="delete_chat_confirmation">Apakah anda ingin menghapus chat ini?</string>
 </resources>

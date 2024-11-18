@@ -5,13 +5,14 @@ import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.request.LoginRequest
 import com.example.pedulipasal.data.model.request.RegisterRequest
 import com.example.pedulipasal.data.model.response.ChatItem
+import com.example.pedulipasal.data.model.response.DeleteResponse
 import com.example.pedulipasal.data.model.response.HistoryChatResponse
 import com.example.pedulipasal.data.model.response.LoginResponse
-import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.data.model.response.MessageResponse
 import com.example.pedulipasal.data.model.response.RegisterResponse
 import com.example.pedulipasal.data.model.response.UserResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -53,4 +54,9 @@ interface CloudApiService {
     suspend fun getUserChatHistory (
         @Path("userId") userId: String
     ): HistoryChatResponse
+
+    @DELETE("chats/{chatId}")
+    suspend fun deleteChat (
+        @Path("chatId") chatId: String
+    ): DeleteResponse
 }

@@ -8,6 +8,7 @@ import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.request.LoginRequest
 import com.example.pedulipasal.data.model.request.RegisterRequest
 import com.example.pedulipasal.data.model.response.ChatItem
+import com.example.pedulipasal.data.model.response.DeleteResponse
 import com.example.pedulipasal.data.model.response.LoginResponse
 import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.data.model.response.MessageResponse
@@ -113,6 +114,18 @@ class CloudRepository(
         emit(Result.Loading)
         try {
             val client = cloudApiService.getChatMessageById(chatId)
+            emit(Result.Success(client))
+        } catch (e: HttpException) {
+            emit(Result.Error(e.toString()))
+        } catch (e: Exception) {
+            emit(Result.Error(e.toString()))
+        }
+    }
+
+    fun deleteChat(chatId: String): LiveData<Result<DeleteResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val client = cloudApiService.deleteChat(chatId)
             emit(Result.Success(client))
         } catch (e: HttpException) {
             emit(Result.Error(e.toString()))

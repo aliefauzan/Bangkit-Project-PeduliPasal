@@ -13,12 +13,13 @@ import java.util.Locale
 
 class ChatAdapter(
     private val context: Context,
-    private val chatList: List<ChatItem>,
+    private var chatList: List<ChatItem>,
     private val onItemSelectedCallback: OnItemSelected
 ): RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     interface OnItemSelected {
         fun onItemClicked(chatId: String)
+        fun onButtonDeleteClick(chatId: String)
     }
 
     class ViewHolder(val binding: ItemChatLayoutBinding): RecyclerView.ViewHolder(binding.root)
@@ -38,7 +39,6 @@ class ChatAdapter(
             tvTitle.text = chatList[position].title
             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             tvCreatedAt.text = "${context.getString(R.string.created_at)} ${dateFormat.format(chatList[position].createdAt?: dateFormat.parse("01/01/1970"))}"
-            tvUpdatedAt.text = "${context.getString(R.string.updated_at)} ${dateFormat.format(chatList[position].updateAt?: dateFormat.parse("01/01/1970"))}"
         }
 
         holder.itemView.setOnClickListener {
@@ -46,9 +46,24 @@ class ChatAdapter(
                 onItemSelectedCallback.onItemClicked(it1)
             }
         }
+        holder.binding.btnDeleteChat.setOnClickListener {
+            chatList[position].chatId?.let { it1 ->
+                onItemSelectedCallback.onButtonDeleteClick(it1)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return chatList.size
+    }
+
+    fun deleteItem(chatId: String) {
+        val itemPosition = chatList.indexOfFirst { it.chatId == chatId }
+        if (itemPosition != -1) {
+            val mutableList = chatList.toMutableList()
+            mutableList.removeAt(itemPosition)
+            chatList = mutableList
+            notifyDataSetChanged()
+        }
     }
 }
