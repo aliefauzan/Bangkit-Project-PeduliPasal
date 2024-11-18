@@ -71,12 +71,21 @@ const getChatMessageById = async (req, res) => {
       return res.status(404).json({ error: "Chat not found" });
     }
 
+    const chatData = chatDoc.data();
+    
     const messagesRef = chatRef.collection("messages");
     const messagesSnapshot = await messagesRef.orderBy("timestamp").get();
 
     const messages = messagesSnapshot.docs.map(doc => doc.data());
 
-    res.status(200).json({ chatId, messages });
+    res.status(200).json({
+      chatId,
+      userId: chatData.userId,
+      title: chatData.title,
+      createdAt: chatData.createdAt,
+      updatedAt: chatData.updatedAt,
+      messages,
+    });
   } catch (error) {
     console.error("Error fetching chat messages:", error);
     res.status(500).json({ error: "Failed to fetch chat messages" });
