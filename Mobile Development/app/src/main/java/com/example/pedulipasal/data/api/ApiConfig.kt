@@ -1,10 +1,14 @@
 package com.example.pedulipasal.data.api
 
 import com.example.pedulipasal.BuildConfig
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
+import java.security.cert.X509Certificate
 
 class ApiConfig {
     companion object{
@@ -21,5 +25,30 @@ class ApiConfig {
                 .build()
             return retrofit.create(NewsApiService::class.java)
         }
+
+        fun provideCloudApiService(getToken:() -> String): CloudApiService {
+            val loggingInterceptor =
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+
+            val authInterceptor = Interceptor { chain ->
+                val req = chain.request()
+                val requestHeaders = req.newBuilder()
+                    .addHeader("Authorization", "Bearer ${getToken()}")
+                    .build()
+                chain.proceed(requestHeaders)
+            }
+            val client = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .addInterceptor(authInterceptor)
+                .build()
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BuildConfig.CLOUD_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+            return retrofit.create(CloudApiService::class.java)
+        }
     }
 }
+
+

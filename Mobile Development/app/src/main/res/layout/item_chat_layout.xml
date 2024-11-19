@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    android:padding="8dp"
+    android:padding="16dp"
     android:background="@drawable/borders"
     android:orientation="vertical">
 
@@ -23,11 +23,12 @@
             android:layout_marginTop="8dp"
             android:textStyle="italic"/>
 
-        <TextView
-            android:id="@+id/tv_updated_at"
+        <Button
+            android:id="@+id/btn_delete_chat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/delete"
             android:textSize="16sp"
             android:layout_marginTop="8dp"
-            android:textStyle="italic"/>
+            android:backgroundTint="@color/red"/>
 </LinearLayout>

@@ -18,6 +18,8 @@ android {
 
         buildConfigField("String", "NEWS_API_KEY", "\"3ae36dd2f1f14442b1aa3b590e11b0fe\"")
         buildConfigField("String", "NEWS_BASE_URL", "\"https://newsapi.org/v2/\"")
+        buildConfigField("String", "CLOUD_BASE_URL", "\"https://pedulipasal-api-808921460677.asia-southeast1.run.app/api/\"")
+
     }
 
     buildTypes {

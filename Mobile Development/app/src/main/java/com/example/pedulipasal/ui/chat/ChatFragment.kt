@@ -4,43 +4,44 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.ChatAdapter
-import com.example.pedulipasal.data.model.ChatResponse
-import com.example.pedulipasal.data.model.Message
+import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.databinding.FragmentChatBinding
-import com.example.pedulipasal.page.messagehistory.MessageHistoryActivity
-import com.example.pedulipasal.page.newmessage.NewMessageActivity
-import java.util.Date
+import com.example.pedulipasal.helper.Result
+import com.example.pedulipasal.helper.ViewModelFactory
+import com.example.pedulipasal.helper.observeOnce
+import com.example.pedulipasal.page.message.MessageActivity
 
 class ChatFragment : Fragment() {
 
     private lateinit var chatAdapter: ChatAdapter
-    private lateinit var layoutManager: LinearLayoutManager
 
     private var _binding: FragmentChatBinding? = null
     private val binding get() = _binding!!
 
+    private val chatViewModel by viewModels<ChatViewModel> {
+        ViewModelFactory.getInstance(requireActivity())
+    }
+
+    companion object {
+        private const val CHAT_ID_KEY = "detail_chat_key"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-//        val dashboardViewModel =
-//            ViewModelProvider(this).get(DashboardViewModel::class.java)
-
         _binding = FragmentChatBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,79 +56,141 @@ class ChatFragment : Fragment() {
     }
 
     private fun initializeData() {
-        val chatList = ArrayList<ChatResponse>().apply {
-            repeat(10) { chatIndex ->
-                add(
-                    ChatResponse(
-                        chatId = "chat${chatIndex + 1}",
-                        userId = "user${chatIndex + 1}",
-                        title = "Chat Title ${chatIndex + 1}",
-                        createdAt = Date(),
-                        updateAt = Date(),
-                        messages = List(30) { messageIndex ->
-                            Message(
-                                messageId = "msg${chatIndex + 1}_${messageIndex + 1}",
-                                isByHuman = messageIndex % 2 == 0, // Alternate between human and bot
-                                content = "Message content ${messageIndex + 1} from Chat ${chatIndex + 1}",
-                                timestamp = Date()
-                            )
+        chatViewModel.getSession().observe(viewLifecycleOwner) {user ->
+            getHistoryChat(user.userId)
+        }
+    }
+
+    private fun getHistoryChat(userId: String) {
+        chatViewModel.getUserHistoryChat(userId).observe(viewLifecycleOwner) {result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        chatAdapter = ChatAdapter(requireActivity(), result.data.sortedByDescending { it.createdAt }, object : ChatAdapter.OnItemSelected {
+                            override fun onItemClicked(chatId: String) {
+                                moveToMessageActivity(chatId = chatId)
+                            }
+
+                            override fun onButtonDeleteClick(chatId: String) {
+                                showDeleteDialog(chatId)
+                            }
+                        })
+                        binding.rvChats.apply {
+                            layoutManager = LinearLayoutManager(requireActivity())
+                            adapter = chatAdapter
                         }
-                    )
-                )
+                        binding.progressBar.visibility = View.GONE
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(requireActivity(), "Gagal mengambil data chat ${result.error}", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
+
         }
 
-        chatAdapter = ChatAdapter(requireActivity(), chatList, object : ChatAdapter.OnItemSelected {
-            override fun onItemClicked(chatResponse: ChatResponse) {
-                Toast.makeText(requireActivity(), "chat id: ${chatResponse.chatId}", Toast.LENGTH_SHORT).show()
-                moveToMessageHistoryActivity(chatResponse)
-            }
-        })
+    }
 
-        binding.rvChats.apply {
-            layoutManager = LinearLayoutManager(requireActivity())
-            adapter = chatAdapter
+    private fun moveToMessageActivity(chatId: String) {
+        val intent = Intent(requireActivity(), MessageActivity::class.java).apply {
+            putExtra(CHAT_ID_KEY, chatId)
+        }
+        startActivity(intent)
+    }
+
+    private fun showDeleteDialog(chatId: String) {
+        AlertDialog.Builder(requireActivity()).apply {
+            setTitle(getString(R.string.delete_chat))
+            setMessage(R.string.delete_chat_confirmation)
+            setPositiveButton(R.string.create) { _, _ ->
+                chatViewModel.deleteChatById(chatId).observe(viewLifecycleOwner) {result ->
+                    if (result != null) {
+                        when(result) {
+                            is Result.Loading -> {
+                                binding.progressBar.visibility = View.VISIBLE
+                            }
+                            is Result.Success -> {
+                                chatAdapter.deleteItem(chatId)
+                                Toast.makeText(requireActivity(), "Berhasil menghapus chat", Toast.LENGTH_SHORT).show()
+                                binding.progressBar.visibility = View.GONE
+                            }
+                            is Result.Error -> {
+                                Toast.makeText(requireActivity(), "Gagal menghapus chat dengan id ${result.error}", Toast.LENGTH_SHORT).show()
+                                binding.progressBar.visibility = View.GONE
+                            }
+                        }
+                    }
+                }
+            }
+            setNegativeButton(R.string.cancel, null)
+            create()
+            show()
         }
     }
 
     private fun setupAction() {
-        binding.fabAddNewChat.setOnClickListener { showDialog(requireActivity()) }
+        binding.fabAddNewChat.setOnClickListener {
+            showDialog()
+        }
     }
 
-    private fun showDialog(context: Context) {
-        val inflater = LayoutInflater.from(context)
+    private fun showDialog() {
+        val inflater = LayoutInflater.from(requireActivity())
         val dialogLayout = inflater.inflate(R.layout.dialog_layout, null)
+        val editText = dialogLayout.findViewById<EditText>(R.id.ed_new_topics)
 
-        AlertDialog.Builder(context).apply {
+        AlertDialog.Builder(requireActivity()).apply {
             setTitle(getString(R.string.add_new_chat))
             setView(dialogLayout)
-            setPositiveButton(R.string.create) {_, _, ->
-                val topic = dialogLayout.findViewById<EditText>(R.id.ed_new_topics).text.toString()
-                if (topic.isNotEmpty()) {
-                    moveToNewMessageActivity(topic)
-                    Toast.makeText(context, topic, Toast.LENGTH_SHORT).show()
+            setPositiveButton(R.string.create) { _, _ ->
+                val title = editText.text.toString().trim()
+                if (title.isNotEmpty()) {
+                    chatViewModel.getSession().observeOnce(viewLifecycleOwner) {user ->
+                        createNewChat(title = title, userId = user.userId)
+                    }
                 } else {
                     Toast.makeText(context, getString(R.string.empty_topic_warning), Toast.LENGTH_SHORT).show()
                 }
             }
-            setNegativeButton(R.string.cancel) {_,_, ->
-
-            }
+            setNegativeButton(R.string.cancel, null)
             create()
             show()
         }
-
     }
 
-    private fun moveToNewMessageActivity(topic: String) {
-        val intent = Intent(requireActivity(), NewMessageActivity::class.java)
-        intent.putExtra("topic_key", topic)
-        startActivity(intent)
+    private fun createNewChat(title: String, userId: String) {
+        val createChatRequest = CreateChatRequest (
+            userId = userId,
+            title = title
+        )
+        chatViewModel.createChat(createChatRequest).observe(viewLifecycleOwner) { result ->
+            if (result != null) {
+                when(result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        result.data.chatId?.let { moveToMessageActivity(it) }
+                        Log.d("ChatActivity", "Berhasil membuat chat baru dengan id ${result.data.chatId}")
+                        Toast.makeText(requireActivity(), "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Log.d("ChatActivity", "Gagal membuat chat baru dengan id ${result.error}")
+                        Toast.makeText(requireActivity(), "Gagal membuat chat baru dengan id ${result.error}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
-    private fun moveToMessageHistoryActivity(chatResponse: ChatResponse) {
-        val intent = Intent(requireActivity(), MessageHistoryActivity::class.java)
-        intent.putExtra("detail_chat_key", chatResponse)
-        startActivity(intent)
+    override fun onResume() {
+        super.onResume()
+        initializeData()
     }
 }
