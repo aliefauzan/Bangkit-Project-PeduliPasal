@@ -92,8 +92,28 @@ const getChatMessageById = async (req, res) => {
   }
 };
 
+const deleteChat = async (req , res) => {
+  const { chatId } = req.params
+
+  try{
+   await db.collection('chats').doc(chatId).delete()
+   const messagesRef = db.collection('chats').doc(chatId).collection('messages');
+   const querySnapshot = await messagesRef.get();
+   querySnapshot.forEach(async (doc) => {
+     await doc.ref.delete();
+   });
+   res.status(200).json({
+     message : 'Chat deleted successfully'
+   })
+  }catch(error){
+   console.error(error);
+   res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 module.exports = {
   createChat,
   addMessageToChat,
   getChatMessageById,
-};
+  deleteChat
+}
