@@ -1,11 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const asycnHandler = require('express-async-handler');
-const { addUser, getUserById, updateUserById, deleteUserById } = require('../controllers/userController');
+const protectRoute = require('../middleware/authMiddleware')
+const {
+    registerUser,
+    loginUser, 
+    getUserById, 
+    updateUserById, 
+    deleteUserById,
+    getChatHistoryByUserId
+} = require('../controllers/userController');
 
-router.post('/', asycnHandler(addUser))
-router.get('/:userId', asycnHandler(getUserById))
-router.put('/:userId', asycnHandler(updateUserById))
-router.delete('/:userId', asycnHandler(deleteUserById))
+router.post('/reg', registerUser);
+router.post('/login', loginUser);
+router.get('/:userId', protectRoute, getUserById);
+router.put('/:userId', protectRoute, updateUserById);
+router.delete('/:userId',protectRoute, deleteUserById)
+router.get('/chats/:userId',protectRoute, getChatHistoryByUserId)
 
 module.exports = router
