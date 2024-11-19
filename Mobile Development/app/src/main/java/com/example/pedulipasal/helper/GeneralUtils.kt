@@ -9,6 +9,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.pedulipasal.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun getProfileIcon(context: Context, isLocalUser: Boolean): Drawable {
     val drawable =
@@ -32,4 +35,14 @@ fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
 
         }
     })
+}
+
+fun getTimeFormat(date: Date?): String {
+    val dateFormat = SimpleDateFormat("HH.mm", Locale.getDefault())
+    return dateFormat.format(date ?: dateFormat.parse("00.00"))
+}
+
+fun getDateFormat(date: Date?): String {
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return dateFormat.format(date ?: dateFormat.parse("01/01/1970"))
 }

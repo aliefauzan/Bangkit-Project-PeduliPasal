@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
 import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.helper.getProfileIcon
+import com.example.pedulipasal.helper.getTimeFormat
 
 
 class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
@@ -19,6 +20,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userProfile: ImageView = view.findViewById(R.id.iv_userProfile)
         val userMessageText: TextView = view.findViewById(R.id.tv_userMessageText)
+        val tvTime: TextView = view.findViewById(R.id.tv_time)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,6 +49,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
         val message = messageItems[position]
         holder.userProfile.setImageDrawable(getProfileIcon(holder.userProfile.context, message.isHuman ?: false))
         holder.userMessageText.text = message.content
+        holder.tvTime.text = getTimeFormat(messageItems[position].timestamp)
     }
 
     fun setMessages(messagesList: List<MessageItem>) {

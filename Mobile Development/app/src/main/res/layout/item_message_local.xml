@@ -5,16 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginEnd="16dp">
+    android:layout_marginTop="10dp">
 
     <ImageView
         android:id="@+id/iv_userProfile"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/tv_userMessageText"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_userMessageText"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="12sp"
+        tools:text="09:00"/>
 
     <TextView
         android:id="@+id/tv_userMessageText"
@@ -29,8 +39,7 @@
         android:textSize="16sp"
         app:layout_constrainedWidth="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_userProfile"
-        tools:text="Text Message"
-        android:layout_marginEnd="8dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Text Message"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

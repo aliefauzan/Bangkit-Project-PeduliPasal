@@ -72,7 +72,7 @@ class MessageActivity : AppCompatActivity() {
                     }
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        supportActionBar?.title = result.data.chatId
+                        supportActionBar?.title = result.data.title
                         messageAdapter = MessageAdapter()
                         Log.d("MessageActivity", "${result.data.chatId}")
                         result.data.messages.let {

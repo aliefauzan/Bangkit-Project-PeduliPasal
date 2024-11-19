@@ -12,13 +12,14 @@ data class ChatItem(
     val userId: String? = null,
     val title: String? = null,
     val createdAt: Date? = null,
-    val updateAt: Date? = null,
+    val updatedAt: Date? = null,
     val messages: List<MessageItem>?=null
 )
 
 data class MessageItem (
     val isHuman: Boolean,
-    val content: String
+    val content: String,
+    val timestamp: Date? = null
 )
 
 data class MessageResponse(
