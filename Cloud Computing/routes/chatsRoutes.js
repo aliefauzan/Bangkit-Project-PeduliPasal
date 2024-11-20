@@ -8,6 +8,8 @@ const {
     deleteChat,
  } = require('../controllers/chatController');
 
+const protectRoute = require('../middleware/authMiddleware')
+
 router.post('/',asycnHandler(createChat));
 router.post('/:chatId', asycnHandler(addMessageToChat)); 
 router.get('/:chatId', asycnHandler(getChatMessageById)); 
