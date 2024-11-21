@@ -50,7 +50,7 @@ class MyWorker(context: Context, workerParams: WorkerParameters) : Worker(contex
     fun showNotification(title: String, description: String, link: String) {
         //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
         val intent = Intent(applicationContext, DetailNewsActivity::class.java)
-        Log.d("MyWorker", link)
+        //Log.d("MyWorker", link)
         intent.putExtra("WEB_URL", link)
         val pendingIntent = PendingIntent.getActivity(
             applicationContext,
