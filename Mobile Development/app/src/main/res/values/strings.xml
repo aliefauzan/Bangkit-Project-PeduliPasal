@@ -54,4 +54,5 @@
     <string name="failed_signup_message">Akun gagal dibuat</string>
     <string name="delete_chat">Hapus chat</string>
     <string name="delete_chat_confirmation">Apakah anda ingin menghapus chat ini?</string>
+    <string name="confirm">Ya</string>
 </resources>

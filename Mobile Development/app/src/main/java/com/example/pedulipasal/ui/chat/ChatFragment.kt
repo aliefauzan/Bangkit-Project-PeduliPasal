@@ -106,7 +106,7 @@ class ChatFragment : Fragment() {
         AlertDialog.Builder(requireActivity()).apply {
             setTitle(getString(R.string.delete_chat))
             setMessage(R.string.delete_chat_confirmation)
-            setPositiveButton(R.string.create) { _, _ ->
+            setPositiveButton(R.string.confirm) { _, _ ->
                 chatViewModel.deleteChatById(chatId).observe(viewLifecycleOwner) {result ->
                     if (result != null) {
                         when(result) {
