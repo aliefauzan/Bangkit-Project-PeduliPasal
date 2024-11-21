@@ -139,7 +139,8 @@ const getChatHistoryByUserId = asycnHandler (async (req, res) => {
     const chats = chatDocs.docs.map(doc => ({
       chatId: doc.id,
       title: doc.data().title,
-      createdAt: doc.data().createdAt
+      createdAt: doc.data().createdAt,
+      updatedAt: doc.data().updatedAt
     }));
 
     res.status(200).json({ chats });
