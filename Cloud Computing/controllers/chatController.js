@@ -1,19 +1,17 @@
 const admin = require("firebase-admin");
 const db = admin.firestore();
 const { nanoid } = require('nanoid');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const createChat = async (req, res) => {
   try {
-    // Generate a unique chat ID if not provided
     const chatId = req.body.chatId || nanoid(16);
     const { userId, title } = req.body;
 
-    // Validate request body
     if (!userId || !title) {
       return res.status(400).json({ error: "Data tidak valid" });
     }
 
-    // Add chat document with chatId as document ID
     const chatRef = await admin.firestore().collection('chats').add({
       chatId,
       userId,
@@ -33,9 +31,9 @@ const createChat = async (req, res) => {
 const addMessageToChat = async (req, res) => {
   try {
     const { chatId } = req.params;
-    const { isHuman, content } = req.body;
+    const { content } = req.body;
 
-    if (typeof isHuman !== "boolean" || !content) {
+    if (!content) {
       return res.status(400).json({ error: "Invalid message data" });
     }
 
@@ -46,14 +44,37 @@ const addMessageToChat = async (req, res) => {
       return res.status(404).json({ error: "Chat not found" });
     }
 
-    const messageRef = chatRef.collection("messages").doc();
-    await messageRef.set({
-      isHuman,
+    const userMessage = {
+      isHuman: true,
       content,
       timestamp: new Date().toISOString(),
-    });
+    };
+    const userMessageRef = chatRef.collection("messages").doc();
+    await userMessageRef.set(userMessage);
 
-    res.status(201).json({ message: "Message added to chat" });
+    // Integrasi dengan Google Generative AI
+    const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    // Panggil model untuk menghasilkan balasan berdasarkan pesan pengguna
+    const result = await model.generateContent(content);
+    const aiContent = result.response.text(); // Dapatkan balasan dari model
+
+    // Simpan balasan AI ke subkoleksi "messages"
+    const aiMessage = {
+      isHuman: false,
+      content: aiContent,
+      timestamp: new Date().toISOString(),
+    };
+    const aiMessageRef = chatRef.collection("messages").doc();
+    await aiMessageRef.set(aiMessage);
+
+    // Kirim respons ke klien
+    res.status(201).json({
+      message: "Message added to chat",
+      userMessage,
+      aiMessage,
+    });
   } catch (error) {
     console.error("Error adding message to chat:", error);
     res.status(500).json({ error: "Failed to add message to chat" });
