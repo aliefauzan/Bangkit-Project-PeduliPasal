@@ -42,6 +42,11 @@ fun getTimeFormat(date: Date?): String {
     return dateFormat.format(date ?: dateFormat.parse("00.00"))
 }
 
+fun showLocalTime(date: Date?): Date {
+    return SimpleDateFormat("HH.mm", Locale.getDefault()).parse(getTimeFormat(date)) ?: Date()
+}
+
+
 fun getDateFormat(date: Date?): String {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return dateFormat.format(date ?: dateFormat.parse("01/01/1970"))

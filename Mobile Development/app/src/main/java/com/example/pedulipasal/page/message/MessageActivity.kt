@@ -16,6 +16,8 @@ import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.databinding.ActivityMessageBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
+import com.example.pedulipasal.helper.showLocalTime
+import java.util.Date
 
 class MessageActivity : AppCompatActivity() {
 
@@ -141,13 +143,13 @@ class MessageActivity : AppCompatActivity() {
         messageAdapter.addMessage(
             MessageItem(
                 isHuman = addMessageRequest.isHuman,
-                content = addMessageRequest.content
+                content = addMessageRequest.content,
+                timestamp = showLocalTime(Date())
             )
         )
 
         // Scroll to the last message
         binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
-//      oast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
 
         messageViewModel.addMessageToChat(chatId, addMessageRequest).removeObservers(this)
         messageViewModel.addMessageToChat(chatId, addMessageRequest).observe(this) { result ->
@@ -157,9 +159,13 @@ class MessageActivity : AppCompatActivity() {
                 }
                 is Result.Success -> {
                     binding.progressBar.visibility = View.GONE
-                    // Refresh the message list
-                    showListMessages(chatId)
-//                  Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
+                    messageAdapter.addMessage(
+                        MessageItem(
+                            isHuman = false,
+                            content = result.data.aiMessage?.content ?: "Error message",
+                            timestamp = showLocalTime(Date())
+                        )
+                    )
                     binding.rvMessageHistory.post {
                         binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
                     }
