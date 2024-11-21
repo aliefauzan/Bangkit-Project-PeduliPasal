@@ -1,7 +1,6 @@
 package com.example.pedulipasal.page.message
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -24,7 +23,6 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
     private val messageItems: MutableList<MessageItem> = mutableListOf()
 
-
     private val messageViewModel by viewModels<MessageViewModel> {
         ViewModelFactory.getInstance(this)
     }
@@ -32,7 +30,6 @@ class MessageActivity : AppCompatActivity() {
     companion object {
         const val CHAT_ID_KEY = "detail_chat_key"
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +44,7 @@ class MessageActivity : AppCompatActivity() {
         }
 
         setupView()
+
         val chatId = intent.getStringExtra(CHAT_ID_KEY)
         if (intent.hasExtra(CHAT_ID_KEY)) {
             //Log.d("MessageActivity", "Received chatId: $chatId")
@@ -59,41 +57,43 @@ class MessageActivity : AppCompatActivity() {
     private fun setupView() {
         supportActionBar?.show()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    }
 
+        // Initialize the adapter
+        messageAdapter = MessageAdapter()
+
+        //Log.d("MessageActivity", "${result.data.chatId}")
+
+        // Set up the RecyclerView with LayoutManager and Adapter
+        binding.rvMessageHistory.apply {
+            layoutManager = LinearLayoutManager(this@MessageActivity)
+            adapter = messageAdapter
+        }
+    }
 
     private fun showListMessages(chatId: String) {
         messageViewModel.getChatMessageById(chatId).removeObservers(this)
         messageViewModel.getChatMessageById(chatId).observe(this) { result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    supportActionBar?.title = result.data.title
+                    // Update the adapter's data
+                    result.data.messages?.let {
+                        messageAdapter.setMessages(it)
                     }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        supportActionBar?.title = result.data.title
-                        messageAdapter = MessageAdapter()
-                        //Log.d("MessageActivity", "${result.data.chatId}")
-                        result.data.messages.let {
-                            if (it != null) {
-                                messageAdapter.setMessages(it)
-                            }
-                        }
-                        binding.rvMessageHistory.apply {
-                            layoutManager = LinearLayoutManager(this@MessageActivity)
-                            adapter = messageAdapter
-                        }
-                        binding.rvMessageHistory.scrollToPosition(messageAdapter.itemCount - 1)
-                        result.data.chatId?.let {
-                            setupAction(it)
-                        }
+                    // Scroll to the last message
+                    binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
+                    result.data.chatId?.let {
+                        setupAction(it)
                     }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                        //Log.d("MessageActivity", "${result.error}")
-                    }
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                    //Log.d("MessageActivity", "${result.error}")
                 }
             }
         }
@@ -102,6 +102,7 @@ class MessageActivity : AppCompatActivity() {
     private fun setupAction(chatId: String) {
         // Send button click listener
         //Log.d("chatActivity", "setup action jalan")
+
         binding.btnSendMessage.setOnClickListener {
             sendMessage(chatId)
         }
@@ -127,41 +128,45 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun sendMessageFromHuman(chatId: String, content: String) {
-        val addMessageRequest = AddMessageRequest (
+        val addMessageRequest = AddMessageRequest(
             isHuman = true,
             content = content
         )
-        if (messageAdapter.itemCount == 0) {
-            messageAdapter.addMessage(
-                MessageItem(
-                    isHuman = addMessageRequest.isHuman,
-                    content = addMessageRequest.content
-                )
-            )
-        }
-        binding.rvMessageHistory.apply {
-            layoutManager = LinearLayoutManager(this@MessageActivity)
-            adapter = messageAdapter
-        }
+
+        // Clear the input field
         binding.etMessageInput.text?.clear()
         //Log.d("MessageActivity", "value from process: ${chatId} ${addMessageRequest.isHuman} ${addMessageRequest.content}")
-        messageViewModel.addMessageToChat(chatId,addMessageRequest).removeObservers(this)
-        messageViewModel.addMessageToChat(chatId, addMessageRequest).observe(this) {result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
+
+        // Add the new message to the adapter
+        messageAdapter.addMessage(
+            MessageItem(
+                isHuman = addMessageRequest.isHuman,
+                content = addMessageRequest.content
+            )
+        )
+
+        // Scroll to the last message
+        binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
+//      oast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
+
+        messageViewModel.addMessageToChat(chatId, addMessageRequest).removeObservers(this)
+        messageViewModel.addMessageToChat(chatId, addMessageRequest).observe(this) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    // Refresh the message list
+                    showListMessages(chatId)
+//                  Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
+                    binding.rvMessageHistory.post {
+                        binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
                     }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        showListMessages(chatId)
-                        binding.rvMessageHistory.scrollToPosition(messageAdapter.itemCount - 1)
-//                        Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                    }
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
                 }
             }
         }
