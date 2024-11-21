@@ -1,6 +1,7 @@
 package com.example.pedulipasal.page.message
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -87,7 +88,9 @@ class MessageActivity : AppCompatActivity() {
                         messageAdapter.setMessages(it)
                     }
                     // Scroll to the last message
-                    binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
+                    if (messageAdapter.itemCount != 0) {
+                        binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
+                    }
                     result.data.chatId?.let {
                         setupAction(it)
                     }
