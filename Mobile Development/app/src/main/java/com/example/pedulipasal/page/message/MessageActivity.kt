@@ -80,11 +80,11 @@ class MessageActivity : AppCompatActivity() {
                                 messageAdapter.setMessages(it)
                             }
                         }
-                        binding.rvMessageHistory.scrollToPosition(messageItems.size - 1)
                         binding.rvMessageHistory.apply {
                             layoutManager = LinearLayoutManager(this@MessageActivity)
                             adapter = messageAdapter
                         }
+                        binding.rvMessageHistory.scrollToPosition(messageAdapter.itemCount - 1)
                         result.data.chatId?.let {
                             setupAction(it)
                         }
@@ -155,6 +155,7 @@ class MessageActivity : AppCompatActivity() {
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
                         showListMessages(chatId)
+                        binding.rvMessageHistory.scrollToPosition(messageAdapter.itemCount - 1)
 //                        Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
                     }
                     is Result.Error -> {
