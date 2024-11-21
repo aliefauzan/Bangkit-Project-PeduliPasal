@@ -11,13 +11,12 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        tools:visibility="visible"/>
+        android:layout_marginTop="8dp"/>
+
 
     <!-- RecyclerView for messages -->
     <androidx.recyclerview.widget.RecyclerView

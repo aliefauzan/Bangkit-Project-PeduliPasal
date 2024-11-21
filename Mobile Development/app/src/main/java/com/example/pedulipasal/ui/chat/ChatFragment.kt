@@ -115,7 +115,7 @@ class ChatFragment : Fragment() {
                             }
                             is Result.Success -> {
                                 chatAdapter.deleteItem(chatId)
-                                Toast.makeText(requireActivity(), "Berhasil menghapus chat", Toast.LENGTH_SHORT).show()
+//                                Toast.makeText(requireActivity(), "Berhasil menghapus chat", Toast.LENGTH_SHORT).show()
                                 binding.progressBar.visibility = View.GONE
                             }
                             is Result.Error -> {
@@ -176,12 +176,12 @@ class ChatFragment : Fragment() {
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
                         result.data.chatId?.let { moveToMessageActivity(it) }
-                        Log.d("ChatActivity", "Berhasil membuat chat baru dengan id ${result.data.chatId}")
-                        Toast.makeText(requireActivity(), "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
+                        //Log.d("ChatActivity", "Berhasil membuat chat baru dengan id ${result.data.chatId}")
+//                        Toast.makeText(requireActivity(), "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
-                        Log.d("ChatActivity", "Gagal membuat chat baru dengan id ${result.error}")
+                        //Log.d("ChatActivity", "Gagal membuat chat baru dengan id ${result.error}")
                         Toast.makeText(requireActivity(), "Gagal membuat chat baru dengan id ${result.error}", Toast.LENGTH_SHORT).show()
                     }
                 }

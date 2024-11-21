@@ -49,7 +49,7 @@ class MessageActivity : AppCompatActivity() {
         setupView()
         val chatId = intent.getStringExtra(CHAT_ID_KEY)
         if (intent.hasExtra(CHAT_ID_KEY)) {
-            Log.d("MessageActivity", "Received chatId: $chatId")
+            //Log.d("MessageActivity", "Received chatId: $chatId")
             if (!chatId.isNullOrEmpty()) {
                 showListMessages(chatId) // Display messages for the chatId
             }
@@ -74,7 +74,7 @@ class MessageActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.GONE
                         supportActionBar?.title = result.data.title
                         messageAdapter = MessageAdapter()
-                        Log.d("MessageActivity", "${result.data.chatId}")
+                        //Log.d("MessageActivity", "${result.data.chatId}")
                         result.data.messages.let {
                             if (it != null) {
                                 messageAdapter.setMessages(it)
@@ -92,7 +92,7 @@ class MessageActivity : AppCompatActivity() {
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                        Log.d("MessageActivity", "${result.error}")
+                        //Log.d("MessageActivity", "${result.error}")
                     }
                 }
             }
@@ -101,7 +101,7 @@ class MessageActivity : AppCompatActivity() {
 
     private fun setupAction(chatId: String) {
         // Send button click listener
-        Log.d("chatActivity", "setup action jalan")
+        //Log.d("chatActivity", "setup action jalan")
         binding.btnSendMessage.setOnClickListener {
             sendMessage(chatId)
         }
@@ -144,7 +144,7 @@ class MessageActivity : AppCompatActivity() {
             adapter = messageAdapter
         }
         binding.etMessageInput.text?.clear()
-        Log.d("MessageActivity", "value from process: ${chatId} ${addMessageRequest.isHuman} ${addMessageRequest.content}")
+        //Log.d("MessageActivity", "value from process: ${chatId} ${addMessageRequest.isHuman} ${addMessageRequest.content}")
         messageViewModel.addMessageToChat(chatId,addMessageRequest).removeObservers(this)
         messageViewModel.addMessageToChat(chatId, addMessageRequest).observe(this) {result ->
             if (result != null) {
@@ -155,10 +155,11 @@ class MessageActivity : AppCompatActivity() {
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
                         showListMessages(chatId)
-                        Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this, result.data.message, Toast.LENGTH_SHORT).show()
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
+                        Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
