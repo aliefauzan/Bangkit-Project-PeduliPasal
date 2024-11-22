@@ -23,6 +23,12 @@ data class MessageItem (
 )
 
 data class MessageResponse(
-    val message: String? = null
+    val message: String? = null,
+    val aiMessage: AiResponse? = null
+)
+
+data class AiResponse (
+    val isHuman: Boolean? = null,
+    val content: String? = null
 )
 

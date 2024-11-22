@@ -9,15 +9,25 @@
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:visibility="gone"
+        android:indeterminate="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_jump_to_newest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rvMessageHistory"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        tools:visibility="visible"/>
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        app:fabSize="normal"
+        android:src="@drawable/baseline_arrow_circle_down_24"
+        android:visibility="visible"/>
 
     <!-- RecyclerView for messages -->
     <androidx.recyclerview.widget.RecyclerView

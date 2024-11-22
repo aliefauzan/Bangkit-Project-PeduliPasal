@@ -106,7 +106,7 @@ class ChatFragment : Fragment() {
         AlertDialog.Builder(requireActivity()).apply {
             setTitle(getString(R.string.delete_chat))
             setMessage(R.string.delete_chat_confirmation)
-            setPositiveButton(R.string.create) { _, _ ->
+            setPositiveButton(R.string.confirm) { _, _ ->
                 chatViewModel.deleteChatById(chatId).observe(viewLifecycleOwner) {result ->
                     if (result != null) {
                         when(result) {
@@ -115,7 +115,7 @@ class ChatFragment : Fragment() {
                             }
                             is Result.Success -> {
                                 chatAdapter.deleteItem(chatId)
-                                Toast.makeText(requireActivity(), "Berhasil menghapus chat", Toast.LENGTH_SHORT).show()
+//                                Toast.makeText(requireActivity(), "Berhasil menghapus chat", Toast.LENGTH_SHORT).show()
                                 binding.progressBar.visibility = View.GONE
                             }
                             is Result.Error -> {
@@ -176,12 +176,12 @@ class ChatFragment : Fragment() {
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
                         result.data.chatId?.let { moveToMessageActivity(it) }
-                        Log.d("ChatActivity", "Berhasil membuat chat baru dengan id ${result.data.chatId}")
-                        Toast.makeText(requireActivity(), "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
+                        //Log.d("ChatActivity", "Berhasil membuat chat baru dengan id ${result.data.chatId}")
+//                        Toast.makeText(requireActivity(), "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
-                        Log.d("ChatActivity", "Gagal membuat chat baru dengan id ${result.error}")
+                        //Log.d("ChatActivity", "Gagal membuat chat baru dengan id ${result.error}")
                         Toast.makeText(requireActivity(), "Gagal membuat chat baru dengan id ${result.error}", Toast.LENGTH_SHORT).show()
                     }
                 }

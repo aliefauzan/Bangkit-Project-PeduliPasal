@@ -52,7 +52,7 @@ class DetailNewsActivity : AppCompatActivity() {
         val webView = binding.wvNews
         val webUrl = intent.getStringExtra("WEB_URL")
 
-        Log.d("DetailNews", webUrl?: "null")
+        //Log.d("DetailNews", webUrl?: "null")
 
         webView.settings.apply {
             javaScriptEnabled = true
