@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.MessageAdapter
 import com.example.pedulipasal.data.model.request.AddMessageRequest
@@ -120,6 +121,29 @@ class MessageActivity : AppCompatActivity() {
             } else {
                 false
             }
+        }
+
+        binding.rvMessageHistory.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                val itemCount = recyclerView.adapter?.itemCount ?: 0
+
+                if (lastVisibleItemPosition < itemCount - 1) {
+                    binding.btnJumpToNewest.visibility = View.VISIBLE
+                } else {
+                    binding.btnJumpToNewest.visibility = View.GONE
+                }
+            }
+        })
+
+        binding.btnJumpToNewest.setOnClickListener {
+            binding.rvMessageHistory.layoutManager as LinearLayoutManager
+            binding.rvMessageHistory.smoothScrollToPosition(
+                binding.rvMessageHistory.adapter?.itemCount ?: (0 - 1)
+            )
         }
     }
 
