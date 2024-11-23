@@ -17,7 +17,6 @@
     <TextView
         android:id="@+id/tv_userMessageText"
         style="@style/Base.TextAppearance.AppCompat.Display1"
-        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:background="@drawable/rounded_rectangle_purple"
@@ -27,19 +26,23 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constrainedWidth="true"
-        app:layout_constraintStart_toEndOf="@+id/iv_userProfile"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toEndOf="@id/iv_userProfile"
+        app:layout_constraintEnd_toStartOf="@id/tv_time"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Text Message" />
+
 
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/tv_userMessageText"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_userMessageText"
-        android:layout_marginBottom="4dp"
         android:layout_marginStart="8dp"
-        tools:text="09:00"
-        android:textSize="12sp"/>
+        android:layout_marginBottom="4dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/tv_userMessageText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_userMessageText"
+        tools:text="09:00" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

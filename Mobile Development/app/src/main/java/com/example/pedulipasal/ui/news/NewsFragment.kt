@@ -76,7 +76,7 @@ class NewsFragment : Fragment() {
                         result.data.forEach {
                             listNews.add(it)
                         }
-                        Log.d("NewsFragment", listNews.size.toString())
+                        //Log.d("NewsFragment", listNews.size.toString())
                         newsAdapter.submitList(listNews)
                         binding.progressBar.visibility = View.GONE
                     }

@@ -45,7 +45,7 @@ class ProfileActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.title = getString(R.string.profile)
         profileViewModel.getSession().observe(this) { user ->
-            Log.d("ProfileActivity", "${user.token}")
+            //Log.d("ProfileActivity", "${user.token}")
             showProfile(user.userId)
         }
     }
@@ -63,13 +63,13 @@ class ProfileActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.VISIBLE
                     }
                     is Result.Success -> {
-                        Log.d("ProfileActivity", "${result.data.name} ${result.data.email}")
+                        //Log.d("ProfileActivity", "${result.data.name} ${result.data.email}")
                         binding.tvUserEmail.text = result.data.email
                         binding.tvUsername.text = result.data.name
                         binding.progressBar.visibility = View.GONE
                     }
                     is Result.Error -> {
-                        Log.d("ProfileActivity", "${result.error} ${result.error}")
+                        //Log.d("ProfileActivity", "${result.error} ${result.error}")
                         binding.progressBar.visibility = View.GONE
                     }
                 }

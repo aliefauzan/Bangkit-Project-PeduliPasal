@@ -35,7 +35,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
         val isByHuman = messageItems[position].isHuman
-        Log.d("MessageAdapter", "getItemViewType - position: $position, isByHuman: $isByHuman")
+        //Log.d("MessageAdapter", "getItemViewType - position: $position, isByHuman: $isByHuman")
         return if (isByHuman) {
             R.layout.item_message_local
         } else {
