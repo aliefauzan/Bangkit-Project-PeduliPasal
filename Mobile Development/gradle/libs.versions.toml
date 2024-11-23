@@ -18,6 +18,11 @@ navigationUiKtx = "2.8.3"
 retrofit = "2.9.0"
 workRuntime = "2.9.1"
 datastorePreferences = "1.1.1"
+googleGmsGoogleServices = "4.4.2" # Firebase auth
+firebaseAuth = "23.1.0" # Firebase auth
+playServicesAuth = "21.2.0" # Friebase auth
+credentials = "1.3.0" # Firebase auth
+googleid = "1.1.1" # Firebase auth
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,8 +43,14 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" } # Firebase auth
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" } # Firebase auth
+androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" } # Firebase auth
+androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" } # Firebase auth
+googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" } # Firebase auth
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" } # Firebase auth
 

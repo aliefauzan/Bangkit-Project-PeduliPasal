@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.gms.google.services) // Firebase auth
 }
 
 android {
@@ -68,6 +69,13 @@ dependencies {
 
     // Worker
     implementation(libs.androidx.work.runtime)
+
+    // Firebase auth
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth) // optional
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
 
     testImplementation(libs.junit)
