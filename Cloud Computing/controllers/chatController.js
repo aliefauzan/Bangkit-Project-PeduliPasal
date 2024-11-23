@@ -52,6 +52,10 @@ const addMessageToChat = async (req, res) => {
     const userMessageRef = chatRef.collection("messages").doc();
     await userMessageRef.set(userMessage);
 
+    await chatRef.update({
+      updatedAt: new Date().toISOString(),
+    });
+    
     // Integrasi dengan Google Generative AI
     const genAI = new GoogleGenerativeAI(process.env.API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -69,7 +73,6 @@ const addMessageToChat = async (req, res) => {
     const aiMessageRef = chatRef.collection("messages").doc();
     await aiMessageRef.set(aiMessage);
 
-    // Kirim respons ke klien
     res.status(201).json({
       message: "Message added to chat",
       userMessage,
