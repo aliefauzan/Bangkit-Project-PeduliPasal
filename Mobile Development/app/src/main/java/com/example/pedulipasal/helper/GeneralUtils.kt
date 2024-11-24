@@ -27,16 +27,6 @@ fun getProfileIcon(context: Context, isLocalUser: Boolean): Drawable {
     return drawable
 }
 
-fun <T> LiveData<T>.observeOnce(owner: LifecycleOwner, observer: Observer<T>) {
-    observe(owner, object : Observer<T> {
-        override fun onChanged(value: T) {
-            removeObserver(this)
-            observer.onChanged(value)
-
-        }
-    })
-}
-
 fun getTimeFormat(date: Date?): String {
     val dateFormat = SimpleDateFormat("HH.mm", Locale.getDefault())
     return dateFormat.format(date ?: dateFormat.parse("00.00"))

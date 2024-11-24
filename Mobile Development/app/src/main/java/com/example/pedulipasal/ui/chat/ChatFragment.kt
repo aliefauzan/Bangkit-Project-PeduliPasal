@@ -31,6 +31,8 @@ class ChatFragment : Fragment() {
         ViewModelFactory.getInstance(requireActivity())
     }
 
+    private var userId: String = ""
+
     companion object {
         private const val CHAT_ID_KEY = "detail_chat_key"
     }
@@ -58,6 +60,7 @@ class ChatFragment : Fragment() {
     private fun initializeData() {
         chatViewModel.getSession().observe(viewLifecycleOwner) {user ->
             getHistoryChat(user.userId)
+            this.userId = user.userId
         }
     }
 
@@ -92,7 +95,6 @@ class ChatFragment : Fragment() {
             }
 
         }
-
     }
 
     private fun moveToMessageActivity(chatId: String) {
@@ -143,22 +145,23 @@ class ChatFragment : Fragment() {
         val dialogLayout = inflater.inflate(R.layout.dialog_layout, null)
         val editText = dialogLayout.findViewById<EditText>(R.id.ed_new_topics)
 
-        AlertDialog.Builder(requireActivity()).apply {
-            setTitle(getString(R.string.add_new_chat))
-            setView(dialogLayout)
-            setPositiveButton(R.string.create) { _, _ ->
-                val title = editText.text.toString().trim()
-                if (title.isNotEmpty()) {
-                    chatViewModel.getSession().observeOnce(viewLifecycleOwner) {user ->
-                        createNewChat(title = title, userId = user.userId)
+        if (this.userId.isNotEmpty()) {
+            val userId = this.userId
+            AlertDialog.Builder(requireActivity()).apply {
+                setTitle(getString(R.string.add_new_chat))
+                setView(dialogLayout)
+                setPositiveButton(R.string.create) { _, _ ->
+                    val title = editText.text.toString().trim()
+                    if (title.isNotEmpty()) {
+                            createNewChat(title = title, userId = userId)
+                    } else {
+                        Toast.makeText(context, getString(R.string.empty_topic_warning), Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Toast.makeText(context, getString(R.string.empty_topic_warning), Toast.LENGTH_SHORT).show()
                 }
+                setNegativeButton(R.string.cancel, null)
+                create()
+                show()
             }
-            setNegativeButton(R.string.cancel, null)
-            create()
-            show()
         }
     }
 
