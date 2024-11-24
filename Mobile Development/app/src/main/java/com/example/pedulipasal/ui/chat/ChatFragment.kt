@@ -17,7 +17,6 @@ import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.databinding.FragmentChatBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
-import com.example.pedulipasal.helper.observeOnce
 import com.example.pedulipasal.page.message.MessageActivity
 
 class ChatFragment : Fragment() {
