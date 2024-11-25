@@ -1,7 +1,6 @@
 package com.example.pedulipasal.page.message
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -13,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.MessageAdapter
+import com.example.pedulipasal.adapter.MessageSuggestionAdapter
 import com.example.pedulipasal.data.model.request.AddMessageRequest
 import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.databinding.ActivityMessageBinding
@@ -25,7 +25,7 @@ class MessageActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMessageBinding
     private lateinit var messageAdapter: MessageAdapter
-    private val messageItems: MutableList<MessageItem> = mutableListOf()
+    private lateinit var messageSuggestionAdapter: MessageSuggestionAdapter
 
     private val messageViewModel by viewModels<MessageViewModel> {
         ViewModelFactory.getInstance(this)
@@ -62,8 +62,22 @@ class MessageActivity : AppCompatActivity() {
         supportActionBar?.show()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val listSuggestion = listOf(
+            "Sebutkan 5 sila Pancasila",
+            "Jelaskan secara singkat pembentukan UUD 1945",
+            "Sebutkan suku yang terkenal di indonesia"
+        )
+
         // Initialize the adapter
         messageAdapter = MessageAdapter()
+        messageSuggestionAdapter = MessageSuggestionAdapter(
+            listSuggestion,
+            object : MessageSuggestionAdapter.OnItemSelected {
+                override fun onItemClicked(message: String) {
+                    fillTextInput(message)
+                }
+            }
+        )
 
         //Log.d("MessageActivity", "${result.data.chatId}")
 
@@ -71,6 +85,11 @@ class MessageActivity : AppCompatActivity() {
         binding.rvMessageHistory.apply {
             layoutManager = LinearLayoutManager(this@MessageActivity)
             adapter = messageAdapter
+        }
+
+        binding.rvMessageSuggestion.apply {
+            layoutManager = LinearLayoutManager(this@MessageActivity, LinearLayoutManager.HORIZONTAL, false)
+            adapter = messageSuggestionAdapter
         }
     }
 
@@ -203,6 +222,10 @@ class MessageActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun fillTextInput(prompt: String) {
+        binding.etMessageInput.setText(prompt)
     }
 
     override fun onSupportNavigateUp(): Boolean {
