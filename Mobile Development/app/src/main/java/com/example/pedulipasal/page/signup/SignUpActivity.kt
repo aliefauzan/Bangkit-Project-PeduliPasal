@@ -1,24 +1,22 @@
 package com.example.pedulipasal.page.signup
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import com.example.pedulipasal.MainActivity
 import com.example.pedulipasal.R
 import com.example.pedulipasal.data.model.request.RegisterRequest
-import com.example.pedulipasal.data.user.UserModel
 import com.example.pedulipasal.databinding.ActivitySignUpBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
-import com.example.pedulipasal.page.profile.ProfileViewModel
-import com.example.pedulipasal.page.welcome.WelcomeActivity
-import kotlin.math.sign
+import com.example.pedulipasal.page.login.LoginActivity
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -41,6 +39,7 @@ class SignUpActivity : AppCompatActivity() {
 
         setupView()
         setupAction()
+        playAnimation()
     }
 
     private fun setupView() {
@@ -80,13 +79,7 @@ class SignUpActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.VISIBLE
                     }
                     is Result.Success -> {
-                        signUpViewModel.saveSession(
-                            UserModel(
-                                userId = result.data.userId,
-                                token = result.data.token,
-                                isLogin = true
-                            )
-                        )
+                        Log.d("SignUpActivity", "${result.data.userId}, ${result.data.token}")
                         successDialog()
                         binding.progressBar.visibility = View.GONE
                     }
@@ -104,7 +97,7 @@ class SignUpActivity : AppCompatActivity() {
             setTitle(R.string.success_title_signup)
             setMessage(R.string.success_signup_message)
             setPositiveButton(R.string.positive_reply) { _, _ ->
-                val intent = Intent(context, MainActivity::class.java)
+                val intent = Intent(context, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()
@@ -125,4 +118,63 @@ class SignUpActivity : AppCompatActivity() {
             show()
         }
     }
+
+    private fun playAnimation() {
+        binding.tvSignup.alpha = 0f
+        binding.tvSignupText.alpha = 0f
+        binding.tvName.alpha = 0f
+        binding.edSignupName.alpha = 0f
+        binding.ivNameIcon.alpha = 0f
+        binding.tvEmail.alpha = 0f
+        binding.edSignupEmail.alpha = 0f
+        binding.ivEmailIcon.alpha = 0f
+        binding.tvPassword.alpha = 0f
+        binding.edSignupPassword.alpha = 0f
+        binding.ivPasswordIcon.alpha = 0f
+        binding.btnSignup.alpha = 0f
+
+        val title =
+            ObjectAnimator.ofFloat(binding.tvSignup, View.ALPHA, 1f).setDuration(200)
+        val message =
+            ObjectAnimator.ofFloat(binding.tvSignupText, View.ALPHA, 1f).setDuration(200)
+        val nameTextView =
+            ObjectAnimator.ofFloat(binding.tvName, View.ALPHA, 1f).setDuration(100)
+        val nameEditText =
+            ObjectAnimator.ofFloat(binding.edSignupName, View.ALPHA, 1f).setDuration(100)
+        val nameIcon =
+            ObjectAnimator.ofFloat(binding.ivNameIcon, View.ALPHA, 1f).setDuration(100)
+        val emailTextView =
+            ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
+        val emailEditText =
+            ObjectAnimator.ofFloat(binding.edSignupEmail, View.ALPHA, 1f).setDuration(100)
+        val emailIcon =
+            ObjectAnimator.ofFloat(binding.ivEmailIcon, View.ALPHA, 1f).setDuration(100)
+        val passwordTextView =
+            ObjectAnimator.ofFloat(binding.tvPassword, View.ALPHA, 1f).setDuration(100)
+        val passwordEditText =
+            ObjectAnimator.ofFloat(binding.edSignupPassword, View.ALPHA, 1f).setDuration(100)
+        val passwordIcon =
+            ObjectAnimator.ofFloat(binding.ivPasswordIcon, View.ALPHA, 1f).setDuration(100)
+        val loginButton =
+            ObjectAnimator.ofFloat(binding.btnSignup, View.ALPHA, 1f).setDuration(100)
+
+        AnimatorSet().apply {
+            playSequentially(
+                title,
+                message,
+                nameTextView,
+                nameEditText,
+                nameIcon,
+                emailTextView,
+                emailEditText,
+                emailIcon,
+                passwordTextView,
+                passwordEditText,
+                passwordIcon,
+                loginButton
+            )
+            startDelay = 100
+        }.start()
+    }
+
 }

@@ -10,4 +10,5 @@ class MessageViewModel(private val cloudRepository: CloudRepository): ViewModel(
 
     fun getChatMessageById(chatId: String) = cloudRepository.getChatMessageById(chatId)
 
+    fun getGeminiAiResponse(prompt: String) = cloudRepository.getGeminiAiResponse(prompt)
 }
