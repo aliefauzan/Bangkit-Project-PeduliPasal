@@ -8,6 +8,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
@@ -19,6 +20,7 @@ import com.example.pedulipasal.databinding.ActivityMessageBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
 import com.example.pedulipasal.helper.showLocalTime
+import kotlinx.coroutines.launch
 import java.util.Date
 
 class MessageActivity : AppCompatActivity() {
@@ -26,6 +28,7 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMessageBinding
     private lateinit var messageAdapter: MessageAdapter
     private lateinit var messageSuggestionAdapter: MessageSuggestionAdapter
+    private lateinit var listSuggestion: List<String>
 
     private val messageViewModel by viewModels<MessageViewModel> {
         ViewModelFactory.getInstance(this)
@@ -62,7 +65,7 @@ class MessageActivity : AppCompatActivity() {
         supportActionBar?.show()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val listSuggestion = listOf(
+        listSuggestion = listOf(
             "Sebutkan 5 sila Pancasila",
             "Jelaskan secara singkat pembentukan UUD 1945",
             "Sebutkan suku yang terkenal di indonesia"

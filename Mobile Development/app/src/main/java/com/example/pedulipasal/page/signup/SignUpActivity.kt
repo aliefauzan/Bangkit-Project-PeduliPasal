@@ -2,6 +2,7 @@ package com.example.pedulipasal.page.signup
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -16,6 +17,7 @@ import com.example.pedulipasal.data.user.UserModel
 import com.example.pedulipasal.databinding.ActivitySignUpBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
+import com.example.pedulipasal.page.login.LoginActivity
 import com.example.pedulipasal.page.profile.ProfileViewModel
 import com.example.pedulipasal.page.welcome.WelcomeActivity
 import kotlin.math.sign
@@ -80,13 +82,7 @@ class SignUpActivity : AppCompatActivity() {
                         binding.progressBar.visibility = View.VISIBLE
                     }
                     is Result.Success -> {
-                        signUpViewModel.saveSession(
-                            UserModel(
-                                userId = result.data.userId,
-                                token = result.data.token,
-                                isLogin = true
-                            )
-                        )
+                        Log.d("SignUpActivity", "${result.data.userId}, ${result.data.token}")
                         successDialog()
                         binding.progressBar.visibility = View.GONE
                     }
@@ -104,7 +100,7 @@ class SignUpActivity : AppCompatActivity() {
             setTitle(R.string.success_title_signup)
             setMessage(R.string.success_signup_message)
             setPositiveButton(R.string.positive_reply) { _, _ ->
-                val intent = Intent(context, MainActivity::class.java)
+                val intent = Intent(context, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()
