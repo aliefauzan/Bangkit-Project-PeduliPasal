@@ -35,7 +35,6 @@ const registerUser = asycnHandler(async (req, res) => {
       { 
         message: 'User created successfully',
         userId : userId,
-        token : generateToken(userId)
       });
   } catch (error) {
       console.error(error);
