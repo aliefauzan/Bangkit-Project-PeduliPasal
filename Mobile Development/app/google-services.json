@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "808921460677",
+    "project_id": "pedulipasal",
+    "storage_bucket": "pedulipasal.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808921460677:android:b32053df6471cf5fb525ac",
+        "android_client_info": {
+          "package_name": "com.example.pedulipasal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "808921460677-t1bi0gets81g0cu72eub7tqp0slqo02p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pedulipasal",
+            "certificate_hash": "db0a8eebb400ffb75bfd49ce337a230103d469d9"
+          }
+        },
+        {
+          "client_id": "808921460677-uaj5f7j5egie3eh2ii6r9c94pf7pbfp7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCu9yTU7Jm-FgXOo53wKEc2TQKRjx0Fdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "808921460677-7g7njevtf2ha3u2558kb1sdca2sh382s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
