@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,10 +19,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "NEWS_API_KEY", "\"3ae36dd2f1f14442b1aa3b590e11b0fe\"")
-        buildConfigField("String", "NEWS_BASE_URL", "\"https://newsapi.org/v2/\"")
-        buildConfigField("String", "CLOUD_BASE_URL", "\"https://pedulipasal-api-808921460677.asia-southeast2.run.app/api/\"")
-
+        buildConfigField("String", "NEWS_API_KEY", getLocalProperties("NEWS_API_KEY"))
+        buildConfigField("String", "NEWS_BASE_URL", getLocalProperties("NEWS_BASE_URL"))
+        buildConfigField("String", "CLOUD_BASE_URL", getLocalProperties("CLOUD_BASE_URL"))
+        buildConfigField("String", "GEMINI_API_KEY", getLocalProperties("GEMINI_API_KEY"))
     }
 
     buildTypes {
@@ -32,6 +34,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -77,10 +80,22 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
 
+    // Gemini library
+    implementation(libs.generativeai)
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
 
+}
+
+fun getLocalProperties(key: String): String {
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.inputStream())
+    }
+    return properties.getProperty(key) ?: throw GradleException("Key $key is missing in local.properties")
 }

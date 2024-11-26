@@ -1,6 +1,7 @@
 package com.example.pedulipasal.page.message
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -8,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
@@ -20,7 +20,6 @@ import com.example.pedulipasal.databinding.ActivityMessageBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
 import com.example.pedulipasal.helper.showLocalTime
-import kotlinx.coroutines.launch
 import java.util.Date
 
 class MessageActivity : AppCompatActivity() {
@@ -129,8 +128,6 @@ class MessageActivity : AppCompatActivity() {
 
     private fun setupAction(chatId: String) {
         // Send button click listener
-        //Log.d("chatActivity", "setup action jalan")
-
         binding.btnSendMessage.setOnClickListener {
             sendMessage(chatId)
         }
@@ -186,7 +183,6 @@ class MessageActivity : AppCompatActivity() {
 
         // Clear the input field
         binding.etMessageInput.text?.clear()
-        //Log.d("MessageActivity", "value from process: ${chatId} ${addMessageRequest.isHuman} ${addMessageRequest.content}")
 
         // Add the new message to the adapter
         messageAdapter.addMessage(
