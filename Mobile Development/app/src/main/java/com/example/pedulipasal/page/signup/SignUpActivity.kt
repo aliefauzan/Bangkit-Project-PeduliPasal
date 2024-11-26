@@ -9,18 +9,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import com.example.pedulipasal.MainActivity
 import com.example.pedulipasal.R
 import com.example.pedulipasal.data.model.request.RegisterRequest
-import com.example.pedulipasal.data.user.UserModel
 import com.example.pedulipasal.databinding.ActivitySignUpBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
 import com.example.pedulipasal.page.login.LoginActivity
-import com.example.pedulipasal.page.profile.ProfileViewModel
-import com.example.pedulipasal.page.welcome.WelcomeActivity
-import kotlin.math.sign
 
 class SignUpActivity : AppCompatActivity() {
 

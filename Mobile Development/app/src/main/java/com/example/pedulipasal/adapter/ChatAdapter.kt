@@ -10,8 +10,8 @@ import com.example.pedulipasal.R
 import com.example.pedulipasal.data.model.response.ChatItem
 import com.example.pedulipasal.databinding.ItemChatLayoutBinding
 import com.example.pedulipasal.helper.getDateFormat
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.pedulipasal.helper.getTimeFormat
+import java.util.Date
 
 class ChatAdapter(
     private val context: Context,
@@ -39,8 +39,24 @@ class ChatAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.apply {
             tvTitle.text = chatList[position].title
-            tvCreatedAt.text = "${context.getString(R.string.created_at)} ${getDateFormat(chatList[position].createdAt)}"
-            tvUpdatedAt.text = "${context.getString(R.string.updated_at)} ${getDateFormat(chatList[position].updatedAt)}"
+            val currentDate = getDateFormat( Date())
+            Log.d("ChatAdapter", "Current Date item $position $currentDate")
+            Log.d("ChatAdapter", "Created Date $position ${chatList[position].createdAt}")
+            Log.d("ChatAdapter", "Updated Date $position ${chatList[position].updatedAt}")
+
+            val createdAt = getDateFormat(chatList[position].createdAt)
+            val updatedAt = getDateFormat(chatList[position].updatedAt)
+
+            if (createdAt == currentDate) {
+                tvCreatedAt.text = "${context.getString(R.string.created_at)} ${getTimeFormat(chatList[position].createdAt)}"
+            } else {
+                tvCreatedAt.text = "${context.getString(R.string.created_at)} ${getDateFormat(chatList[position].createdAt)}"
+            }
+            if (updatedAt == currentDate) {
+                tvUpdatedAt.text = "${context.getString(R.string.updated_at)} ${getTimeFormat(chatList[position].updatedAt)}"
+            } else {
+                tvUpdatedAt.text = "${context.getString(R.string.updated_at)} ${getDateFormat(chatList[position].updatedAt)}"
+            }
         }
 
         holder.itemView.setOnClickListener {
