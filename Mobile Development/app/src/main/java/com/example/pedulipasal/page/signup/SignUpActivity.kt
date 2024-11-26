@@ -1,5 +1,7 @@
 package com.example.pedulipasal.page.signup
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -37,6 +39,7 @@ class SignUpActivity : AppCompatActivity() {
 
         setupView()
         setupAction()
+        playAnimation()
     }
 
     private fun setupView() {
@@ -115,4 +118,63 @@ class SignUpActivity : AppCompatActivity() {
             show()
         }
     }
+
+    private fun playAnimation() {
+        binding.tvSignup.alpha = 0f
+        binding.tvSignupText.alpha = 0f
+        binding.tvName.alpha = 0f
+        binding.edSignupName.alpha = 0f
+        binding.ivNameIcon.alpha = 0f
+        binding.tvEmail.alpha = 0f
+        binding.edSignupEmail.alpha = 0f
+        binding.ivEmailIcon.alpha = 0f
+        binding.tvPassword.alpha = 0f
+        binding.edSignupPassword.alpha = 0f
+        binding.ivPasswordIcon.alpha = 0f
+        binding.btnSignup.alpha = 0f
+
+        val title =
+            ObjectAnimator.ofFloat(binding.tvSignup, View.ALPHA, 1f).setDuration(200)
+        val message =
+            ObjectAnimator.ofFloat(binding.tvSignupText, View.ALPHA, 1f).setDuration(200)
+        val nameTextView =
+            ObjectAnimator.ofFloat(binding.tvName, View.ALPHA, 1f).setDuration(100)
+        val nameEditText =
+            ObjectAnimator.ofFloat(binding.edSignupName, View.ALPHA, 1f).setDuration(100)
+        val nameIcon =
+            ObjectAnimator.ofFloat(binding.ivNameIcon, View.ALPHA, 1f).setDuration(100)
+        val emailTextView =
+            ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
+        val emailEditText =
+            ObjectAnimator.ofFloat(binding.edSignupEmail, View.ALPHA, 1f).setDuration(100)
+        val emailIcon =
+            ObjectAnimator.ofFloat(binding.ivEmailIcon, View.ALPHA, 1f).setDuration(100)
+        val passwordTextView =
+            ObjectAnimator.ofFloat(binding.tvPassword, View.ALPHA, 1f).setDuration(100)
+        val passwordEditText =
+            ObjectAnimator.ofFloat(binding.edSignupPassword, View.ALPHA, 1f).setDuration(100)
+        val passwordIcon =
+            ObjectAnimator.ofFloat(binding.ivPasswordIcon, View.ALPHA, 1f).setDuration(100)
+        val loginButton =
+            ObjectAnimator.ofFloat(binding.btnSignup, View.ALPHA, 1f).setDuration(100)
+
+        AnimatorSet().apply {
+            playSequentially(
+                title,
+                message,
+                nameTextView,
+                nameEditText,
+                nameIcon,
+                emailTextView,
+                emailEditText,
+                emailIcon,
+                passwordTextView,
+                passwordEditText,
+                passwordIcon,
+                loginButton
+            )
+            startDelay = 100
+        }.start()
+    }
+
 }
