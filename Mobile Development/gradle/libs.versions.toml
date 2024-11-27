@@ -11,8 +11,8 @@ loggingInterceptor = "4.11.0"
 material = "1.12.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
-lifecycleLivedataKtx = "2.8.7"
-lifecycleViewmodelKtx = "2.8.7"
+lifecycleLivedataKtx = "2.6.2"
+lifecycleViewmodelKtx = "2.6.2"
 navigationFragmentKtx = "2.8.3"
 navigationUiKtx = "2.8.3"
 retrofit = "2.9.0"
@@ -26,6 +26,7 @@ googleid = "1.1.1" # Firebase auth
 generativeai = "0.7.0" # Gemini Ai
 roomCompiler = "2.5.2" # Room
 roomRuntime = "2.5.2" # Room
+roomKtx = "2.5.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -54,7 +55,9 @@ googleid = { module = "com.google.android.libraries.identity.googleid:googleid",
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+
+# lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

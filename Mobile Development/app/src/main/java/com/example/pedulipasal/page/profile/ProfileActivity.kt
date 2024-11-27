@@ -2,20 +2,18 @@ package com.example.pedulipasal.page.profile
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.pedulipasal.R
-import com.example.pedulipasal.databinding.ActivityLoginBinding
 import com.example.pedulipasal.databinding.ActivityProfileBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
-import com.example.pedulipasal.page.login.LoginViewModel
 import com.example.pedulipasal.page.welcome.WelcomeActivity
+import kotlinx.coroutines.launch
 
 class ProfileActivity : AppCompatActivity() {
 

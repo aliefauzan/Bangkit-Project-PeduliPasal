@@ -2,8 +2,11 @@ package com.example.pedulipasal.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.example.pedulipasal.BuildConfig
 import com.example.pedulipasal.data.api.CloudApiService
+import com.example.pedulipasal.data.database.PeduliPasalDatabase
+import com.example.pedulipasal.data.database.userDao
 import com.example.pedulipasal.data.model.request.AddMessageRequest
 import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.request.LoginRequest
@@ -25,9 +28,11 @@ import retrofit2.HttpException
 
 class CloudRepository(
     private val cloudApiService: CloudApiService,
-    private val userPreference: UserPreference
+    private val userPreference: UserPreference,
+    private val userDao: userDao
 ) {
 
+    // Room dao
     fun getUserChatHistory(userId: String): LiveData<Result<List<ChatItem>>> = liveData {
         emit(Result.Loading)
         try {
@@ -44,12 +49,15 @@ class CloudRepository(
         emit(Result.Loading)
         try {
             val client = cloudApiService.getUserProfileData(userId)
-            emit(Result.Success(client))
+            userDao.deleteUserProfileData()
+            userDao.insertUserProfileData(client)
         } catch (e: HttpException) {
             emit(Result.Error(e.toString()))
         } catch (e: Exception) {
             emit(Result.Error(e.toString()))
         }
+        val localData: LiveData<UserResponse> = userDao.getUserProfileData()
+        emitSource(localData.map { Result.Success(it) })
     }
 
     suspend fun saveSession(user: UserModel) {
@@ -113,6 +121,7 @@ class CloudRepository(
         }
     }
 
+    // Room dao
     fun getChatMessageById(chatId: String): LiveData<Result<ChatItem>> = liveData {
         emit(Result.Loading)
         try {
@@ -157,12 +166,14 @@ class CloudRepository(
         private var instance: CloudRepository? = null
         fun getInstance(
             cloudApiService: CloudApiService,
-            userPreference: UserPreference
+            userPreference: UserPreference,
+            userDao: userDao
         ): CloudRepository =
             instance ?: synchronized(this) {
                 instance ?: CloudRepository(
                     cloudApiService,
-                    userPreference
+                    userPreference,
+                    userDao
                 )
             }.also { instance = it }
     }

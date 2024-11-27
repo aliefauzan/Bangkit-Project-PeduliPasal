@@ -86,8 +86,9 @@ dependencies {
     implementation(libs.generativeai)
 
     // Room
-    implementation(libs.lifecycle.livedata.ktx)
+    // implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     ksp(libs.room.compiler)
 
 
