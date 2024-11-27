@@ -49,17 +49,10 @@ C242-PS139
   
 
 ## 🛠️ Tech Stack
-
 | Category | Technology |
-
 |----------|------------|
-
-| Frontend | Android (Kotlin, XML, Gradle)    |
-
-| Backend  | Node.js, Express     |
-
-| Database | Firebase     |
-
-| AI       | TensorFlow |
-
-| Other   | Gemini API |
+| Frontend | Android (Kotlin, XML, Gradle)    |
+| Backend  | Node.js, Express     |
+| Database | Firebase     |
+| AI       | TensorFlow |
+| Other   | Gemini API |
