@@ -10,13 +10,12 @@
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
-    app:strokeColor="@color/md_theme_onSurfaceVariant"
-    app:strokeWidth="1dp">
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
         <!-- Article Image -->
         <ImageView
