@@ -4,8 +4,10 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp"
-    android:background="@drawable/borders"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
 
     <!-- Suggestion Text -->
     <TextView
@@ -18,17 +20,6 @@
         android:maxLines="1"
         android:maxWidth="250dp"
         android:gravity="center_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <!-- Ripple Effect for Interaction -->
-    <View
-        android:id="@+id/clickable_background"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
