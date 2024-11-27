@@ -8,6 +8,7 @@ tensorflow = "*"
 pandas = "*"
 numpy = "*"
 transformers = "*"
+scikit-learn = "*"
 
 [dev-packages]
 ipykernel = "*"
