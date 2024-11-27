@@ -6,5 +6,5 @@
     <corners android:radius="8dp" />
 
     <!-- The radius makes the corners rounded -->
-    <solid android:color="?attr/colorPrimary" />
+    <solid android:color="@color/md_theme_surfaceVariant" />
 </shape>

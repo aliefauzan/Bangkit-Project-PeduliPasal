@@ -17,14 +17,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible" />
 
     <!-- Scrollable Content -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -32,26 +32,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="16dp">
+            android:padding="2dp">
 
             <!-- News Header -->
             <TextView
                 android:id="@+id/tvNews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginStart="16dp"
                 android:text="@string/news"
                 android:textSize="32sp"
                 android:textStyle="bold"
-                android:textColor="@color/md_theme_primary" />
+                android:textColor="@color/md_theme_primary"
+                android:layout_marginStart="10dp"
+                android:padding="5dp" />
 
             <!-- News Recycler View -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvNews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:paddingBottom="88dp" />
         </LinearLayout>
     </ScrollView>

@@ -56,4 +56,5 @@
     <string name="delete_chat_confirmation">Apakah anda ingin menghapus chat ini?</string>
     <string name="confirm">Ya</string>
     <string name="your_web_client_id">808921460677-uaj5f7j5egie3eh2ii6r9c94pf7pbfp7.apps.googleusercontent.com</string>
+    <string name="profile_image">profile image</string>
 </resources>

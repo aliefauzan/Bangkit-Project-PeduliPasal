@@ -18,7 +18,6 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
     private val messageItems = ArrayList<MessageItem>()
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val userProfile: ImageView = view.findViewById(R.id.iv_userProfile)
         val userMessageText: TextView = view.findViewById(R.id.tv_userMessageText)
         val tvTime: TextView = view.findViewById(R.id.tv_time)
     }
@@ -47,7 +46,6 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val message = messageItems[position]
-        holder.userProfile.setImageDrawable(getProfileIcon(holder.userProfile.context, message.isHuman ?: false))
         holder.userMessageText.text = message.content
         holder.tvTime.text = getTimeFormat(messageItems[position].timestamp)
     }
