@@ -1,9 +1,6 @@
 <div align="center">
-
-  <img src="https://github.com/aliefauzan/Bangkit-Project-PeduliPasal/blob/main/logo.svg" alt="Logo Bangkit" width="280px" />
-
-  <h1>PeduliPasal - Bangkit Capstone Project 2024</h1>
-
+  <img src="https://github.com/aliefauzan/Bangkit-Project-PeduliPasal/blob/main/logo.svg" alt="Logo Bangkit" width="280px" />
+  <h1>PeduliPasal - Bangkit Capstone Project 2024</h1>
 </div>
 
   
