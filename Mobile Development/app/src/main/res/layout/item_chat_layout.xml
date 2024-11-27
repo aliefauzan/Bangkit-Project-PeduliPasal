@@ -42,12 +42,11 @@
             android:scrollHorizontally="false"
             android:lineSpacingExtra="2dp"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_delete_chat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/delete"
             android:textSize="16sp"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/red"/>
+            android:layout_marginTop="8dp"/>
 </LinearLayout>

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/md_theme_background"
     tools:context=".page.signup.SignUpActivity">
 
     <ProgressBar
@@ -17,154 +19,182 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:indeterminateTint="@color/md_theme_primary" />
 
     <TextView
         android:id="@+id/tv_signup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/sign_up"
-        android:textSize="64sp"
+        android:textColor="@color/md_theme_primary"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/tv_signup_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_signup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif-light"
+        android:lineSpacingExtra="4dp"
         android:text="@string/signup_page_text"
-        android:textSize="24sp"/>
+        android:textColor="@color/md_theme_onBackground"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_signup" />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tv_signup_text"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/name"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
-        android:textSize="16sp"
-        android:textStyle="bold"/>
-
-    <EditText
-        android:id="@+id/ed_signup_name"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_name_icon"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/name_hint"/>
-
-    <ImageView
-        android:id="@+id/iv_name_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:padding="4dp"
-        android:src="@drawable/baseline_person_24"
-        app:layout_constraintBottom_toBottomOf="@+id/ed_signup_name"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/name"
+        android:textColor="@color/md_theme_onSurface"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ed_signup_name"
-        app:layout_constraintTop_toTopOf="@+id/ed_signup_name" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_signup_text" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_signup_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        app:boxStrokeColor="@color/md_theme_primary"
+        app:hintTextColor="@color/md_theme_onSurfaceVariant"
+        app:startIconDrawable="@drawable/baseline_person_24"
+        app:startIconTint="@color/md_theme_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_signup_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="42dp"
+            android:paddingEnd="42dp"
+            android:hint="@string/name_hint"
+            android:textColor="@color/md_theme_onSurface"
+            android:textColorHint="@color/md_theme_onSurfaceVariant" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tv_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/ed_signup_name"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/email"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:textSize="16sp"
-        android:textStyle="bold"/>
-
-    <com.example.pedulipasal.customview.EmailEditText
-        android:id="@+id/ed_signup_email"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_email_icon"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/email_hint"/>
-
-    <ImageView
-        android:id="@+id/iv_email_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-        android:padding="4dp"
-        android:src="@drawable/baseline_email_24"
-        app:layout_constraintBottom_toBottomOf="@+id/ed_signup_email"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/email"
+        android:textColor="@color/md_theme_onSurface"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ed_signup_email"
-        app:layout_constraintTop_toTopOf="@+id/ed_signup_email" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_signup_name" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_signup_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        app:boxStrokeColor="@color/md_theme_primary"
+        app:hintTextColor="@color/md_theme_onSurfaceVariant"
+        app:startIconDrawable="@drawable/baseline_email_24"
+        app:startIconTint="@color/md_theme_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_signup_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="42dp"
+            android:paddingEnd="42dp"
+            android:hint="@string/email_hint"
+            android:textColor="@color/md_theme_onSurface"
+            android:textColorHint="@color/md_theme_onSurfaceVariant" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tv_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/ed_signup_email"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="@string/password"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/password"
+        android:textColor="@color/md_theme_onSurface"
         android:textSize="16sp"
-        android:textStyle="bold"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_signup_email" />
 
-    <EditText
-        android:id="@+id/ed_signup_password"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_signup_password"
         android:layout_width="0dp"
-        android:layout_height="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_password"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_password_icon"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:inputType="textPassword"
-        android:hint="@string/password_hint"/>
-
-    <ImageView
-        android:id="@+id/iv_password_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="16dp"
-        android:padding="4dp"
-        android:src="@drawable/baseline_lock_24"
-        app:layout_constraintBottom_toBottomOf="@+id/ed_signup_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ed_signup_password"
-        app:layout_constraintTop_toTopOf="@+id/ed_signup_password" />
-
-    <Button
-        android:id="@+id/btn_signup"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sign_up"
-        app:layout_constraintTop_toBottomOf="@id/ed_signup_password"
+        app:layout_constraintTop_toBottomOf="@id/tv_password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="40dp"
-        android:textSize="16sp"/>
+        android:layout_marginTop="8dp"
+        app:boxStrokeColor="@color/md_theme_primary"
+        app:hintTextColor="@color/md_theme_onSurfaceVariant"
+        app:startIconDrawable="@drawable/baseline_lock_24"
+        app:startIconTint="@color/md_theme_primary">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_signup_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="42dp"
+            android:paddingEnd="42dp"
+            android:hint="@string/password_hint"
+            android:inputType="textPassword"
+            android:textColor="@color/md_theme_onSurface"
+            android:textColorHint="@color/md_theme_onSurfaceVariant" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_signup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/til_signup_password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/sign_up"
+        android:backgroundTint="@color/md_theme_primary"
+        android:textColor="@color/md_theme_onPrimary"
+        android:textSize="16sp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

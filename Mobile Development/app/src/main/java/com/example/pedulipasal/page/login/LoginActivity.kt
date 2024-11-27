@@ -242,10 +242,8 @@ class LoginActivity : AppCompatActivity() {
         binding.tvLoginText.alpha = 0f
         binding.tvEmail.alpha = 0f
         binding.edLoginEmail.alpha = 0f
-        binding.ivEmailIcon.alpha = 0f
         binding.tvPassword.alpha = 0f
         binding.edLoginPassword.alpha = 0f
-        binding.ivPasswordIcon.alpha = 0f
         binding.btnLogin.alpha = 0f
         binding.btnSignInWithGoogle.alpha = 0f
 
@@ -257,14 +255,10 @@ class LoginActivity : AppCompatActivity() {
             ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
         val emailEditText =
             ObjectAnimator.ofFloat(binding.edLoginEmail, View.ALPHA, 1f).setDuration(100)
-        val emailIcon =
-            ObjectAnimator.ofFloat(binding.ivEmailIcon, View.ALPHA, 1f).setDuration(100)
         val passwordTextView =
             ObjectAnimator.ofFloat(binding.tvPassword, View.ALPHA, 1f).setDuration(100)
         val passwordEditText =
             ObjectAnimator.ofFloat(binding.edLoginPassword, View.ALPHA, 1f).setDuration(100)
-        val passwordIcon =
-            ObjectAnimator.ofFloat(binding.ivPasswordIcon, View.ALPHA, 1f).setDuration(100)
         val loginButton =
             ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 1f).setDuration(100)
         val loginWithGoogleButton =
@@ -276,10 +270,8 @@ class LoginActivity : AppCompatActivity() {
                 message,
                 emailTextView,
                 emailEditText,
-                emailIcon,
                 passwordTextView,
                 passwordEditText,
-                passwordIcon,
                 loginButton,
                 loginWithGoogleButton
             )
