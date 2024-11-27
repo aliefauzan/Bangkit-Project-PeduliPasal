@@ -14,15 +14,15 @@ C242-PS139
 
 ## 🤝🧑🏻‍💻 Team Members
 
-| Name                       | Bangkit ID   | University                  | Github                     | LinkedIn | Status       |
-| -------------------------- | ------------ | --------------------------- | -------------------------- | -------- | ------------ |
-| Akhmad Ardiansyah Amnur    | M669B4KY0285 | STMIK Profesional Makassar  | [Akhmad Ardiansyah Amnur](https://github.com/akhmad-ardi)    |          | **Active**   |
-| Satriya Handha             | A244B4KY4086 | Universitas Kristen Petra   | [Satriya Handha](https://github.com/Satriya1577)             |          | **Active**   |
-| Ezra Brilliant K           | A244B4KY1301 | Universitas Kristen Petra   | [Ezra Brilliant K](https://github.com/ezrabrilliant)           |          | **Active**   |
-| Andi Muhammad Alief Fauzan | C012B4KY0502 | Universitas Telkom          | [Andi Muhammad Alief Fauzan](https://github.com/aliefauzan) |          | **Active**   |
-| Paulus Apriliano Crespo    | C375B4KY3483 | Universitas Dipa Makassar   | [Paulus Apriliano Crespo](https://github.com/Crespo443)    |          | **Active**   |
-| Iyun Federiska S. Dawing   | M278B4KX2030 | Universitas Negeri Makassar | -                          | -        | **Inactive** |
-| Nurul Hikmah Usmanah       | M278B4KX3448 | Universitas Negeri Makassar | -                          | -        | **Inactive** |  
+| Name                       | Bangkit ID   | University                  | Github                                                      | LinkedIn                                                                                  | Status       |
+| -------------------------- | ------------ | --------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------ |
+| Akhmad Ardiansyah Amnur    | M669B4KY0285 | STMIK Profesional Makassar  | [Akhmad Ardiansyah Amnur](https://github.com/akhmad-ardi)   | [Akhmad Ardiansyah Amnur](https://www.linkedin.com/in/akhmad-ardiansyah-amnur-a85904261/) | **Active**   |
+| Satriya Handha             | A244B4KY4086 | Universitas Kristen Petra   | [Satriya Handha](https://github.com/Satriya1577)            | [Satriya Handha](https://www.linkedin.com/in/satriya-wibowo-705850333/)                   | **Active**   |
+| Ezra Brilliant K           | A244B4KY1301 | Universitas Kristen Petra   | [Ezra Brilliant K](https://github.com/ezrabrilliant)        | [Ezra Brilliant K](https://www.linkedin.com/in/ezra-brilliant-09670a1b6/)                 | **Active**   |
+| Andi Muhammad Alief Fauzan | C012B4KY0502 | Universitas Telkom          | [Andi Muhammad Alief Fauzan](https://github.com/aliefauzan) | [Andi Muhammad Alief Fauzan](https://www.linkedin.com/in/alief-fauzan1/)                  | **Active**   |
+| Paulus Apriliano Crespo    | C375B4KY3483 | Universitas Dipa Makassar   | [Paulus Apriliano Crespo](https://github.com/Crespo443)     | [Paulus Apriliano Crespo](www.linkedin.com/in/apriliano-crespo-982b1526a/)                | **Active**   |
+| Iyun Federiska S. Dawing   | M278B4KX2030 | Universitas Negeri Makassar | -                                                           | -                                                                                         | **Inactive** |
+| Nurul Hikmah Usmanah       | M278B4KX3448 | Universitas Negeri Makassar | -                                                           | -                                                                                         | **Inactive** |  
 
 ## 🛠️ Tech Stack
 | Category | Technology |
