@@ -30,6 +30,7 @@ const createChat = async (req, res) => {
 
 const addMessageToChat = async (req, res) => {
   try {
+    const messageId = nanoid(16)
     const { chatId } = req.params;
     const { content } = req.body;
 
@@ -45,6 +46,7 @@ const addMessageToChat = async (req, res) => {
     }
 
     const userMessage = {
+      messageId,
       isHuman: true,
       content,
       timestamp: new Date().toISOString(),
@@ -66,6 +68,7 @@ const addMessageToChat = async (req, res) => {
 
     // Simpan balasan AI ke subkoleksi "messages"
     const aiMessage = {
+      messageId,
       isHuman: false,
       content: aiContent,
       timestamp: new Date().toISOString(),
