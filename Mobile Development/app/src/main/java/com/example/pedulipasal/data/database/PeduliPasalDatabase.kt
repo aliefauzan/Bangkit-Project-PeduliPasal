@@ -4,11 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.pedulipasal.data.model.response.ChatItem
 import com.example.pedulipasal.data.model.response.UserResponse
 
-@Database(entities = [UserResponse::class], version = 1, exportSchema = false)
+@Database(entities = [UserResponse::class, ChatItem::class], version = 1, exportSchema = false)
+@TypeConverters(DateConverter::class)
 abstract class PeduliPasalDatabase: RoomDatabase() {
-    abstract fun userDao(): userDao
+    abstract fun userDao(): UserDao
+    abstract fun chatDao(): ChatDao
 
 
     companion object {
