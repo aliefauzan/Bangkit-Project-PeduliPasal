@@ -27,14 +27,19 @@ data class ChatItem(
 
 @Entity(tableName = "message")
 data class MessageItem (
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
+    @PrimaryKey(autoGenerate = false)
     var messageId: String,
     var isHuman: Boolean,
     var content: String,
     var timestamp: Date? = null,
-    var chatId: String
-)
+    var chatId: String,
+    @Ignore
+    var aiMessageId: String? = null,
+    @Ignore
+    var userMessageId: String? = null
+) {
+    constructor() : this(messageId = "", isHuman = false, content = "", timestamp = null, chatId = "")
+}
 
 data class MessageResponse(
     val message: String? = null,

@@ -53,7 +53,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun showProfile(userId: String) {
-        profileViewModel.getUserProfileData(userId).removeObservers(this)
         profileViewModel.getUserProfileData(userId).observe(this) {result ->
             if (result != null) {
                 when (result) {

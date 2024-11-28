@@ -15,7 +15,7 @@ interface UserDao {
     suspend fun insertUserProfileData(userResponse: UserResponse)
 
     @Query("SELECT * FROM user")
-    fun getUserProfileData(): LiveData<UserResponse>
+    fun getUserProfileData(): LiveData<UserResponse?>
 
     @Query("DELETE FROM user")
     suspend fun deleteUserProfileData()

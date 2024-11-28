@@ -1,6 +1,5 @@
 package com.example.pedulipasal.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
@@ -36,7 +35,6 @@ class CloudRepository(
     private val messageDao: MessageDao
 ) {
 
-    // Room dao
     fun getUserChatHistory(userId: String): LiveData<Result<List<ChatItem>>> = liveData {
         emit(Result.Loading)
         try {
@@ -48,8 +46,8 @@ class CloudRepository(
         } catch (e: Exception) {
             emit(Result.Error(e.toString()))
         }
-        val localData: LiveData<List<ChatItem>> = chatDao.getUserChats()
-        emitSource(localData.map { Result.Success(it) })
+        val localData: LiveData<Result<List<ChatItem>>> = chatDao.getUserChats().map { Result.Success(it) }
+        emitSource(localData)
     }
 
     fun getUserProfileData(userId: String): LiveData<Result<UserResponse>> = liveData {
@@ -63,10 +61,16 @@ class CloudRepository(
         } catch (e: Exception) {
             emit(Result.Error(e.toString()))
         }
-        val localData: LiveData<UserResponse> = userDao.getUserProfileData()
-
-
-        emitSource(localData.map { Result.Success(it) })
+        val localData = userDao.getUserProfileData() // LiveData<UserResponse?>
+        emitSource(
+            localData.map { userResponse ->
+                if (userResponse != null) {
+                    Result.Success(userResponse) // Wrap in Result.Success
+                } else {
+                    Result.Error("No data found in the database") // Handle null case
+                }
+            }
+        )
     }
 
     suspend fun saveSession(user: UserModel) {
@@ -105,7 +109,6 @@ class CloudRepository(
         }
     }
 
-
     fun createChat(createChatRequest: CreateChatRequest): LiveData<Result<ChatItem>> = liveData {
         emit(Result.Loading)
         try {
@@ -138,7 +141,6 @@ class CloudRepository(
         }
     }
 
-    // Room dao
     fun getChatMessageById(chatId: String): LiveData<Result<List<MessageItem>>> = liveData {
         emit(Result.Loading)
         try {
@@ -146,6 +148,11 @@ class CloudRepository(
             if (client != null) {
                 client.forEach {
                     it.chatId = chatId
+                    if (it.aiMessageId != null) {
+                        it.messageId = it.aiMessageId!!
+                    } else if (it.userMessageId != null) {
+                        it.messageId = it.userMessageId!!
+                    }
                 }
                 messageDao.deleteChatMessageById(chatId)
                 messageDao.insertChatMessagesById(client)
