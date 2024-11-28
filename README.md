@@ -21,14 +21,14 @@ C242-PS139
 | Ezra Brilliant K           | A244B4KY1301 | Universitas Kristen Petra   | [Ezra Brilliant K](https://github.com/ezrabrilliant)        | [Ezra Brilliant K](https://www.linkedin.com/in/ezra-brilliant-09670a1b6/)                 | **Active**   |
 | Andi Muhammad Alief Fauzan | C012B4KY0502 | Universitas Telkom          | [Andi Muhammad Alief Fauzan](https://github.com/aliefauzan) | [Andi Muhammad Alief Fauzan](https://www.linkedin.com/in/alief-fauzan1/)                  | **Active**   |
 | Paulus Apriliano Crespo    | C375B4KY3483 | Universitas Dipa Makassar   | [Paulus Apriliano Crespo](https://github.com/Crespo443)     | [Paulus Apriliano Crespo](www.linkedin.com/in/apriliano-crespo-982b1526a/)                | **Active**   |
-| Iyun Federiska S. Dawing   | M278B4KX2030 | Universitas Negeri Makassar | -                                                           | -                                                                                         | **Inactive** |
-| Nurul Hikmah Usmanah       | M278B4KX3448 | Universitas Negeri Makassar | -                                                           | -                                                                                         | **Inactive** |  
+| ~~Iyun Federiska S. Dawing~~   | ~~M278B4KX2030~~ | ~~Universitas Negeri Makassar~~ | -                                                           | -                                                                                         | **Inactive** |
+| ~~Nurul Hikmah Usmanah~~       | ~~M278B4KX3448~~ | ~~Universitas Negeri Makassar~~ | -                                                           | -                                                                                         | **Inactive** |  
 
 ## 🛠️ Tech Stack
 | Category | Technology |
 |----------|------------|
 | Frontend | Android (Kotlin, XML, Gradle)    |
-| Backend  | Node.js, Express     |
+| Backend  | Node.js, Express, Flask     |
 | Database | Firebase     |
 | AI       | TensorFlow |
 | Other   | Gemini API |
