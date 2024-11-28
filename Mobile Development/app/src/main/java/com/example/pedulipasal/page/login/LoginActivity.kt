@@ -1,5 +1,7 @@
 package com.example.pedulipasal.page.login
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -62,6 +64,7 @@ class LoginActivity : AppCompatActivity() {
 
         setupView()
         setupAction()
+        playAnimation()
     }
 
 
@@ -232,6 +235,56 @@ class LoginActivity : AppCompatActivity() {
             create()
             show()
         }
+    }
+
+    private fun playAnimation() {
+        binding.tvLogin.alpha = 0f
+        binding.tvLoginText.alpha = 0f
+        binding.tvEmail.alpha = 0f
+        binding.edLoginEmail.alpha = 0f
+        binding.ivEmailIcon.alpha = 0f
+        binding.tvPassword.alpha = 0f
+        binding.edLoginPassword.alpha = 0f
+        binding.ivPasswordIcon.alpha = 0f
+        binding.btnLogin.alpha = 0f
+        binding.btnSignInWithGoogle.alpha = 0f
+
+        val title =
+            ObjectAnimator.ofFloat(binding.tvLogin, View.ALPHA, 1f).setDuration(200)
+        val message =
+            ObjectAnimator.ofFloat(binding.tvLoginText, View.ALPHA, 1f).setDuration(200)
+        val emailTextView =
+            ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
+        val emailEditText =
+            ObjectAnimator.ofFloat(binding.edLoginEmail, View.ALPHA, 1f).setDuration(100)
+        val emailIcon =
+            ObjectAnimator.ofFloat(binding.ivEmailIcon, View.ALPHA, 1f).setDuration(100)
+        val passwordTextView =
+            ObjectAnimator.ofFloat(binding.tvPassword, View.ALPHA, 1f).setDuration(100)
+        val passwordEditText =
+            ObjectAnimator.ofFloat(binding.edLoginPassword, View.ALPHA, 1f).setDuration(100)
+        val passwordIcon =
+            ObjectAnimator.ofFloat(binding.ivPasswordIcon, View.ALPHA, 1f).setDuration(100)
+        val loginButton =
+            ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 1f).setDuration(100)
+        val loginWithGoogleButton =
+            ObjectAnimator.ofFloat(binding.btnSignInWithGoogle, View.ALPHA, 1f).setDuration(100)
+
+        AnimatorSet().apply {
+            playSequentially(
+                title,
+                message,
+                emailTextView,
+                emailEditText,
+                emailIcon,
+                passwordTextView,
+                passwordEditText,
+                passwordIcon,
+                loginButton,
+                loginWithGoogleButton
+            )
+            startDelay = 100
+        }.start()
     }
 
     companion object {

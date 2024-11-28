@@ -2,6 +2,7 @@ package com.example.pedulipasal.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.example.pedulipasal.BuildConfig
 import com.example.pedulipasal.data.api.CloudApiService
 import com.example.pedulipasal.data.model.request.AddMessageRequest
 import com.example.pedulipasal.data.model.request.CreateChatRequest
@@ -17,6 +18,8 @@ import com.example.pedulipasal.data.model.response.UserResponse
 import com.example.pedulipasal.data.user.UserModel
 import com.example.pedulipasal.data.user.UserPreference
 import com.example.pedulipasal.helper.Result
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.GenerateContentResponse
 import kotlinx.coroutines.flow.Flow
 import retrofit2.HttpException
 
@@ -127,6 +130,21 @@ class CloudRepository(
         try {
             val client = cloudApiService.deleteChat(chatId)
             emit(Result.Success(client))
+        } catch (e: HttpException) {
+            emit(Result.Error(e.toString()))
+        } catch (e: Exception) {
+            emit(Result.Error(e.toString()))
+        }
+    }
+
+    fun getGeminiAiResponse(prompt: String): LiveData<Result<GenerateContentResponse>> = liveData {
+        emit(Result.Loading)
+        try {
+            val generativeModel = GenerativeModel(
+                modelName = "gemini-1.5-flash",
+                apiKey = BuildConfig.GEMINI_API_KEY
+            )
+            emit(Result.Success(generativeModel.generateContent(prompt)))
         } catch (e: HttpException) {
             emit(Result.Error(e.toString()))
         } catch (e: Exception) {

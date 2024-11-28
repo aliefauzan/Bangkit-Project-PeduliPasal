@@ -138,6 +138,7 @@
         app:layout_constraintEnd_toStartOf="@+id/iv_password_icon"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:inputType="textPassword"
         android:hint="@string/password_hint"/>
 
     <ImageView
