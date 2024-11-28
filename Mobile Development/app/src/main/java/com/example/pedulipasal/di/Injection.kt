@@ -29,6 +29,7 @@ object Injection {
         val database = PeduliPasalDatabase.getInstance(context)
         val userDao = database.userDao()
         val chatDao = database.chatDao()
-        return CloudRepository.getInstance(cloudApiService, pref, userDao, chatDao)
+        val messageDao = database.messageDao()
+        return CloudRepository.getInstance(cloudApiService, pref, userDao, chatDao, messageDao)
     }
 }

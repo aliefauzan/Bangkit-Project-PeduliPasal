@@ -1,6 +1,7 @@
 package com.example.pedulipasal.page.message
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
@@ -35,6 +36,7 @@ class MessageActivity : AppCompatActivity() {
 
     companion object {
         const val CHAT_ID_KEY = "detail_chat_key"
+        const val TITLE_KEY = "detail_title_key"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,8 +53,9 @@ class MessageActivity : AppCompatActivity() {
         setupView()
 
         val chatId = intent.getStringExtra(CHAT_ID_KEY)
-        if (!chatId.isNullOrEmpty()) {
-            showListMessages(chatId)
+        val title = intent.getStringExtra(TITLE_KEY)
+        if (!chatId.isNullOrEmpty() && !title.isNullOrEmpty()) {
+            showListMessages(chatId = chatId, title = title)
         }
     }
 
@@ -95,14 +98,14 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
-    private fun showListMessages(chatId: String) {
+    private fun showListMessages(chatId: String, title: String) {
         messageViewModel.getChatMessageById(chatId).observe(this) { result ->
             when (result) {
                 is Result.Loading -> toggleProgressBarVisibility(true)
                 is Result.Success -> {
                     toggleProgressBarVisibility(false)
-                    supportActionBar?.title = result.data.title
-                    result.data.messages?.let {
+                    supportActionBar?.title = title
+                    result.data.let {
                         messageAdapter.setMessages(it)
                     }
                     scrollToLastMessage()
@@ -110,7 +113,8 @@ class MessageActivity : AppCompatActivity() {
                 }
                 is Result.Error -> {
                     toggleProgressBarVisibility(false)
-                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
+                    Log.d("MessageActivity", result.error)
                 }
             }
         }
@@ -154,9 +158,11 @@ class MessageActivity : AppCompatActivity() {
         // Add the new message to the adapter
         messageAdapter.addMessage(
             MessageItem(
+                messageId = "",
                 isHuman = addMessageRequest.isHuman,
                 content = addMessageRequest.content,
-                timestamp = showLocalTime(Date())
+                timestamp = showLocalTime(Date()),
+                chatId = chatId
             )
         )
 
@@ -170,16 +176,18 @@ class MessageActivity : AppCompatActivity() {
                     toggleProgressBarVisibility(false)
                     messageAdapter.addMessage(
                         MessageItem(
+                            messageId = "",
                             isHuman = false,
                             content = result.data.aiMessage?.content ?: "Error message",
-                            timestamp = showLocalTime(Date())
+                            timestamp = showLocalTime(Date()),
+                            chatId = chatId,
                         )
                     )
                     scrollToLastMessage()
                 }
                 is Result.Error -> {
                     toggleProgressBarVisibility(false)
-                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }

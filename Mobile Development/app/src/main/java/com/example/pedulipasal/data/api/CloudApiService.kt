@@ -1,6 +1,5 @@
 package com.example.pedulipasal.data.api
 
-import com.example.pedulipasal.BuildConfig
 import com.example.pedulipasal.data.model.request.AddMessageRequest
 import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.request.LoginRequest
@@ -12,8 +11,6 @@ import com.example.pedulipasal.data.model.response.LoginResponse
 import com.example.pedulipasal.data.model.response.MessageResponse
 import com.example.pedulipasal.data.model.response.RegisterResponse
 import com.example.pedulipasal.data.model.response.UserResponse
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.GenerateContentResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

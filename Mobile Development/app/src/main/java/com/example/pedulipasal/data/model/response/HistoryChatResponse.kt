@@ -1,6 +1,7 @@
 package com.example.pedulipasal.data.model.response
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.util.Date
@@ -24,10 +25,15 @@ data class ChatItem(
     constructor() : this(chatId = "", userId = null, title = null, createdAt = null, updatedAt = null)
 }
 
+@Entity(tableName = "message")
 data class MessageItem (
-    val isHuman: Boolean,
-    val content: String,
-    val timestamp: Date? = null
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0,
+    var messageId: String,
+    var isHuman: Boolean,
+    var content: String,
+    var timestamp: Date? = null,
+    var chatId: String
 )
 
 data class MessageResponse(

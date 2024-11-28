@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.pedulipasal.data.model.response.ChatItem
+import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.data.model.response.UserResponse
 
 @Dao
@@ -36,4 +37,16 @@ interface ChatDao {
 
     @Query("DELETE FROM chat WHERE chatId = :chatId")
     suspend fun deleteChat(chatId: String)
+}
+
+@Dao
+interface MessageDao {
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertChatMessagesById(chats: List<MessageItem>)
+
+    @Query("SELECT * FROM message WHERE chatId = :chatId")
+    fun getUserChats(chatId: String): LiveData<List<MessageItem>>
+
+    @Query("DELETE FROM message WHERE chatId = :chatId")
+    suspend fun deleteChatMessageById(chatId: String)
 }

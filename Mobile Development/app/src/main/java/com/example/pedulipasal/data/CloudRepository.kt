@@ -1,11 +1,13 @@
 package com.example.pedulipasal.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.example.pedulipasal.BuildConfig
 import com.example.pedulipasal.data.api.CloudApiService
 import com.example.pedulipasal.data.database.ChatDao
+import com.example.pedulipasal.data.database.MessageDao
 import com.example.pedulipasal.data.database.UserDao
 import com.example.pedulipasal.data.model.request.AddMessageRequest
 import com.example.pedulipasal.data.model.request.CreateChatRequest
@@ -14,6 +16,7 @@ import com.example.pedulipasal.data.model.request.RegisterRequest
 import com.example.pedulipasal.data.model.response.ChatItem
 import com.example.pedulipasal.data.model.response.DeleteResponse
 import com.example.pedulipasal.data.model.response.LoginResponse
+import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.data.model.response.MessageResponse
 import com.example.pedulipasal.data.model.response.RegisterResponse
 import com.example.pedulipasal.data.model.response.UserResponse
@@ -29,7 +32,8 @@ class CloudRepository(
     private val cloudApiService: CloudApiService,
     private val userPreference: UserPreference,
     private val userDao: UserDao,
-    private val chatDao: ChatDao
+    private val chatDao: ChatDao,
+    private val messageDao: MessageDao
 ) {
 
     // Room dao
@@ -60,6 +64,8 @@ class CloudRepository(
             emit(Result.Error(e.toString()))
         }
         val localData: LiveData<UserResponse> = userDao.getUserProfileData()
+
+
         emitSource(localData.map { Result.Success(it) })
     }
 
@@ -133,16 +139,24 @@ class CloudRepository(
     }
 
     // Room dao
-    fun getChatMessageById(chatId: String): LiveData<Result<ChatItem>> = liveData {
+    fun getChatMessageById(chatId: String): LiveData<Result<List<MessageItem>>> = liveData {
         emit(Result.Loading)
         try {
-            val client = cloudApiService.getChatMessageById(chatId)
-            emit(Result.Success(client))
+            val client = cloudApiService.getChatMessageById(chatId).messages
+            if (client != null) {
+                client.forEach {
+                    it.chatId = chatId
+                }
+                messageDao.deleteChatMessageById(chatId)
+                messageDao.insertChatMessagesById(client)
+            }
         } catch (e: HttpException) {
             emit(Result.Error(e.toString()))
         } catch (e: Exception) {
             emit(Result.Error(e.toString()))
         }
+        val localdata: LiveData<Result<List<MessageItem>>> = messageDao.getUserChats(chatId).map { Result.Success(it) }
+        emitSource(localdata)
     }
 
     fun deleteChat(chatId: String): LiveData<Result<DeleteResponse>> = liveData {
@@ -151,6 +165,7 @@ class CloudRepository(
             val client = cloudApiService.deleteChat(chatId)
             emit(Result.Success(client))
             chatDao.deleteChat(chatId)
+            messageDao.deleteChatMessageById(chatId)
         } catch (e: HttpException) {
             emit(Result.Error(e.toString()))
         } catch (e: Exception) {
@@ -180,14 +195,16 @@ class CloudRepository(
             cloudApiService: CloudApiService,
             userPreference: UserPreference,
             userDao: UserDao,
-            chatDao: ChatDao
+            chatDao: ChatDao,
+            messageDao: MessageDao
         ): CloudRepository =
             instance ?: synchronized(this) {
                 instance ?: CloudRepository(
                     cloudApiService,
                     userPreference,
                     userDao,
-                    chatDao
+                    chatDao,
+                    messageDao
                 )
             }.also { instance = it }
     }
