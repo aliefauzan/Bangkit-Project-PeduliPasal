@@ -1,24 +1,19 @@
 package com.example.pedulipasal.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
 import com.example.pedulipasal.data.model.response.MessageItem
-import com.example.pedulipasal.helper.getProfileIcon
 import com.example.pedulipasal.helper.getTimeFormat
-
-
 class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
-    private val messageItems = ArrayList<MessageItem>()
+    private val messageItems = mutableListOf<MessageItem>()
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val userProfile: ImageView = view.findViewById(R.id.iv_userProfile)
         val userMessageText: TextView = view.findViewById(R.id.tv_userMessageText)
         val tvTime: TextView = view.findViewById(R.id.tv_time)
     }
@@ -34,9 +29,7 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
     }
 
     override fun getItemViewType(position: Int): Int {
-        val isByHuman = messageItems[position].isHuman
-        //Log.d("MessageAdapter", "getItemViewType - position: $position, isByHuman: $isByHuman")
-        return if (isByHuman) {
+        return if (messageItems[position].isHuman) {
             R.layout.item_message_local
         } else {
             R.layout.item_message_another_user
@@ -47,19 +40,36 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val message = messageItems[position]
-        holder.userProfile.setImageDrawable(getProfileIcon(holder.userProfile.context, message.isHuman ?: false))
         holder.userMessageText.text = message.content
-        holder.tvTime.text = getTimeFormat(messageItems[position].timestamp)
+        holder.tvTime.text = getTimeFormat(message.timestamp)
     }
 
-    fun setMessages(messagesList: List<MessageItem>) {
+    fun setMessages(newMessages: List<MessageItem>) {
+        val diffCallback = MessageDiffCallback(messageItems, newMessages)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         messageItems.clear()
-        messageItems.addAll(messagesList)
-        notifyDataSetChanged()
+        messageItems.addAll(newMessages)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun addMessage(messageItem: MessageItem) {
         messageItems.add(messageItem)
         notifyItemInserted(messageItems.size - 1)
+    }
+}
+
+class MessageDiffCallback(
+    private val oldList: List<MessageItem>,
+    private val newList: List<MessageItem>
+) : DiffUtil.Callback() {
+    override fun getOldListSize() = oldList.size
+    override fun getNewListSize() = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition].timestamp == newList[newItemPosition].timestamp
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 }

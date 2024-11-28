@@ -1,43 +1,37 @@
 package com.example.pedulipasal.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.pedulipasal.databinding.ItemMessageSuggestionBinding
+import com.example.pedulipasal.R
 
 class MessageSuggestionAdapter(
-    private val listSuggestion: List<String>,
-    private val onItemSelectedCallback: OnItemSelected
-): RecyclerView.Adapter<MessageSuggestionAdapter.ViewHolder>() {
+    private val suggestions: List<String>,
+    private val onItemClicked: (String) -> Unit
+) : RecyclerView.Adapter<MessageSuggestionAdapter.SuggestionViewHolder>() {
 
-    interface OnItemSelected {
-        fun onItemClicked(message: String)
-    }
+    inner class SuggestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val suggestionText: TextView = view.findViewById(R.id.tv_suggestion_text)
 
-    class ViewHolder(val binding: ItemMessageSuggestionBinding): RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemMessageSuggestionBinding.inflate (
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return ViewHolder(binding)
-    }
-
-    override fun getItemCount(): Int {
-        return listSuggestion.size
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.apply {
-            tvSuggestionText.text = listSuggestion[position]
-        }
-
-        holder.binding.tvSuggestionText.setOnClickListener {
-            listSuggestion[position].let { it1 ->
-                onItemSelectedCallback.onItemClicked(it1)
+        fun bind(suggestion: String) {
+            suggestionText.text = suggestion
+            itemView.setOnClickListener {
+                onItemClicked(suggestion)
             }
         }
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_message_suggestion, parent, false)
+        return SuggestionViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: SuggestionViewHolder, position: Int) {
+        holder.bind(suggestions[position])
+    }
+
+    override fun getItemCount(): Int = suggestions.size
 }

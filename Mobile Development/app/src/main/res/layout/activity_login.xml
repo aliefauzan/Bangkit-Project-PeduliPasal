@@ -1,144 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/md_theme_background"
     tools:context=".page.login.LoginActivity">
 
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:indeterminateTint="@color/md_theme_primary"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:visibility="gone"
         tools:visibility="visible" />
 
+    <!-- Login Title -->
     <TextView
         android:id="@+id/tv_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/login"
+        android:textSize="36sp"
+        android:textColor="@color/md_theme_primary"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="64dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="64dp"
-        android:text="@string/login"
-        android:textSize="64sp"
+        app:layout_constraintEnd_toEndOf="parent"
         android:textStyle="bold"/>
 
+    <!-- Login Subtitle -->
     <TextView
         android:id="@+id/tv_login_text"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/login_page_text"
+        android:textStyle="italic"
+        android:textColor="@color/md_theme_secondary"
+        android:textSize="18sp"
+        android:fontFamily="sans-serif-light"
+        android:lineSpacingExtra="4dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-        android:text="@string/login_page_text"
-        android:textSize="24sp"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_login"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Email Label -->
     <TextView
         android:id="@+id/tv_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login_text"
-        app:layout_constraintStart_toStartOf="parent"
         android:text="@string/email"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
         android:textSize="16sp"
-        android:textStyle="bold"/>
-
-    <com.example.pedulipasal.customview.EmailEditText
-        android:id="@+id/ed_login_email"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_email_icon"
+        android:textColor="@color/md_theme_onSurface"
+        android:fontFamily="sans-serif-medium"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/email_hint"/>
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_login_text"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/iv_email_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
+    <!-- Email Input -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_login_email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:padding="4dp"
-        android:src="@drawable/baseline_email_24"
-        app:layout_constraintBottom_toBottomOf="@+id/ed_login_email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ed_login_email"
-        app:layout_constraintTop_toTopOf="@+id/ed_login_email" />
+        android:layout_marginTop="8dp"
+        app:boxStrokeColor="@color/md_theme_primary"
+        app:hintTextColor="@color/md_theme_onSurfaceVariant"
+        app:startIconDrawable="@drawable/baseline_email_24"
+        app:startIconTint="@color/md_theme_primary"
+        app:layout_constraintTop_toBottomOf="@id/tv_email"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_login_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email_hint"
+            android:inputType="textEmailAddress"
+            android:paddingStart="42dp"
+            android:paddingEnd="42dp"
+            android:textColor="@color/md_theme_onSurface"
+            android:textColorHint="@color/md_theme_onSurfaceVariant" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Password Label -->
     <TextView
         android:id="@+id/tv_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/ed_login_email"
-        app:layout_constraintStart_toStartOf="parent"
         android:text="@string/password"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
         android:textSize="16sp"
-        android:textStyle="bold"/>
-
-    <EditText
-        android:id="@+id/ed_login_password"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_password"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/iv_password_icon"
+        android:textColor="@color/md_theme_onSurface"
+        android:fontFamily="sans-serif-medium"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:hint="@string/password_hint"
-        android:inputType="textPassword"/>
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/til_login_email"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/iv_password_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
+    <!-- Password Input -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_login_password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:padding="4dp"
-        android:src="@drawable/baseline_lock_24"
-        app:layout_constraintBottom_toBottomOf="@+id/ed_login_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ed_login_password"
-        app:layout_constraintTop_toTopOf="@+id/ed_login_password" />
+        android:layout_marginTop="8dp"
+        app:boxStrokeColor="@color/md_theme_primary"
+        app:hintTextColor="@color/md_theme_onSurfaceVariant"
+        app:startIconDrawable="@drawable/baseline_lock_24"
+        app:startIconTint="@color/md_theme_primary"
+        app:layout_constraintTop_toBottomOf="@id/tv_password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_login_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password_hint"
+            android:inputType="textPassword"
+            android:paddingStart="42dp"
+            android:paddingEnd="42dp"
+            android:textColor="@color/md_theme_onSurface"
+            android:textColorHint="@color/md_theme_onSurfaceVariant" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Login Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_login"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/login"
-        app:layout_constraintTop_toBottomOf="@id/ed_login_password"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="16sp"
+        android:textColor="@color/md_theme_onPrimary"
+        android:backgroundTint="@color/md_theme_primary"
+        app:cornerRadius="8dp"
+        app:icon="@drawable/baseline_login_24"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="40dp"
-        android:textSize="16sp"/>
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/til_login_password"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Sign In with Google Button -->
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btn_sign_in_with_google"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        app:cornerRadius="8dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/btn_login"
-        app:layout_constraintEnd_toEndOf="@+id/btn_login"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/btn_login"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

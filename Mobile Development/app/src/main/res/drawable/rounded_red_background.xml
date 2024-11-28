@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-
-    <!-- View background color -->
     <corners android:radius="8dp" />
-
-    <!-- The radius makes the corners rounded -->
-    <solid android:color="@color/md_theme_surfaceVariant" />
+    <solid android:color="@color/md_theme_error" />
 </shape>

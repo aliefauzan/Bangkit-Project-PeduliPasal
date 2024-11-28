@@ -28,6 +28,7 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var messageAdapter: MessageAdapter
     private lateinit var messageSuggestionAdapter: MessageSuggestionAdapter
     private lateinit var listSuggestion: List<String>
+    private var lastClickTime = 0L
 
     private val messageViewModel by viewModels<MessageViewModel> {
         ViewModelFactory.getInstance(this)
@@ -35,6 +36,7 @@ class MessageActivity : AppCompatActivity() {
 
     companion object {
         const val CHAT_ID_KEY = "detail_chat_key"
+        const val TITLE_KEY = "detail_title_key"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +44,6 @@ class MessageActivity : AppCompatActivity() {
         binding = ActivityMessageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Adjust for system bars
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -52,11 +53,9 @@ class MessageActivity : AppCompatActivity() {
         setupView()
 
         val chatId = intent.getStringExtra(CHAT_ID_KEY)
-        if (intent.hasExtra(CHAT_ID_KEY)) {
-            //Log.d("MessageActivity", "Received chatId: $chatId")
-            if (!chatId.isNullOrEmpty()) {
-                showListMessages(chatId) // Display messages for the chatId
-            }
+        val title = intent.getStringExtra(TITLE_KEY)
+        if (!chatId.isNullOrEmpty() && !title.isNullOrEmpty()) {
+            showListMessages(chatId = chatId, title = title)
         }
     }
 
@@ -70,57 +69,52 @@ class MessageActivity : AppCompatActivity() {
             "Sebutkan suku yang terkenal di indonesia"
         )
 
-        // Initialize the adapter
         messageAdapter = MessageAdapter()
-        messageSuggestionAdapter = MessageSuggestionAdapter(
-            listSuggestion,
-            object : MessageSuggestionAdapter.OnItemSelected {
-                override fun onItemClicked(message: String) {
-                    fillTextInput(message)
-                }
+        messageSuggestionAdapter = MessageSuggestionAdapter(listSuggestion) { message ->
+            if (System.currentTimeMillis() - lastClickTime > 300) {
+                lastClickTime = System.currentTimeMillis()
+                fillTextInput(message)
             }
-        )
+        }
 
-        //Log.d("MessageActivity", "${result.data.chatId}")
-
-        // Set up the RecyclerView with LayoutManager and Adapter
         binding.rvMessageHistory.apply {
             layoutManager = LinearLayoutManager(this@MessageActivity)
             adapter = messageAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    toggleScrollToLastButton()
+                }
+            })
         }
 
         binding.rvMessageSuggestion.apply {
             layoutManager = LinearLayoutManager(this@MessageActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = messageSuggestionAdapter
         }
+
+        binding.btnJumpToNewest.setOnClickListener {
+            scrollToLastMessage()
+        }
     }
 
-    private fun showListMessages(chatId: String) {
-        messageViewModel.getChatMessageById(chatId).removeObservers(this)
+    private fun showListMessages(chatId: String, title: String) {
         messageViewModel.getChatMessageById(chatId).observe(this) { result ->
             when (result) {
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
+                is Result.Loading -> toggleProgressBarVisibility(true)
                 is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    supportActionBar?.title = result.data.title
-                    // Update the adapter's data
-                    result.data.messages?.let {
+                    toggleProgressBarVisibility(false)
+                    supportActionBar?.title = title
+                    result.data.let {
                         messageAdapter.setMessages(it)
                     }
-                    // Scroll to the last message
-                    if (messageAdapter.itemCount != 0) {
-                        binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
-                    }
-                    result.data.chatId?.let {
-                        setupAction(it)
-                    }
+                    scrollToLastMessage()
+                    setupAction(chatId)
                 }
                 is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
-                    //Log.d("MessageActivity", "${result.error}")
+                    toggleProgressBarVisibility(false)
+                    Toast.makeText(this, getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
+                    Log.d("MessageActivity", result.error)
                 }
             }
         }
@@ -140,29 +134,6 @@ class MessageActivity : AppCompatActivity() {
             } else {
                 false
             }
-        }
-
-        binding.rvMessageHistory.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-                val itemCount = recyclerView.adapter?.itemCount ?: 0
-
-                if (lastVisibleItemPosition < itemCount - 1) {
-                    binding.btnJumpToNewest.visibility = View.VISIBLE
-                } else {
-                    binding.btnJumpToNewest.visibility = View.GONE
-                }
-            }
-        })
-
-        binding.btnJumpToNewest.setOnClickListener {
-            binding.rvMessageHistory.layoutManager as LinearLayoutManager
-            binding.rvMessageHistory.smoothScrollToPosition(
-                binding.rvMessageHistory.adapter?.itemCount ?: (0 - 1)
-            )
         }
     }
 
@@ -187,40 +158,58 @@ class MessageActivity : AppCompatActivity() {
         // Add the new message to the adapter
         messageAdapter.addMessage(
             MessageItem(
+                messageId = "",
                 isHuman = addMessageRequest.isHuman,
                 content = addMessageRequest.content,
-                timestamp = showLocalTime(Date())
+                timestamp = showLocalTime(Date()),
+                chatId = chatId
             )
         )
 
         // Scroll to the last message
-        binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
+        scrollToLastMessage()
 
-        messageViewModel.addMessageToChat(chatId, addMessageRequest).removeObservers(this)
         messageViewModel.addMessageToChat(chatId, addMessageRequest).observe(this) { result ->
             when (result) {
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
+                is Result.Loading -> toggleProgressBarVisibility(true)
                 is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
+                    toggleProgressBarVisibility(false)
                     messageAdapter.addMessage(
                         MessageItem(
+                            messageId = "",
                             isHuman = false,
                             content = result.data.aiMessage?.content ?: "Error message",
-                            timestamp = showLocalTime(Date())
+                            timestamp = showLocalTime(Date()),
+                            chatId = chatId,
                         )
                     )
-                    binding.rvMessageHistory.post {
-                        binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
-                    }
+                    scrollToLastMessage()
                 }
                 is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(this, result.error, Toast.LENGTH_SHORT).show()
+                    toggleProgressBarVisibility(false)
+                    Toast.makeText(this, getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
+    }
+
+    private fun scrollToLastMessage() {
+        if (messageAdapter.itemCount > 0) {
+            binding.rvMessageHistory.post {
+                binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
+            }
+        }
+    }
+
+    private fun toggleScrollToLastButton() {
+        val layoutManager = binding.rvMessageHistory.layoutManager as LinearLayoutManager
+        val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+        val isAtBottom = lastVisibleItemPosition == messageAdapter.itemCount - 1
+        binding.btnJumpToNewest.visibility = if (isAtBottom) View.GONE else View.VISIBLE
+    }
+
+    private fun toggleProgressBarVisibility(isVisible: Boolean) {
+        binding.progressBar.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     private fun fillTextInput(prompt: String) {

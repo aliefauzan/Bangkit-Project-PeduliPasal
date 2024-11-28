@@ -24,32 +24,33 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="12dp">
 
             <TextView
                 android:id="@+id/tvNews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginStart="16dp"
                 android:text="@string/title_chat"
-                android:textSize="40sp"
-                android:textStyle="bold"/>
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="@color/md_theme_primary"
+                android:paddingBottom="8dp" />
 
+            <!-- RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvChats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:paddingTop="16dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="88dp"/>
+                android:layout_marginTop="12dp"
+                android:paddingBottom="88dp" />
         </LinearLayout>
     </ScrollView>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_new_chat"

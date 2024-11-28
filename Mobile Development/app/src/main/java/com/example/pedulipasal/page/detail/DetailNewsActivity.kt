@@ -2,7 +2,7 @@ package com.example.pedulipasal.page.detail
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
+import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -12,7 +12,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.pedulipasal.R
 import com.example.pedulipasal.databinding.ActivityDetailNewsBinding
-import com.example.pedulipasal.databinding.ActivityLoginBinding
 
 class DetailNewsActivity : AppCompatActivity() {
 
@@ -50,9 +49,8 @@ class DetailNewsActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupAction() {
         val webView = binding.wvNews
+        val progressBar = binding.progressBar
         val webUrl = intent.getStringExtra("WEB_URL")
-
-        //Log.d("DetailNews", webUrl?: "null")
 
         webView.settings.apply {
             javaScriptEnabled = true
@@ -61,8 +59,23 @@ class DetailNewsActivity : AppCompatActivity() {
             userAgentString = "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.105 Mobile Safari/537.36"
         }
         WebView.setWebContentsDebuggingEnabled(true)
+
+
+        // Track loading progress
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                progressBar.progress = newProgress
+                if (newProgress == 100) {
+                    progressBar.visibility = android.view.View.GONE // Hide when fully loaded
+                } else {
+                    progressBar.visibility = android.view.View.VISIBLE // Show while loading
+                }
+            }
+        }
+
         webView.webViewClient = WebViewClient()
-        if (webUrl != null) {
+
+        if (!webUrl.isNullOrEmpty()) {
             webView.loadUrl(webUrl)
         }
     }

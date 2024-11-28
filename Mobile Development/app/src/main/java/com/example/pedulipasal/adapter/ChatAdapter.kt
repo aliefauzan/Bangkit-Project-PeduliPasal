@@ -20,7 +20,7 @@ class ChatAdapter(
 ): RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
 
     interface OnItemSelected {
-        fun onItemClicked(chatId: String)
+        fun onItemClicked(chatId: String, title: String)
         fun onButtonDeleteClick(chatId: String)
     }
 
@@ -60,12 +60,14 @@ class ChatAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            chatList[position].chatId?.let { it1 ->
-                onItemSelectedCallback.onItemClicked(it1)
+            chatList[position].chatId.let { it1 ->
+                chatList[position].title?.let { it2 ->
+                    onItemSelectedCallback.onItemClicked(it1, it2)
+                }
             }
         }
         holder.binding.btnDeleteChat.setOnClickListener {
-            chatList[position].chatId?.let { it1 ->
+            chatList[position].chatId.let { it1 ->
                 onItemSelectedCallback.onButtonDeleteClick(it1)
             }
         }

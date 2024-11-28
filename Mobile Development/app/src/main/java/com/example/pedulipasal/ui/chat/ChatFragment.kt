@@ -1,10 +1,11 @@
 package com.example.pedulipasal.ui.chat
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -34,6 +35,7 @@ class ChatFragment : Fragment() {
 
     companion object {
         private const val CHAT_ID_KEY = "detail_chat_key"
+        private const val TITLE_KEY = "detail_title_key"
     }
 
     override fun onCreateView(
@@ -72,8 +74,8 @@ class ChatFragment : Fragment() {
                     }
                     is Result.Success -> {
                         chatAdapter = ChatAdapter(requireActivity(), result.data.sortedByDescending { it.createdAt }, object : ChatAdapter.OnItemSelected {
-                            override fun onItemClicked(chatId: String) {
-                                moveToMessageActivity(chatId = chatId)
+                            override fun onItemClicked(chatId: String, title: String) {
+                                moveToMessageActivity(chatId = chatId, title = title)
                             }
 
                             override fun onButtonDeleteClick(chatId: String) {
@@ -88,7 +90,8 @@ class ChatFragment : Fragment() {
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(requireActivity(), "Gagal mengambil data chat ${result.error}", Toast.LENGTH_SHORT).show()
+                        Log.d("chatFragment", "${result.error}")
+                        Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -96,9 +99,10 @@ class ChatFragment : Fragment() {
         }
     }
 
-    private fun moveToMessageActivity(chatId: String) {
+    private fun moveToMessageActivity(chatId: String, title: String) {
         val intent = Intent(requireActivity(), MessageActivity::class.java).apply {
             putExtra(CHAT_ID_KEY, chatId)
+            putExtra(TITLE_KEY, title)
         }
         startActivity(intent)
     }
@@ -177,14 +181,11 @@ class ChatFragment : Fragment() {
                     }
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        result.data.chatId?.let { moveToMessageActivity(it) }
-                        //Log.d("ChatActivity", "Berhasil membuat chat baru dengan id ${result.data.chatId}")
-//                        Toast.makeText(requireActivity(), "Berhasil membuat chat baru dengan id ${result.data.chatId}", Toast.LENGTH_SHORT).show()
+                        result.data.chatId.let { moveToMessageActivity(chatId = it, title = title) }
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
-                        //Log.d("ChatActivity", "Gagal membuat chat baru dengan id ${result.error}")
-                        Toast.makeText(requireActivity(), "Gagal membuat chat baru dengan id ${result.error}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
