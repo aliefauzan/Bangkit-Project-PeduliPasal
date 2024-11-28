@@ -186,8 +186,10 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun scrollToLastMessage() {
-        binding.rvMessageHistory.post {
-            binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
+        if (messageAdapter.itemCount > 0) {
+            binding.rvMessageHistory.post {
+                binding.rvMessageHistory.smoothScrollToPosition(messageAdapter.itemCount - 1)
+            }
         }
     }
 
