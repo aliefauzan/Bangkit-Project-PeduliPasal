@@ -1,0 +1,55 @@
+{
+  "level": "Intermediate",
+  "questions": [
+    {
+      "question": "Siapa yang mencetuskan Pancasila sebagai dasar negara Indonesia?",
+      "options": ["Sukarno", "Soeharto", "Mohammad Hatta", "Gus Dur"],
+      "correct_answer": "Sukarno"
+    },
+    {
+      "question": "Apa arti dari simbol Garuda Pancasila yang memegang perisai?",
+      "options": ["Perisai melambangkan pertahanan negara", "Perisai melambangkan keamanan", "Perisai melambangkan kesetiaan", "Perisai melambangkan kemerdekaan"],
+      "correct_answer": "Perisai melambangkan pertahanan negara"
+    },
+    {
+      "question": "Siapakah yang menjadi Presiden Indonesia pada tahun 2001 hingga 2006?",
+      "options": ["Bacharuddin Jusuf Habibie", "Megawati Soekarnoputri", "Soeharto", "Susilo Bambang Yudhoyono"],
+      "correct_answer": "Bacharuddin Jusuf Habibie"
+    },
+    {
+      "question": "Apa yang dimaksud dengan Bhineka Tunggal Ika?",
+      "options": ["Persatuan dalam keragaman", "Satu bangsa satu negara", "Keberagaman ras", "Negara kesatuan Indonesia"],
+      "correct_answer": "Persatuan dalam keragaman"
+    },
+    {
+      "question": "Siapa yang pertama kali menyarankan sistem demokrasi di Indonesia?",
+      "options": ["Mohammad Hatta", "Sukarno", "Soekarno-Hatta", "Soeharto"],
+      "correct_answer": "Sukarno"
+    },
+    {
+      "question": "Apa peran utama DPR dalam sistem pemerintahan Indonesia?",
+      "options": ["Membuat undang-undang", "Menentukan kebijakan luar negeri", "Menjaga kestabilan ekonomi", "Menjaga hubungan antar negara"],
+      "correct_answer": "Membuat undang-undang"
+    },
+    {
+      "question": "Apa arti dari 'Sumpah Pemuda' yang diikrarkan pada 28 Oktober 1928?",
+      "options": ["Persatuan Indonesia", "Kemerdekaan Indonesia", "Keberagaman dalam persatuan", "Mencapai kemerdekaan"],
+      "correct_answer": "Persatuan Indonesia"
+    },
+    {
+      "question": "Siapa yang dikenal sebagai pahlawan yang memperjuangkan kemerdekaan Indonesia melalui jalur diplomasi?",
+      "options": ["Mohammad Hatta", "Sukarno", "Sudirman", "Diponegoro"],
+      "correct_answer": "Mohammad Hatta"
+    },
+    {
+      "question": "Apa yang menjadi tujuan dari amandemen UUD 1945?",
+      "options": ["Menyesuaikan dengan perkembangan zaman", "Menambah jumlah anggota DPR", "Menambah kekuasaan presiden", "Mengurangi hak-hak warga negara"],
+      "correct_answer": "Menyesuaikan dengan perkembangan zaman"
+    },
+    {
+      "question": "Apa yang dimaksud dengan Otonomi Daerah?",
+      "options": ["Pemerintahan yang lebih terpusat", "Pemerintahan daerah memiliki hak mengatur dirinya sendiri", "Pemerintah daerah bertanggung jawab langsung kepada presiden", "Desentralisasi pemerintahan pusat"],
+      "correct_answer": "Pemerintahan daerah memiliki hak mengatur dirinya sendiri"
+    }
+  ]
+}

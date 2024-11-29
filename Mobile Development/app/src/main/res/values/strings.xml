@@ -59,4 +59,16 @@
     <string name="profile_image">profile image</string>
     <string name="example_suggestion">Kapan Undang Undang KUHP di sah kan?</string>
     <string name="offline_message">Anda sedang offline</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_quiz">Quiz</string>
+    <string name="select_level">Select level</string>
+    <string name="score">Nilai</string>
+    <string name="reset">Reset</string>
+    <string name="easy">Easy</string>
+    <string-array name="levels">
+        <item>Easy</item>
+        <item>Intermediate</item>
+        <item>Advance</item>
+    </string-array>
 </resources>

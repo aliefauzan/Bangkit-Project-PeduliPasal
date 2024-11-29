@@ -12,6 +12,11 @@
         android:title="@string/title_chat" />
 
     <item
+        android:id="@+id/navigation_quiz"
+        android:icon="@drawable/baseline_question_mark_24"
+        android:title="@string/title_quiz" />
+
+    <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/baseline_settings_24"
         android:title="@string/title_settings" />

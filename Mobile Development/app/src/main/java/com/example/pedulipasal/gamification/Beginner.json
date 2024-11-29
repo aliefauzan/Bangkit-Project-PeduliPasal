@@ -1,0 +1,55 @@
+{
+  "level": "Beginner",
+  "questions": [
+    {
+      "question": "Apa ibu kota Indonesia?",
+      "options": ["Jakarta", "Bali", "Surabaya", "Medan"],
+      "correct_answer": "Jakarta"
+    },
+    {
+      "question": "Siapa Presiden pertama Indonesia?",
+      "options": ["Joko Widodo", "Soekarno", "Soeharto", "Bacharuddin Jusuf Habibie"],
+      "correct_answer": "Soekarno"
+    },
+    {
+      "question": "Apa nama bendera Indonesia?",
+      "options": ["Merah Putih", "Garuda", "Bendera Pusaka", "Sang Saka Merah Putih"],
+      "correct_answer": "Merah Putih"
+    },
+    {
+      "question": "Kapan Indonesia merdeka?",
+      "options": ["17 Agustus 1945", "20 Mei 1908", "1 Juni 1945", "10 November 1945"],
+      "correct_answer": "17 Agustus 1945"
+    },
+    {
+      "question": "Apa simbol negara Indonesia?",
+      "options": ["Garuda Pancasila", "Elang Jawa", "Harimau Sumatera", "Keris"],
+      "correct_answer": "Garuda Pancasila"
+    },
+    {
+      "question": "Apa bahasa resmi Indonesia?",
+      "options": ["Bahasa Indonesia", "Jawa", "Sunda", "Aceh"],
+      "correct_answer": "Bahasa Indonesia"
+    },
+    {
+      "question": "Siapa pahlawan nasional yang dikenal dengan julukan 'Bapak Proklamator'?",
+      "options": ["Soekarno", "Mohammad Hatta", "Sukarno-Hatta", "Diponegoro"],
+      "correct_answer": "Soekarno"
+    },
+    {
+      "question": "Apa nama dokumen yang menyatakan kemerdekaan Indonesia?",
+      "options": ["Deklarasi Kemerdekaan", "Proklamasi Kemerdekaan", "Undang-Undang Dasar", "Pernyataan Merdeka"],
+      "correct_answer": "Proklamasi Kemerdekaan"
+    },
+    {
+      "question": "Apa yang dimaksud dengan Pancasila?",
+      "options": ["Dasar negara Indonesia", "Nama ibukota Indonesia", "Sistem ekonomi Indonesia", "Hari kemerdekaan Indonesia"],
+      "correct_answer": "Dasar negara Indonesia"
+    },
+    {
+      "question": "Apa lambang negara Indonesia?",
+      "options": ["Garuda Pancasila", "Bintang Jaya", "Sang Saka Merah Putih", "Singa"],
+      "correct_answer": "Garuda Pancasila"
+    }
+  ]
+}
