@@ -69,6 +69,6 @@
     <string-array name="levels">
         <item>Easy</item>
         <item>Intermediate</item>
-        <item>Advance</item>
+        <item>Advanced</item>
     </string-array>
 </resources>
