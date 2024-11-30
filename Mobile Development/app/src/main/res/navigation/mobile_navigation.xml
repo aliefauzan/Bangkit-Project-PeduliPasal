@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_chat" />
 
     <fragment
+        android:id="@+id/navigation_quiz"
+        android:name="com.example.pedulipasal.ui.quiz.QuizFragment"
+        android:label="@string/title_quiz"
+        tools:layout="@layout/fragment_quiz" />
+
+    <fragment
         android:id="@+id/navigation_settings"
         android:name="com.example.pedulipasal.ui.settings.SettingsFragment"
         android:label="@string/title_settings"

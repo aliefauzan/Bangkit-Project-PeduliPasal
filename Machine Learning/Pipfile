@@ -9,6 +9,9 @@ pandas = "*"
 numpy = "*"
 transformers = "*"
 scikit-learn = "*"
+matplotlib = "*"
+flask = "*"
+tf-keras = "*"
 
 [dev-packages]
 ipykernel = "*"

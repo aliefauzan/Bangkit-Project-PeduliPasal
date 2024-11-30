@@ -1,0 +1,55 @@
+{
+  "level": "Advanced",
+  "questions": [
+    {
+      "question": "Pada tahun berapakah Indonesia mengamandemen UUD 1945 untuk pertama kalinya?",
+      "options": ["1999", "2001", "1998", "2000"],
+      "correct_answer": "1999"
+    },
+    {
+      "question": "Siapa yang dikenal sebagai 'Bapak Hukum Indonesia'?",
+      "options": ["Soediman", "Soepomo", "Muhammad Yamin", "Joko Widodo"],
+      "correct_answer": "Soepomo"
+    },
+    {
+      "question": "Apa yang dimaksud dengan sistem pemerintahan presidensial di Indonesia?",
+      "options": ["Presiden adalah kepala negara dan kepala pemerintahan", "Presiden tidak dapat diberhentikan", "Pemerintahan dibagi antara presiden dan DPR", "Pemerintahan sentral"],
+      "correct_answer": "Presiden adalah kepala negara dan kepala pemerintahan"
+    },
+    {
+      "question": "Apa yang dimaksud dengan 'Negara Kesatuan' dalam konteks Indonesia?",
+      "options": ["Negara yang memiliki satu pemerintahan pusat", "Negara yang terdiri dari beberapa negara bagian", "Negara yang diatur dengan sistem federal", "Negara yang dibagi menjadi beberapa provinsi"],
+      "correct_answer": "Negara yang memiliki satu pemerintahan pusat"
+    },
+    {
+      "question": "Apa yang dimaksud dengan Reformasi dalam konteks sejarah Indonesia?",
+      "options": ["Perubahan dalam sistem pemerintahan dan politik", "Perubahan dalam ekonomi", "Perubahan dalam kebijakan luar negeri", "Perubahan dalam hukum negara"],
+      "correct_answer": "Perubahan dalam sistem pemerintahan dan politik"
+    },
+    {
+      "question": "Siapa yang pertama kali memperkenalkan konsep Demokrasi Pancasila?",
+      "options": ["Sukarno", "Soeharto", "Mohammad Hatta", "Agus Salim"],
+      "correct_answer": "Sukarno"
+    },
+    {
+      "question": "Apa tujuan dari Deklarasi Djuanda pada tahun 1957?",
+      "options": ["Menyatukan wilayah laut Indonesia", "Menyatakan kemerdekaan Indonesia", "Memperkenalkan Pancasila", "Menetapkan UUD 1945"],
+      "correct_answer": "Menyatukan wilayah laut Indonesia"
+    },
+    {
+      "question": "Bagaimana cara amendemen UUD 1945 dapat dilakukan?",
+      "options": ["Dengan keputusan Presiden", "Dengan persetujuan MPR", "Dengan persetujuan DPR dan DPD", "Melalui referendum"],
+      "correct_answer": "Dengan persetujuan MPR"
+    },
+    {
+      "question": "Apa tujuan dari adanya sistem Demokrasi di Indonesia?",
+      "options": ["Menjaga kebebasan individu", "Menjamin pemerintahan yang adil dan transparan", "Menghasilkan kebijakan yang bersifat otoriter", "Menghindari campur tangan militer dalam pemerintahan"],
+      "correct_answer": "Menjamin pemerintahan yang adil dan transparan"
+    },
+    {
+      "question": "Apa yang dimaksud dengan 'Desentralisasi' dalam pemerintahan Indonesia?",
+      "options": ["Pemindahan kekuasaan dari pemerintah pusat ke daerah", "Pengalihan kewenangan ke lembaga internasional", "Penguatan kekuasaan presiden", "Pembagian wilayah administrasi"],
+      "correct_answer": "Pemindahan kekuasaan dari pemerintah pusat ke daerah"
+    }
+  ]
+}

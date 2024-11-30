@@ -1,0 +1,10 @@
+<TextView android:id="@+id/textView"
+    style="@style/Theme.AppCompat.DayNight"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="TextView"
+    android:padding="8dp"
+    android:textColor="@color/md_theme_scrim"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    xmlns:android="http://schemas.android.com/apk/res/android"/>
