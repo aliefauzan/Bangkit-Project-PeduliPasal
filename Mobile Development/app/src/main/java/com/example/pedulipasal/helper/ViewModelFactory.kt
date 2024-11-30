@@ -12,6 +12,7 @@ import com.example.pedulipasal.page.login.LoginViewModel
 import com.example.pedulipasal.page.profile.ProfileViewModel
 import com.example.pedulipasal.page.signup.SignUpViewModel
 import com.example.pedulipasal.ui.news.NewsViewModel
+import com.example.pedulipasal.ui.quiz.QuizViewModel
 import com.example.pedulipasal.ui.settings.SettingsPreferences
 import com.example.pedulipasal.ui.settings.SettingsViewModel
 
@@ -47,6 +48,9 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(SignUpViewModel::class.java) -> {
                 SignUpViewModel(cloudRepository) as T
+            }
+            modelClass.isAssignableFrom(QuizViewModel::class.java) -> {
+                QuizViewModel(cloudRepository) as T
             }
 
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
