@@ -66,6 +66,7 @@
     <string name="score">Nilai</string>
     <string name="reset">Reset</string>
     <string name="easy">Easy</string>
+    <string name="ask_gemini">Ask Gemini</string>
     <string-array name="levels">
         <item>Easy</item>
         <item>Intermediate</item>
