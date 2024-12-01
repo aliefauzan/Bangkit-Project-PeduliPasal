@@ -1,10 +1,15 @@
 package com.example.pedulipasal.adapter.gamification
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
+import android.widget.TextView
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +20,7 @@ import com.google.ai.client.generativeai.type.GenerateContentResponse
 
 class QuestionAdapter(
     private val context: Context,
+    private val viewLifecycleOwner: LifecycleOwner,
     private val onItemSelectedCallback: OnItemSelected
 ) : RecyclerView.Adapter<QuestionAdapter.ViewHolder>() {
 
@@ -73,11 +79,11 @@ class QuestionAdapter(
             btnAskGemini.setOnClickListener {
                 btnAskGemini.visibility = View.GONE
                 val response = onItemSelectedCallback.onAskGeminiClicked(prompt)
-                response.observe(context as LifecycleOwner) { result ->
+                response.observe(viewLifecycleOwner) { result ->
                     if (result is Result.Success) {
                         progressBar.visibility = View.GONE
-                        tvGeminiAnswer.text = result.data.text
                         tvGeminiAnswer.visibility = View.VISIBLE
+                        typeTextAnimation(tvGeminiAnswer, result.data.text ?: "No Answer", viewLifecycleOwner)
                     }
                     if (result is Result.Loading) {
                         progressBar.visibility = View.VISIBLE
@@ -106,4 +112,32 @@ class QuestionAdapter(
     override fun getItemCount(): Int {
         return questionList.size
     }
+
+    private fun typeTextAnimation(
+        textView: TextView,
+        text: String,
+        lifecycleOwner: LifecycleOwner,
+        delay: Long = 75L
+    ) {
+        textView.text = ""
+        var index = 0
+        val handler = Handler(Looper.getMainLooper())
+        val runnable = object : Runnable {
+            override fun run() {
+                if (index < text.length && lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    textView.append(text[index].toString())
+                    index++
+                    handler.postDelayed(this, delay)
+                }
+            }
+        }
+        handler.post(runnable)
+
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                handler.removeCallbacks(runnable)
+            }
+        })
+    }
+
 }

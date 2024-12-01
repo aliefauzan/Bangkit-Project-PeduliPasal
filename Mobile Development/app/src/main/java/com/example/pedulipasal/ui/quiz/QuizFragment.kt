@@ -75,7 +75,7 @@ class QuizFragment : Fragment() {
             val questions = loadQuestionsFromJson(jsonFileName)
             if (questions != null) {
                 Log.d("QuizFragment", "Questions: ${questions.size}")
-                questionAdapter = QuestionAdapter(requireActivity(), object : QuestionAdapter.OnItemSelected {
+                questionAdapter = QuestionAdapter(requireActivity(), viewLifecycleOwner, object : QuestionAdapter.OnItemSelected {
                     override fun onOptionClicked(chosenOption: String, correctAnswer: String, currPostion: Int) {
                         if (chosenOption == correctAnswer) {
                             currScore += 10
@@ -113,7 +113,9 @@ class QuizFragment : Fragment() {
             scrollToTop()
             binding.tvScoreValue.text = "0"
             currScore = 0
-            questionAdapter.clearAllItems()
+            if (binding.rvQuizQuestion.adapter != null) {
+                questionAdapter.clearAllItems()
+            }
         }
     }
 
