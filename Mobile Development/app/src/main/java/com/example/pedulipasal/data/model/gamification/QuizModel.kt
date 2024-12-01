@@ -20,5 +20,11 @@ data class QuestionsItem(
 	val options: List<String?>? = null,
 
 	@field:SerializedName("correct_answer")
-	val correctAnswer: String? = null
+	val correctAnswer: String? = null,
+
+	var alreadyAnswer: Boolean = false,
+	var answerCorrect: Boolean = false,
+	var isAskingGemini: Boolean = false,
+	var isLoadingGeminiResponse: Boolean = false,
+	var selectedOption: String = "",
 )
