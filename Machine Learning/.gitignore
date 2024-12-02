@@ -24,7 +24,7 @@ MANIFEST
 .ipynb_checkpoints
 
 # Data
-data/
+# data/
 
 # Local configuration
 local.settings.json
