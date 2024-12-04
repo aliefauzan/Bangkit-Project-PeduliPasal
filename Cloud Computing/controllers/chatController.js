@@ -66,17 +66,21 @@ const addMessageToChat = async (req, res) => {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const prompt = `Anda adalah asisten hukum yang dirancang untuk membantu pengacara dan mahasiswa hukum memahami dan menavigasi pasal hukum serta peraturan yang relevan. Ketika diberikan deskripsi kasus atau masalah hukum, tugas Anda adalah:
-                    1. Mengidentifikasi undang-undang, pasal, dan peraturan yang berlaku.
-                    2. Memberikan penjelasan singkat tentang implikasi hukum, termasuk hukuman atau konsekuensi.
-                    3. Gunakan bahasa yang jelas dan ringkas agar mudah dipahami oleh profesional hukum maupun mahasiswa.
+                    1. Mengidentifikasi undang-undang, pasal, dan peraturan yang berlaku
+                    2. Memberikan penjelasan singkat tentang implikasi hukum, termasuk hukuman atau konsekuensi
+                    3. Gunakan bahasa yang jelas dan ringkas agar mudah dipahami oleh profesional hukum maupun mahasiswa
                     Contoh: Jika pengguna memberikan input, "pelanggaran UU ITE terkait pornografi," jawaban Anda harus mengidentifikasi pasal yang spesifik, seperti:
-                    "Melanggar Pasal 45 Ayat 1. Pasal 27 Ayat 1 UU RI No. 1 Tahun 2024, dengan ancaman hukuman berupa penjara hingga 12 tahun atau denda sebesar Rp 6 miliar."
-                    Jawablah hanya dalam bahasa Indonesia, tanpa menggunakan bahasa lain. Jika input pengguna ambigu, tanyakan pertanyaan klarifikasi untuk memberikan informasi hukum yang paling akurat.
-                    Input pengguna: "${content}"`;
+                    Melanggar Pasal 45 Ayat 1. Pasal 27 Ayat 1 UU RI No. 1 Tahun 2024, dengan ancaman hukuman berupa penjara hingga 12 tahun atau denda sebesar Rp 6 miliar
+                    Berikan jawaban hanya dalam bentuk teks biasa tanpa simbol, format markdown, atau karakter spesial. Jika input pengguna ambigu, tanyakan pertanyaan klarifikasi untuk memberikan informasi hukum yang paling akurat
+                    Input pengguna: ${content}`;
+    
 
     const result = await model.generateContent(prompt);
-    const aiContent = result.response.text(); // Dapatkan balasan dari model
-
+    let aiContent = result.response.text();
+    
+    // Hapus simbol atau format dari teks
+    aiContent = aiContent.replace(/[\n\r\t*_*]/g, "").trim();
+                    
     // Simpan balasan AI ke subkoleksi "messages"
     const aiMessage = {
       aiMessageId,
