@@ -60,13 +60,21 @@ const addMessageToChat = async (req, res) => {
     await chatRef.update({
       updatedAt: new Date().toISOString(),
     });
-    
+
     // Integrasi dengan Google Generative AI
     const genAI = new GoogleGenerativeAI(process.env.API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // Panggil model untuk menghasilkan balasan berdasarkan pesan pengguna
-    const result = await model.generateContent(content);
+    const prompt = `You are a legal assistant designed to help lawyers and law students understand and navigate relevant legal statutes and provisions. When given a case description or legal issue, your task is to:
+                    1. Identify the applicable laws, articles, and statutes.
+                    2. Provide a brief explanation of the legal implications, including penalties or consequences.
+                    3. Use clear and concise language to ensure accessibility for both legal professionals and students.
+                    For example, if the user provides the input, "pelanggaran UU ITE terkait pornografi," your response should identify specific articles, such as:
+                    "Melanggar Pasal 45 Ayat 1. Pasal 27 Ayat 1 UU RI No. 1 Tahun 2024, dengan ancaman hukuman berupa penjara hingga 12 tahun atau denda sebesar Rp 6 miliar."
+                    Ensure accuracy, professionalism, and clarity in your response. If a specific input is ambiguous, ask clarifying questions to provide the most accurate legal advice or information.
+                    User input: "${content}"`;
+
+    const result = await model.generateContent(prompt);
     const aiContent = result.response.text(); // Dapatkan balasan dari model
 
     // Simpan balasan AI ke subkoleksi "messages"
