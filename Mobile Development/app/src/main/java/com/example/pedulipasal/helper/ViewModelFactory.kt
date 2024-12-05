@@ -7,9 +7,8 @@ import com.example.pedulipasal.MainViewModel
 import com.example.pedulipasal.data.CloudRepository
 import com.example.pedulipasal.data.NewsRepository
 import com.example.pedulipasal.di.Injection
-import com.example.pedulipasal.page.message.MessageViewModel
 import com.example.pedulipasal.page.login.LoginViewModel
-import com.example.pedulipasal.page.profile.ProfileViewModel
+import com.example.pedulipasal.page.message.MessageViewModel
 import com.example.pedulipasal.page.signup.SignUpViewModel
 import com.example.pedulipasal.ui.news.NewsViewModel
 import com.example.pedulipasal.ui.quiz.QuizViewModel
@@ -29,7 +28,7 @@ class ViewModelFactory(
                 NewsViewModel(newsRepository) as T
             }
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> {
-                SettingsViewModel(settingsPreferences) as T
+                SettingsViewModel(settingsPreferences, cloudRepository) as T
             }
             modelClass.isAssignableFrom(MessageViewModel::class.java) -> {
                 MessageViewModel(cloudRepository) as T
@@ -42,9 +41,6 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(com.example.pedulipasal.ui.chat.ChatViewModel::class.java) -> {
                 com.example.pedulipasal.ui.chat.ChatViewModel(cloudRepository) as T
-            }
-            modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
-                ProfileViewModel(cloudRepository) as T
             }
             modelClass.isAssignableFrom(SignUpViewModel::class.java) -> {
                 SignUpViewModel(cloudRepository) as T

@@ -1,5 +1,6 @@
 package com.example.pedulipasal.ui.settings
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,8 +15,11 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.example.pedulipasal.R
 import com.example.pedulipasal.databinding.FragmentSettingsBinding
+import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
+import com.example.pedulipasal.page.welcome.WelcomeActivity
 import java.util.concurrent.TimeUnit
 
 class SettingsFragment : Fragment() {
@@ -44,45 +48,8 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        workManager = WorkManager.getInstance(requireActivity())
-
-        val switchTheme = binding.switchTheme
-        val switchNotifications = binding.switchNotifications
-
-
-
-        settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean ->
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                if (isDarkModeActive) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    switchTheme.isChecked = true
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    switchTheme.isChecked = false
-                }
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                switchTheme.isEnabled = false
-            }
-        }
-
-        switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            settingsViewModel.saveThemeSetting(isChecked)
-        }
-
-        settingsViewModel.getNotificationSettings().observe(viewLifecycleOwner) { isNotificationsEnabled: Boolean ->
-            if (isNotificationsEnabled) {
-                startPeriodicTask()
-                switchNotifications.isChecked = true
-            } else {
-                cancelPeriodicTask()
-                switchNotifications.isChecked = false
-            }
-        }
-        switchNotifications.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            settingsViewModel.saveNotificationSetting(isChecked)
-        }
+        setupView()
+        setupAction()
     }
 
     private fun startPeriodicTask() {
@@ -108,5 +75,81 @@ class SettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupView () {
+        settingsViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            //Log.d("ProfileActivity", "${user.token}")
+            showProfile(user.userId)
+        }
+
+        settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean ->
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                if (isDarkModeActive) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    binding.switchTheme.isChecked = true
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    binding.switchTheme.isChecked = false
+                }
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                binding.switchTheme.isEnabled = false
+            }
+        }
+
+        settingsViewModel.getNotificationSettings().observe(viewLifecycleOwner) { isNotificationsEnabled: Boolean ->
+            if (isNotificationsEnabled) {
+                startPeriodicTask()
+                binding.switchNotifications.isChecked = true
+            } else {
+                cancelPeriodicTask()
+                binding.switchNotifications.isChecked = false
+            }
+        }
+    }
+
+    private fun setupAction() {
+        workManager = WorkManager.getInstance(requireActivity())
+
+        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            settingsViewModel.saveThemeSetting(isChecked)
+        }
+
+        binding.switchNotifications.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            settingsViewModel.saveNotificationSetting(isChecked)
+        }
+
+        binding.btnLogout.setOnClickListener { logout() }
+    }
+
+    private fun showProfile(userId: String) {
+        settingsViewModel.getUserProfileData(userId).observe(viewLifecycleOwner) {result ->
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        //Log.d("ProfileActivity", "${result.data.name} ${result.data.email}")
+                        binding.tvEmail.text = result.data.email
+                        binding.tvName.text = result.data.name
+                        binding.progressBar.visibility = View.GONE
+                    }
+                    is Result.Error -> {
+                        //Log.d("ProfileActivity", "${result.error} ${result.error}")
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    private fun logout () {
+        settingsViewModel.logout()
+        val intent = Intent(requireActivity(), WelcomeActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        requireActivity().finish()
     }
 }

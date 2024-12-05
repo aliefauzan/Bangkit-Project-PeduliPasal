@@ -35,6 +35,7 @@ class DetailNewsActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.show()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)

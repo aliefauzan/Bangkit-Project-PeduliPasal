@@ -24,9 +24,6 @@
             android:name=".page.detail.DetailNewsActivity"
             android:exported="false" />
         <activity
-            android:name=".page.profile.ProfileActivity"
-            android:exported="false" />
-        <activity
             android:name=".page.signup.SignUpActivity"
             android:exported="false" />
         <activity
@@ -44,7 +41,8 @@
             android:exported="false" />
         <activity
             android:name=".page.welcome.WelcomeActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.pedulipasal.data.CloudRepository
+import com.example.pedulipasal.data.user.UserModel
 import kotlinx.coroutines.launch
 
-class SettingsViewModel(private val pref: SettingsPreferences) : ViewModel() {
+class SettingsViewModel(private val pref: SettingsPreferences, private val cloudRepository: CloudRepository) : ViewModel() {
     fun getThemeSettings(): LiveData<Boolean> {
         return pref.getThemeSetting().asLiveData()
     }
@@ -27,4 +29,13 @@ class SettingsViewModel(private val pref: SettingsPreferences) : ViewModel() {
             pref.saveNotificationSetting(isNotificationsEnabled)
         }
     }
+
+    fun logout() {
+        viewModelScope.launch {
+            cloudRepository.logout()
+        }
+    }
+
+    fun getSession(): LiveData<UserModel> = cloudRepository.getSession().asLiveData()
+    fun getUserProfileData(userId: String) = cloudRepository.getUserProfileData(userId)
 }

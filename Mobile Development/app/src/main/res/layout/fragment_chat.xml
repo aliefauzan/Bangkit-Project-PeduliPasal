@@ -36,10 +36,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_chat"
-                android:textSize="32sp"
+                android:textSize="64sp"
                 android:textStyle="bold"
                 android:textColor="@color/md_theme_primary"
-                android:paddingBottom="8dp" />
+                android:padding="5dp" />
 
             <!-- RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView

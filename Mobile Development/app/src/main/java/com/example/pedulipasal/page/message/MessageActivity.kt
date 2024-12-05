@@ -60,6 +60,7 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.show()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

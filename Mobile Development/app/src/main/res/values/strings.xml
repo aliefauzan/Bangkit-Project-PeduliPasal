@@ -67,9 +67,20 @@
     <string name="reset">Reset</string>
     <string name="easy">Easy</string>
     <string name="ask_gemini">Ask Gemini</string>
+    <string name="recent_chats">Recent chats</string>
+    <string name="edit">Edit</string>
+    <string name="recent_news">Recent news</string>
+    <string name="registered_email">Registered email</string>
+    <string name="registered_name">Registered name</string>
+    <string name="try_again">Coba lagi</string>
+    <string name="empty_chat">Belum pernah chat yah? buat chat baru</string>
     <string-array name="levels">
         <item>Easy</item>
         <item>Intermediate</item>
         <item>Advanced</item>
     </string-array>
+    <string name="morning">Selamat pagi,</string>
+    <string name="afternoon">Selamat siang,</string>
+    <string name="night">Selamat malam,</string>
+
 </resources>

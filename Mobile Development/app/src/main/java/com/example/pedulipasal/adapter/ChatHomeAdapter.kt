@@ -8,26 +8,26 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
 import com.example.pedulipasal.data.model.response.ChatItem
-import com.example.pedulipasal.databinding.ItemChatLayoutBinding
+import com.example.pedulipasal.databinding.ItemChatHomeBinding
 import com.example.pedulipasal.helper.getDateFormat
 import com.example.pedulipasal.helper.getTimeFormat
 import java.util.Date
 
-class ChatAdapter(
+class ChatHomeAdapter(
     private val context: Context,
     private var chatList: List<ChatItem>,
     private val onItemSelectedCallback: OnItemSelected
-): RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
+): RecyclerView.Adapter<ChatHomeAdapter.ViewHolder>() {
 
     interface OnItemSelected {
-        fun onItemClicked(chatId: String, title: String)
+        fun onChatButtonClick(chatId: String, title: String)
         fun onButtonDeleteClick(chatId: String)
     }
 
-    class ViewHolder(val binding: ItemChatLayoutBinding): RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ItemChatHomeBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemChatLayoutBinding.inflate(
+        val binding = ItemChatHomeBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -40,6 +40,9 @@ class ChatAdapter(
         holder.binding.apply {
             tvTitle.text = chatList[position].title
             val currentDate = getDateFormat( Date())
+            Log.d("ChatAdapter", "Current Date item $position $currentDate")
+            Log.d("ChatAdapter", "Created Date $position ${chatList[position].createdAt}")
+            Log.d("ChatAdapter", "Updated Date $position ${chatList[position].updatedAt}")
 
             val createdAt = getDateFormat(chatList[position].createdAt)
             val updatedAt = getDateFormat(chatList[position].updatedAt)
@@ -56,10 +59,10 @@ class ChatAdapter(
             }
         }
 
-        holder.itemView.setOnClickListener {
+        holder.binding.btnChat.setOnClickListener {
             chatList[position].chatId.let { it1 ->
                 chatList[position].title?.let { it2 ->
-                    onItemSelectedCallback.onItemClicked(it1, it2)
+                    onItemSelectedCallback.onChatButtonClick(it1, it2)
                 }
             }
         }
