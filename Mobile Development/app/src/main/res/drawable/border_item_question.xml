@@ -6,7 +6,7 @@
     <!-- Define the border color and width -->
     <stroke
         android:width="2dp"
-        android:color="#000000"/> <!-- Change to your desired color and width -->
+        android:color="@color/md_theme_onSurface_highContrast"/> <!-- Change to your desired color and width -->
 
     <!-- Optional: Round the corners -->
     <corners android:radius="8dp"/>
