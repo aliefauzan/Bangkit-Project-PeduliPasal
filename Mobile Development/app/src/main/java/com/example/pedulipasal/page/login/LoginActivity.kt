@@ -69,12 +69,9 @@ class LoginActivity : AppCompatActivity() {
 
 
     private fun setupView() {
-        supportActionBar?.apply {
-            show()
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
-            title = getString(R.string.login)
-        }
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.show()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onSupportNavigateUp(): Boolean {

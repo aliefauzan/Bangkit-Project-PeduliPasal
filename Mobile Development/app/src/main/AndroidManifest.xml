@@ -41,8 +41,7 @@
             android:exported="false" />
         <activity
             android:name=".page.welcome.WelcomeActivity"
-            android:exported="false"
-            android:launchMode="singleTask"/>
+            android:exported="false"/>
     </application>
 
 </manifest>

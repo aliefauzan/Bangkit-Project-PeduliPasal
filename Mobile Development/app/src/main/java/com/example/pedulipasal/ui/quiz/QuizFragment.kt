@@ -140,6 +140,10 @@ class QuizFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onResume() {
         super.onResume()
         setupDropDownMenu()
