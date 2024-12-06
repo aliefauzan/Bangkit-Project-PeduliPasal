@@ -42,3 +42,7 @@ fun getDateFormat(date: Date?): String {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return dateFormat.format(date ?: dateFormat.parse("01/01/1970"))
 }
+
+fun removeAsterisk(input: String): String {
+    return input.replace("*", "")
+}
