@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape android:shape="rectangle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="100dp" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/md_theme_surface_highContrast" /> <!-- Change stroke color -->
+    <solid android:color="@color/md_theme_primary" /> <!-- Add a background color -->
+</shape>

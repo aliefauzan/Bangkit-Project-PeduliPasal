@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pedulipasal.R
 import com.example.pedulipasal.adapter.ChatHomeAdapter
 import com.example.pedulipasal.adapter.NewsAdapter
+import com.example.pedulipasal.adapter.NewsCategoryAdapter
 import com.example.pedulipasal.data.model.request.CreateChatRequest
 import com.example.pedulipasal.data.model.response.NewsItem
 import com.example.pedulipasal.databinding.FragmentNewsBinding
@@ -52,6 +53,7 @@ class NewsFragment : Fragment() {
 
     private lateinit var newsAdapter: NewsAdapter
     private lateinit var chatHomeAdapter: ChatHomeAdapter
+    private lateinit var newsCategoryAdapter: NewsCategoryAdapter
 
 
     override fun onCreateView(
@@ -88,6 +90,20 @@ class NewsFragment : Fragment() {
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
+        }
+
+        val listCategory = listOf("general", "entertainment", "business", "health", "science", "sports", "technology")
+        newsCategoryAdapter = NewsCategoryAdapter(
+            listCategory,
+            onCategorySelected = { selectedItem ->
+               showNews(selectedItem)
+            },
+            defaultCategory = listCategory[0] // Set the default selected category
+        )
+
+        binding.rvNewsCategory.apply {
+            layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = newsCategoryAdapter
         }
     }
 
@@ -130,13 +146,13 @@ class NewsFragment : Fragment() {
         binding.btnAddNewChat.setOnClickListener { showDialog() }
     }
 
-    private fun showNews() {
+    private fun showNews(category: String? = null) {
         newsAdapter = NewsAdapter()
-        newsViewModel.getNews().observe(viewLifecycleOwner) { result ->
+        newsViewModel.getNews(category).observe(viewLifecycleOwner) { result ->
             if (result != null) {
                 when(result) {
                     is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
+                        binding.newsProgressBar.visibility = View.VISIBLE
                     }
                     is Result.Success -> {
                         binding.noInternetLayout.visibility = View.GONE
@@ -146,10 +162,10 @@ class NewsFragment : Fragment() {
                         }
                         //Log.d("NewsFragment", listNews.size.toString())
                         newsAdapter.submitList(listNews)
-                        binding.progressBar.visibility = View.GONE
+                        binding.newsProgressBar.visibility = View.GONE
                     }
                     is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
+                        binding.newsProgressBar.visibility = View.GONE
                         binding.noInternetLayout.visibility = View.VISIBLE
                     }
                 }

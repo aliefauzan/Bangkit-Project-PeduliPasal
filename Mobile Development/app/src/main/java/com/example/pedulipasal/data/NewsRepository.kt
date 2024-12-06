@@ -10,11 +10,11 @@ import retrofit2.HttpException
 class NewsRepository(
     private val newsApiService: NewsApiService
 ) {
-    fun getNews(): LiveData<Result<List<NewsItem>>> = liveData {
+    fun getNews(category: String? = null): LiveData<Result<List<NewsItem>>> = liveData {
         emit(Result.Loading)
         try {
             val listNews = ArrayList<NewsItem>()
-            val client = newsApiService.getNews().articles
+            val client = if (category != null) newsApiService.getNews(category = category).articles else newsApiService.getNews().articles
             client?.forEach {
                 if (it != null) {
                     listNews.add(it)

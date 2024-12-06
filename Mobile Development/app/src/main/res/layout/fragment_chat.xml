@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_chat"
-                android:textSize="64sp"
+                android:textSize="56sp"
                 android:textStyle="bold"
                 android:textColor="@color/md_theme_primary"
                 android:padding="5dp" />
