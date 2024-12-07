@@ -70,6 +70,7 @@ class LoginActivity : AppCompatActivity() {
     private fun setupView() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.show()
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
