@@ -11,7 +11,7 @@ import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.helper.getTimeFormat
 class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
 
-    private val messageItems = mutableListOf<MessageItem>()
+    val messageItems = mutableListOf<MessageItem>()
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userMessageText: TextView = view.findViewById(R.id.tv_userMessageText)

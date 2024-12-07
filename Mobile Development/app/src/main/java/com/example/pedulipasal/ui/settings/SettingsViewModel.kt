@@ -33,6 +33,7 @@ class SettingsViewModel(private val pref: SettingsPreferences, private val cloud
     fun logout() {
         viewModelScope.launch {
             cloudRepository.logout()
+            pref.clearSettingsPreferences()
         }
     }
 

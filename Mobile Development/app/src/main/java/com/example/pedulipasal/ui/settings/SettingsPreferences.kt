@@ -40,6 +40,12 @@ class SettingsPreferences private constructor(private val dataStore: DataStore<P
         }
     }
 
+    suspend fun clearSettingsPreferences() {
+        dataStore.edit { preferences ->
+            preferences.clear()
+        }
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: SettingsPreferences? = null
