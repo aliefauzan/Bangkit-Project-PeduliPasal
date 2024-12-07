@@ -233,10 +233,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun playAnimation() {
-        // Optionally, add a slight delay to start the animations after the container transform finishes
         val startDelay = 200L
 
-        // Initially set alpha to 0
         binding.tvLogin.alpha = 0f
         binding.tvLoginText.alpha = 0f
         binding.tvEmail.alpha = 0f
@@ -246,7 +244,6 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.alpha = 0f
         binding.btnSignInWithGoogle.alpha = 0f
 
-        // Create animators
         val title = ObjectAnimator.ofFloat(binding.tvLogin, View.ALPHA, 1f).setDuration(200)
         val message = ObjectAnimator.ofFloat(binding.tvLoginText, View.ALPHA, 1f).setDuration(200)
         val emailTextView = ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
