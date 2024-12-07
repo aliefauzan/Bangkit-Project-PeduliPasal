@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Peduli Pasal</string>
-    <string name="welcome">Welcome</string>
+    <string name="welcome">Welcome to Peduli Pasal</string>
     <string name="login">Login</string>
     <string name="login_with_google">Login with Google</string>
     <string name="sign_up">Sign up</string>
