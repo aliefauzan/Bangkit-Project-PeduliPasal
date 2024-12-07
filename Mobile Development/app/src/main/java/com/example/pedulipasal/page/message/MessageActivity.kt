@@ -26,6 +26,7 @@ import com.example.pedulipasal.databinding.ActivityMessageBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
 import com.example.pedulipasal.helper.getDateFormat
+import com.example.pedulipasal.helper.getDayOfWeek
 import com.example.pedulipasal.helper.getTimeFormat
 import com.example.pedulipasal.helper.showLocalTime
 import java.io.File
@@ -109,23 +110,27 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
-    private fun showListMessages(chatId: String, title: String) {
+    private fun showListMessages(chatId: String, title: String, isShared: Boolean = false) {
         messageViewModel.getChatMessageById(chatId).observe(this) { result ->
             when (result) {
                 is Result.Loading -> toggleProgressBarVisibility(true)
                 is Result.Success -> {
-                    toggleProgressBarVisibility(false)
-                    supportActionBar?.title = title
-                    result.data.let {
-                        messageAdapter.setMessages(it)
+                    if (isShared) {
+                        writeToFile(this, title, result.data)
+                        shareChats(this, title)
+                    } else {
+                        supportActionBar?.title = title
+                        result.data.let {
+                            messageAdapter.setMessages(it)
+                        }
+                        scrollToLastMessage()
+                        setupAction(chatId)
                     }
-                    scrollToLastMessage()
-                    setupAction(chatId)
+                    toggleProgressBarVisibility(false)
                 }
                 is Result.Error -> {
                     toggleProgressBarVisibility(false)
                     Toast.makeText(this, getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
-                    Log.d("MessageActivity", result.error)
                 }
             }
         }
@@ -241,9 +246,9 @@ class MessageActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_share -> {
                 val filename = intent.getStringExtra(TITLE_KEY)
-                if (!filename.isNullOrEmpty()) {
-                    writeToFile(this, filename.toString(), messageAdapter.messageItems)
-                    shareChats(this, filename.toString())
+                val chatId = intent.getStringExtra(CHAT_ID_KEY)
+                if (filename != null && chatId != null) {
+                    showListMessages(chatId, filename, true)
                     return true
                 }
                 true
@@ -255,12 +260,18 @@ class MessageActivity : AppCompatActivity() {
     private fun writeToFile(context: Context, fileName: String, listMessage: List<MessageItem>) {
         val file = File(context.filesDir, fileName)
         try {
+            var prevDate = ""
             val fos = FileOutputStream(file)
             val textHeader = "[PeduliPasal] Chat history in title ${fileName} \n"
             fos.write(textHeader.toByteArray())
-            val savedOn = "Saved on: ${getDateFormat(Date())} ${getTimeFormat(Date())} \n \n"
+            val savedOn = "Saved on: ${getDateFormat(Date())} ${getTimeFormat(Date())} \n"
             fos.write(savedOn.toByteArray())
             listMessage.forEach {
+                if (getDateFormat(it.timestamp) != prevDate) {
+                    val date = "\n${getDayOfWeek(it.timestamp)}, ${getDateFormat(it.timestamp)}\n"
+                    fos.write(date.toByteArray())
+                    prevDate = getDateFormat(it.timestamp)
+                }
                 val username = if (it.isHuman) "Human" else "AI"
                 val message = "${getTimeFormat(it.timestamp)}\t${username}\t${it.content} \n"
                 fos.write(message.toByteArray())

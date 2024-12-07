@@ -10,6 +10,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.pedulipasal.R
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -46,3 +49,10 @@ fun getDateFormat(date: Date?): String {
 fun removeAsterisk(input: String): String {
     return input.replace("*", "")
 }
+
+fun getDayOfWeek(date: Date?): String? {
+    val dayOfWeekFormatter = SimpleDateFormat("EEE", Locale.US)
+    val dayOfWeek = date?.let { dayOfWeekFormatter.format(it) }
+    return dayOfWeek?.uppercase(Locale.US)
+}
+
