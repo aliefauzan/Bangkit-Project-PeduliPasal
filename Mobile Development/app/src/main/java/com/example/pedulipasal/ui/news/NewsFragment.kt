@@ -141,7 +141,34 @@ class NewsFragment : Fragment() {
     private fun setupNewsObserver(category: String?) {
         newsAdapter = NewsAdapter()
         newsViewModel.getNews(category).observe(viewLifecycleOwner) { result ->
-            handleNewsResult(result)
+            if (result != null) {
+                when (result) {
+                    is Result.Loading -> {
+                        binding.newsProgressBar.visibility = View.VISIBLE
+                        binding.noInternetLayout.visibility = View.GONE
+                    }
+                    is Result.Success -> {
+                        binding.noInternetLayout.visibility = View.GONE
+
+                        // Filter out any news item whose title contains "[Removed]"
+                        val filteredNews = result.data.filter { newsItem ->
+                            !(newsItem.title?.contains("[Removed]", ignoreCase = true) == true)
+                        }
+
+                        newsAdapter.submitList(filteredNews)
+                        binding.newsProgressBar.visibility = View.GONE
+                    }
+                    is Result.Error -> {
+                        binding.newsProgressBar.visibility = View.GONE
+                        binding.noInternetLayout.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            binding.rvNews.apply {
+                layoutManager = LinearLayoutManager(requireActivity())
+                adapter = newsAdapter
+            }
         }
     }
 
