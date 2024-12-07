@@ -1,6 +1,7 @@
 package com.example.pedulipasal.ui.news
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,9 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +29,8 @@ import com.example.pedulipasal.helper.ViewModelFactory
 import com.example.pedulipasal.page.message.MessageActivity
 import com.example.pedulipasal.ui.chat.ChatViewModel
 import com.example.pedulipasal.ui.settings.SettingsViewModel
+import com.google.android.material.transition.platform.MaterialContainerTransform
+import com.google.android.material.transition.platform.MaterialFadeThrough
 import java.util.Calendar
 
 class NewsFragment : Fragment() {
@@ -41,13 +47,6 @@ class NewsFragment : Fragment() {
         ViewModelFactory.getInstance(requireActivity())
     }
 
-    private var userId: String = ""
-
-    companion object {
-        private const val CHAT_ID_KEY = "detail_chat_key"
-        private const val TITLE_KEY = "detail_title_key"
-    }
-
     private var _binding: FragmentNewsBinding? = null
     private val binding get() = _binding!!
 
@@ -55,6 +54,24 @@ class NewsFragment : Fragment() {
     private lateinit var chatHomeAdapter: ChatHomeAdapter
     private lateinit var newsCategoryAdapter: NewsCategoryAdapter
 
+    private var userId: String = ""
+
+    companion object {
+        private const val CHAT_ID_KEY = "detail_chat_key"
+        private const val TITLE_KEY = "detail_title_key"
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Create a MaterialContainerTransform for the shared element transition
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            duration = 600L
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(ContextCompat.getColor(requireContext(), R.color.md_theme_background))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,43 +79,49 @@ class NewsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNewsBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        return root
+        ViewCompat.setTransitionName(binding.topContainerView, getString(R.string.login_button_transition_name))
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
-        setupAction()
-        initializeData()
-        showNews()
+        setupThemeObserver()
+        setupUserSessionObserver()
+        setupCategoryList()
+        setupActions()
+        setupNewsObserver(null)
+        setupChatObserver()
     }
 
-    private fun setupView() {
-        settingsViewModel.getSession().observe(viewLifecycleOwner) { user ->
-            //Log.d("ProfileActivity", "${user.token}")
-            showGreetings(user.userId)
-        }
-        settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean ->
+    private fun setupThemeObserver() {
+        settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive ->
+            // Handle dark mode setting
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                if (isDarkModeActive) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
+                AppCompatDelegate.setDefaultNightMode(
+                    if (isDarkModeActive) AppCompatDelegate.MODE_NIGHT_YES
+                    else AppCompatDelegate.MODE_NIGHT_NO
+                )
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
         }
+    }
 
-        val listCategory = listOf("general", "entertainment", "business", "health", "science", "sports", "technology")
+    private fun setupUserSessionObserver() {
+        settingsViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            userId = user.userId
+            showGreetings(user.userId)
+        }
+    }
+
+    private fun setupCategoryList() {
+        val categories = listOf("general", "entertainment", "business", "health", "science", "sports", "technology")
         newsCategoryAdapter = NewsCategoryAdapter(
-            listCategory,
-            onCategorySelected = { selectedItem ->
-               showNews(selectedItem)
-            },
-            defaultCategory = listCategory[0] // Set the default selected category
+            categories,
+            onCategorySelected = { category -> setupNewsObserver(category) },
+            defaultCategory = categories[0]
         )
 
         binding.rvNewsCategory.apply {
@@ -107,126 +130,104 @@ class NewsFragment : Fragment() {
         }
     }
 
-    private fun showGreetings(userId: String) {
-        settingsViewModel.getUserProfileData(userId).observe(viewLifecycleOwner) {result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        //Log.d("ProfileActivity", "${result.data.name} ${result.data.email}")
-                        binding.progressBar.visibility = View.GONE
+    private fun setupActions() {
+        binding.btnTryAgain.setOnClickListener {
+            // Retry fetching news
+            setupNewsObserver(null)
+        }
+        binding.btnAddNewChat.setOnClickListener { showCreateChatDialog() }
+    }
 
-                        binding.tvGreetings.text = "${getCurrentTimeOfDay()} ${result.data.name}"
-                    }
-                    is Result.Error -> {
-                        //Log.d("ProfileActivity", "${result.error} ${result.error}")
-                        binding.progressBar.visibility = View.GONE
-                    }
+    private fun setupNewsObserver(category: String?) {
+        newsAdapter = NewsAdapter()
+        newsViewModel.getNews(category).observe(viewLifecycleOwner) { result ->
+            handleNewsResult(result)
+        }
+    }
+
+    private fun handleNewsResult(result: Result<List<NewsItem>>?) {
+        if (result == null) return
+        when (result) {
+            is Result.Loading -> {
+                binding.newsProgressBar.isVisible = true
+                binding.noInternetLayout.isVisible = false
+            }
+            is Result.Success -> {
+                binding.newsProgressBar.isVisible = false
+                binding.noInternetLayout.isVisible = false
+                newsAdapter.submitList(result.data)
+                binding.rvNews.apply {
+                    layoutManager = LinearLayoutManager(requireActivity())
+                    adapter = newsAdapter
+                }
+            }
+            is Result.Error -> {
+                binding.newsProgressBar.isVisible = false
+                binding.noInternetLayout.isVisible = true
+            }
+        }
+    }
+
+    private fun showGreetings(userId: String) {
+        settingsViewModel.getUserProfileData(userId).observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> binding.progressBar.isVisible = true
+                is Result.Success -> {
+                    binding.progressBar.isVisible = false
+                    binding.tvGreetings.text = "${getCurrentTimeOfDay()} ${result.data.name}"
+                }
+                is Result.Error -> {
+                    binding.progressBar.isVisible = false
+                    // Optionally show an error message or fallback
                 }
             }
         }
     }
 
     private fun getCurrentTimeOfDay(): String {
-        val calendar = Calendar.getInstance()
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         return when (hour) {
             in 5..11 -> getString(R.string.morning)
             in 12..17 -> getString(R.string.afternoon)
-            in 18..21 -> getString(R.string.night)
             else -> getString(R.string.night)
         }
     }
 
-    private fun setupAction() {
-        binding.btnTryAgain.setOnClickListener { onResume() }
-        binding.btnAddNewChat.setOnClickListener { showDialog() }
-    }
-
-    private fun showNews(category: String? = null) {
-        newsAdapter = NewsAdapter()
-        newsViewModel.getNews(category).observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                when(result) {
-                    is Result.Loading -> {
-                        binding.newsProgressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.noInternetLayout.visibility = View.GONE
-                        val listNews = ArrayList<NewsItem>()
-                        result.data.forEach {
-                            listNews.add(it)
-                        }
-                        //Log.d("NewsFragment", listNews.size.toString())
-                        newsAdapter.submitList(listNews)
-                        binding.newsProgressBar.visibility = View.GONE
-                    }
-                    is Result.Error -> {
-                        binding.newsProgressBar.visibility = View.GONE
-                        binding.noInternetLayout.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            binding.rvNews.apply {
-                layoutManager = LinearLayoutManager(requireActivity())
-                adapter = newsAdapter
-            }
-        }
-    }
-
-    private fun initializeData() {
-        chatViewModel.getSession().observe(viewLifecycleOwner) {user ->
+    private fun setupChatObserver() {
+        chatViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            // Fetch chat history whenever user session data is updated
             getHistoryChat(user.userId)
-            this.userId = user.userId
         }
     }
 
     private fun getHistoryChat(userId: String) {
-        chatViewModel.getUserHistoryChat(userId).observe(viewLifecycleOwner) {result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        chatHomeAdapter = ChatHomeAdapter(
-                            requireActivity(),
-                            result.data.sortedByDescending { it.createdAt },
-                            object : ChatHomeAdapter.OnItemSelected {
-                                override fun onChatButtonClick(chatId: String, title: String) {
-                                    moveToMessageActivity(chatId = chatId, title = title)
-                                }
-
-                                override fun onButtonDeleteClick(chatId: String) {
-                                    showDeleteDialog(chatId)
-                                }
-                            })
-
-                        binding.rvChats.apply {
-                            layoutManager = LinearLayoutManager(
-                                requireActivity(),
-                                LinearLayoutManager.HORIZONTAL,
-                                false
-                            )
-                            adapter = chatHomeAdapter
+        chatViewModel.getUserHistoryChat(userId).observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> binding.progressBar.isVisible = true
+                is Result.Success -> {
+                    binding.progressBar.isVisible = false
+                    val chats = result.data.sortedByDescending { it.createdAt }
+                    chatHomeAdapter = ChatHomeAdapter(requireActivity(), chats, object : ChatHomeAdapter.OnItemSelected {
+                        override fun onChatButtonClick(chatId: String, title: String) {
+                            moveToMessageActivity(chatId, title)
                         }
-                        if (chatHomeAdapter.itemCount == 0) {
-                            binding.emptyChatLayout.visibility = View.VISIBLE
-                        } else {
-                            binding.emptyChatLayout.visibility = View.GONE
+
+                        override fun onButtonDeleteClick(chatId: String) {
+                            showDeleteChatDialog(chatId)
                         }
-                        binding.progressBar.visibility = View.GONE
+                    })
+
+                    binding.rvChats.apply {
+                        layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+                        adapter = chatHomeAdapter
                     }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                    }
+                    binding.emptyChatLayout.isVisible = chatHomeAdapter.itemCount == 0
+                }
+                is Result.Error -> {
+                    binding.progressBar.isVisible = false
+                    // Optionally show error or toast
                 }
             }
-
         }
     }
 
@@ -238,27 +239,49 @@ class NewsFragment : Fragment() {
         startActivity(intent)
     }
 
-    private fun showDeleteDialog(chatId: String) {
+    private fun showDeleteChatDialog(chatId: String) {
         AlertDialog.Builder(requireActivity()).apply {
             setTitle(getString(R.string.delete_chat))
             setMessage(R.string.delete_chat_confirmation)
-            setPositiveButton(R.string.confirm) { _, _ ->
-                chatViewModel.deleteChatById(chatId).observe(viewLifecycleOwner) {result ->
-                    if (result != null) {
-                        when(result) {
-                            is Result.Loading -> {
-                                binding.progressBar.visibility = View.VISIBLE
-                            }
-                            is Result.Success -> {
-                                chatHomeAdapter.deleteItem(chatId)
-                                binding.progressBar.visibility = View.GONE
-                            }
-                            is Result.Error -> {
-                                Toast.makeText(requireActivity(), "Gagal menghapus chat dengan id ${result.error}", Toast.LENGTH_SHORT).show()
-                                binding.progressBar.visibility = View.GONE
-                            }
-                        }
-                    }
+            setPositiveButton(R.string.confirm) { _, _ -> deleteChat(chatId) }
+            setNegativeButton(R.string.cancel, null)
+            create()
+            show()
+        }
+    }
+
+    private fun deleteChat(chatId: String) {
+        chatViewModel.deleteChatById(chatId).observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> binding.progressBar.isVisible = true
+                is Result.Success -> {
+                    binding.progressBar.isVisible = false
+                    chatHomeAdapter.deleteItem(chatId)
+                }
+                is Result.Error -> {
+                    binding.progressBar.isVisible = false
+                    Toast.makeText(requireActivity(), getString(R.string.delete_chat_failed, result.error), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun showCreateChatDialog() {
+        if (userId.isEmpty()) return
+
+        val inflater = LayoutInflater.from(requireActivity())
+        val dialogLayout = inflater.inflate(R.layout.dialog_layout, null)
+        val editText = dialogLayout.findViewById<EditText>(R.id.ed_new_topics)
+
+        AlertDialog.Builder(requireActivity()).apply {
+            setTitle(getString(R.string.add_new_chat))
+            setView(dialogLayout)
+            setPositiveButton(R.string.create) { _, _ ->
+                val title = editText.text.toString().trim()
+                if (title.isNotEmpty()) {
+                    createNewChat(title, userId)
+                } else {
+                    Toast.makeText(context, getString(R.string.empty_topic_warning), Toast.LENGTH_SHORT).show()
                 }
             }
             setNegativeButton(R.string.cancel, null)
@@ -267,50 +290,18 @@ class NewsFragment : Fragment() {
         }
     }
 
-    private fun showDialog() {
-        val inflater = LayoutInflater.from(requireActivity())
-        val dialogLayout = inflater.inflate(R.layout.dialog_layout, null)
-        val editText = dialogLayout.findViewById<EditText>(R.id.ed_new_topics)
-
-        if (this.userId.isNotEmpty()) {
-            val userId = this.userId
-            AlertDialog.Builder(requireActivity()).apply {
-                setTitle(getString(R.string.add_new_chat))
-                setView(dialogLayout)
-                setPositiveButton(R.string.create) { _, _ ->
-                    val title = editText.text.toString().trim()
-                    if (title.isNotEmpty()) {
-                        createNewChat(title = title, userId = userId)
-                    } else {
-                        Toast.makeText(context, getString(R.string.empty_topic_warning), Toast.LENGTH_SHORT).show()
-                    }
-                }
-                setNegativeButton(R.string.cancel, null)
-                create()
-                show()
-            }
-        }
-    }
-
     private fun createNewChat(title: String, userId: String) {
-        val createChatRequest = CreateChatRequest (
-            userId = userId,
-            title = title
-        )
+        val createChatRequest = CreateChatRequest(userId = userId, title = title)
         chatViewModel.createChat(createChatRequest).observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                when(result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        result.data.chatId.let { moveToMessageActivity(chatId = it, title = title) }
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
-                    }
+            when (result) {
+                is Result.Loading -> binding.progressBar.isVisible = true
+                is Result.Success -> {
+                    binding.progressBar.isVisible = false
+                    result.data.chatId.let { moveToMessageActivity(it, title) }
+                }
+                is Result.Error -> {
+                    binding.progressBar.isVisible = false
+                    Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -319,11 +310,5 @@ class NewsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        showNews()
-        initializeData()
     }
 }

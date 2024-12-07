@@ -5,6 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/topContainerView"
+    android:layout_margin="16dp"
+    android:transitionName="@string/login_button_transition_name"
+    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="@color/md_theme_surface"
     tools:context=".ui.news.NewsFragment">
 
     <!-- Progress Bar -->
