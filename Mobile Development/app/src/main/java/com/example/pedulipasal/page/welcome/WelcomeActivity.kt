@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.pedulipasal.R
@@ -42,7 +43,17 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun toLoginPage() {
         val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+
+        // Find the view that we assigned the transition name to
+        val sharedElementView = binding.btnLogin
+
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            this,
+            sharedElementView,
+            "transition_login_button" // same as in XML
+        )
+
+        startActivity(intent, options.toBundle())
     }
 
     private fun toSignUpPage() {

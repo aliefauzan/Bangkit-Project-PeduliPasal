@@ -3,12 +3,14 @@ package com.example.pedulipasal.page.login
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.credentials.CredentialManager
@@ -27,6 +29,7 @@ import com.example.pedulipasal.helper.ViewModelFactory
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
@@ -47,10 +50,8 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         supportActionBar?.hide()
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -59,9 +60,7 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
-        // Initialize Firebase Auth
         auth = Firebase.auth
-
         setupView()
         setupAction()
         playAnimation()
@@ -120,31 +119,30 @@ class LoginActivity : AppCompatActivity() {
 
     private fun signInWithGoogle() {
 
-        val credentialManager = CredentialManager.create(this) // why this not work?
+        val credentialManager = CredentialManager.create(this)
 
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
             .setServerClientId(getString(R.string.your_web_client_id))
             .build()
-        val request = GetCredentialRequest.Builder() //import from androidx.CredentialManager
+        val request = GetCredentialRequest.Builder()
             .addCredentialOption(googleIdOption)
             .build()
 
         lifecycleScope.launch {
             try {
-                val result: GetCredentialResponse = credentialManager.getCredential( //import from androidx.CredentialManager
+                val result: GetCredentialResponse = credentialManager.getCredential(
                     request = request,
                     context = this@LoginActivity,
                 )
                 handleSignIn(result)
-            } catch (e: GetCredentialException) { //import from androidx.CredentialManager
+            } catch (e: GetCredentialException) {
                 Log.d("Error", e.message.toString())
             }
         }
     }
 
     private fun handleSignIn(result: GetCredentialResponse) {
-        // Handle the successfully returned credential.
         when (val credential = result.credential) {
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
@@ -235,44 +233,41 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun playAnimation() {
+        // Optionally, add a slight delay to start the animations after the container transform finishes
+        val startDelay = 200L
+
+        // Initially set alpha to 0
         binding.tvLogin.alpha = 0f
         binding.tvLoginText.alpha = 0f
         binding.tvEmail.alpha = 0f
-        binding.edLoginEmail.alpha = 0f
+        binding.tilLoginEmail.alpha = 0f
         binding.tvPassword.alpha = 0f
-        binding.edLoginPassword.alpha = 0f
+        binding.tilLoginPassword.alpha = 0f
         binding.btnLogin.alpha = 0f
         binding.btnSignInWithGoogle.alpha = 0f
 
-        val title =
-            ObjectAnimator.ofFloat(binding.tvLogin, View.ALPHA, 1f).setDuration(200)
-        val message =
-            ObjectAnimator.ofFloat(binding.tvLoginText, View.ALPHA, 1f).setDuration(200)
-        val emailTextView =
-            ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
-        val emailEditText =
-            ObjectAnimator.ofFloat(binding.edLoginEmail, View.ALPHA, 1f).setDuration(100)
-        val passwordTextView =
-            ObjectAnimator.ofFloat(binding.tvPassword, View.ALPHA, 1f).setDuration(100)
-        val passwordEditText =
-            ObjectAnimator.ofFloat(binding.edLoginPassword, View.ALPHA, 1f).setDuration(100)
-        val loginButton =
-            ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 1f).setDuration(100)
-        val loginWithGoogleButton =
-            ObjectAnimator.ofFloat(binding.btnSignInWithGoogle, View.ALPHA, 1f).setDuration(100)
+        // Create animators
+        val title = ObjectAnimator.ofFloat(binding.tvLogin, View.ALPHA, 1f).setDuration(200)
+        val message = ObjectAnimator.ofFloat(binding.tvLoginText, View.ALPHA, 1f).setDuration(200)
+        val emailTextView = ObjectAnimator.ofFloat(binding.tvEmail, View.ALPHA, 1f).setDuration(100)
+        val emailInputLayout = ObjectAnimator.ofFloat(binding.tilLoginEmail, View.ALPHA, 1f).setDuration(100)
+        val passwordTextView = ObjectAnimator.ofFloat(binding.tvPassword, View.ALPHA, 1f).setDuration(100)
+        val passwordInputLayout = ObjectAnimator.ofFloat(binding.tilLoginPassword, View.ALPHA, 1f).setDuration(100)
+        val loginButton = ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 1f).setDuration(100)
+        val loginWithGoogleButton = ObjectAnimator.ofFloat(binding.btnSignInWithGoogle, View.ALPHA, 1f).setDuration(100)
 
         AnimatorSet().apply {
             playSequentially(
                 title,
                 message,
                 emailTextView,
-                emailEditText,
+                emailInputLayout,
                 passwordTextView,
-                passwordEditText,
+                passwordInputLayout,
                 loginButton,
                 loginWithGoogleButton
             )
-            startDelay = 100
+            this.startDelay = startDelay
         }.start()
     }
 

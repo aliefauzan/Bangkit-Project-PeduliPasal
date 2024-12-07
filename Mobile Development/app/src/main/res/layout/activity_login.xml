@@ -6,6 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:transitionName="transition_login_button"
     android:background="@color/md_theme_background"
     tools:context=".page.login.LoginActivity">
 
@@ -56,7 +57,7 @@
         android:text="@string/login_page_text"
         android:textStyle="italic"
         android:textColor="@color/md_theme_onBackground"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:fontFamily="sans-serif-light"
         android:lineSpacingExtra="4dp"
         android:layout_marginStart="16dp"
