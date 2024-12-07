@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Peduli Pasal</string>
-    <string name="welcome">Welcome</string>
+    <string name="welcome">Welcome to Peduli Pasal</string>
     <string name="login">Login</string>
     <string name="login_with_google">Login with Google</string>
     <string name="sign_up">Sign up</string>
@@ -74,6 +74,8 @@
     <string name="registered_name">Registered name</string>
     <string name="try_again">Coba lagi</string>
     <string name="empty_chat">Belum pernah chat yah? buat chat baru</string>
+    <string name="delete_chat_failed">Gagal menghapus chat</string>
+    <string name="login_button_transition_name">login_button_transition</string>
     <string-array name="levels">
         <item>Easy</item>
         <item>Intermediate</item>

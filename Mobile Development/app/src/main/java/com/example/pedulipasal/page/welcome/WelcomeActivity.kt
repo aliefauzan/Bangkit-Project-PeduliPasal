@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.pedulipasal.R
@@ -42,11 +43,26 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun toLoginPage() {
         val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+        val sharedElementView = binding.btnLogin
+
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            this,
+            sharedElementView,
+            "transition_login_button"
+        )
+
+        startActivity(intent, options.toBundle())
     }
 
     private fun toSignUpPage() {
         val intent = Intent(this, SignUpActivity::class.java)
-        startActivity(intent)
+        val sharedElementView = binding.btnSignup
+
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+            this,
+            sharedElementView,
+            "transition_signup_button"
+        )
+        startActivity(intent, options.toBundle())
     }
 }
