@@ -84,5 +84,6 @@
     <string name="morning">Selamat pagi,</string>
     <string name="afternoon">Selamat siang,</string>
     <string name="night">Selamat malam,</string>
+    <string name="share">Share</string>
 
 </resources>

@@ -1,12 +1,18 @@
 package com.example.pedulipasal.page.message
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +25,11 @@ import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.databinding.ActivityMessageBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
+import com.example.pedulipasal.helper.getDateFormat
+import com.example.pedulipasal.helper.getTimeFormat
 import com.example.pedulipasal.helper.showLocalTime
+import java.io.File
+import java.io.FileOutputStream
 import java.util.Date
 
 class MessageActivity : AppCompatActivity() {
@@ -220,5 +230,70 @@ class MessageActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_chat_activity_toolbar, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_share -> {
+                val filename = intent.getStringExtra(TITLE_KEY)
+                if (!filename.isNullOrEmpty()) {
+                    writeToFile(this, filename.toString(), messageAdapter.messageItems)
+                    shareChats(this, filename.toString())
+                    return true
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun writeToFile(context: Context, fileName: String, listMessage: List<MessageItem>) {
+        val file = File(context.filesDir, fileName)
+        try {
+            val fos = FileOutputStream(file)
+            val textHeader = "[PeduliPasal] Chat history in title ${fileName} \n"
+            fos.write(textHeader.toByteArray())
+            val savedOn = "Saved on: ${getDateFormat(Date())} ${getTimeFormat(Date())} \n \n"
+            fos.write(savedOn.toByteArray())
+            listMessage.forEach {
+                val username = if (it.isHuman) "Human" else "AI"
+                val message = "${getTimeFormat(it.timestamp)}\t${username}\t${it.content} \n"
+                fos.write(message.toByteArray())
+            }
+            fos.close()
+        } catch (e: Exception) {
+            Log.d("MessageActivity", "writeToFile: ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    private fun shareChats(context: Context, fileName: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        val uri = getFileUri(this, fileName)
+
+        if (uri != null) {
+            shareIntent.type = "text/plain"
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            context.startActivity(Intent.createChooser(shareIntent, "Share File"))
+        }
+    }
+
+    private fun getFileUri(context: Context, fileName: String): Uri? {
+        val file = File(context.filesDir, fileName)
+        return if (file.exists()) {
+            FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider", // Must match the authority in manifest
+                file
+            )
+        } else {
+            null
+        }
     }
 }
