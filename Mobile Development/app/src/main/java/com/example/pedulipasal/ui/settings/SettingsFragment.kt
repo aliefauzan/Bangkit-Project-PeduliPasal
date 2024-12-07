@@ -146,6 +146,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun logout () {
+        cancelPeriodicTask()
         settingsViewModel.logout()
         val intent = Intent(requireActivity(), WelcomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
