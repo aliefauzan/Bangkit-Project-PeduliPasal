@@ -1,6 +1,6 @@
-﻿# Mobile Development PeduliPasal
+﻿# 📱 Mobile Development PeduliPasal
 
-## Run Program Via Android Studio (if you already setup Android Studio IDE)
+## 💻📲▶️ Run Program Via Android Studio (if you already setup Android Studio IDE)
 
 ### 1. Download & Install Newest Android Studio (optional)
 #### [Download Android Studio Ladybug IDE](https://developer.android.com/studio)
@@ -20,7 +20,7 @@ git clone https://github.com/aliefauzan/Bangkit-Project-PeduliPasal.git
 ##### Additional note : our project require Android Virtual Device (AVD) run on Android 7.0 or API Level 24, so if your AVD run on older Android version or lower API Level you should upgrade your AVD to newest version first
 
 
-## Download .apk file and install directly to your Android Phone
+## ⬇️📲 Download .apk file and install directly to your Android Phone
 ### Note : PeduliPasal app require minimum version of Android 7.0 and above to run
 ```
 For Login Purpose, you can directly use our user testing email and password
