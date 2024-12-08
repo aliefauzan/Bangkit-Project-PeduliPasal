@@ -11,10 +11,10 @@ git clone https://github.com/aliefauzan/Bangkit-Project-PeduliPasal.git
 #### [Download Android Studio Ladybug IDE](https://developer.android.com/studio)
 
 ### 3. Open Android Studio
-#### Choose "Open" on the right side top of the screen
-#### Find your path to cloned PeduliPasal github repository and choose open "Mobile Development" folder
-#### Choose File -> Sync Project with Gradle Files
-#### Wait until Gradle sync process is done
+#### - Choose "Open" on the right side top of the screen
+#### - Find your path to cloned PeduliPasal github repository and choose open "Mobile Development" folder
+#### - Choose File -> Sync Project with Gradle Files
+#### - Wait until Gradle sync process is done
 
 
 ## Download .APK file and install directly to your Android Phone
