@@ -55,7 +55,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rvMessageHistory"
-        app:layout_constraintBottom_toTopOf="@id/messageInputLayout"/>
+        app:layout_constraintBottom_toTopOf="@id/messageInputLayout"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"/>
 
     <!-- Input area at the bottom -->
     <LinearLayout
