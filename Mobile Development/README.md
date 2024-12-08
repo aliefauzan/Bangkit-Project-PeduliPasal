@@ -13,8 +13,11 @@ git clone https://github.com/aliefauzan/Bangkit-Project-PeduliPasal.git
 ### 3. Open Android Studio
 #### - Choose "Open" on the right side top of the screen
 #### - Find your path to cloned PeduliPasal github repository and choose open "Mobile Development" folder
+#### - Replace your local.properties file with [this](https://drive.google.com/file/d/1d7qkDzauXWDpfuiYgnJNidUSfyz7552b/view?usp=drive_link)
 #### - Choose File -> Sync Project with Gradle Files
 #### - Wait until Gradle sync process is done
+#### - Find "MainActivity" Kotlin file or just directly run it using green triangle or Shift + F10 key
+#### Additional note : our project require Android Virtual Device (AVD) run on Android 7.0 or API Level 24, so if your AVD run on older Android version or lower API Level you should upgrade your AVD to newest version first
 
 
 ## Download .apk file and install directly to your Android Phone
