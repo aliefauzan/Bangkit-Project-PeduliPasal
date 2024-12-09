@@ -1,5 +1,6 @@
 package com.example.pedulipasal.ui.news
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
@@ -65,7 +66,6 @@ class NewsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Create a MaterialContainerTransform for the shared element transition
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             duration = 600L
             scrimColor = Color.TRANSPARENT
@@ -97,7 +97,6 @@ class NewsFragment : Fragment() {
 
     private fun setupThemeObserver() {
         settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive ->
-            // Handle dark mode setting
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 AppCompatDelegate.setDefaultNightMode(
                     if (isDarkModeActive) AppCompatDelegate.MODE_NIGHT_YES
@@ -132,7 +131,6 @@ class NewsFragment : Fragment() {
 
     private fun setupActions() {
         binding.btnTryAgain.setOnClickListener {
-            // Retry fetching news
             setupNewsObserver(null)
         }
         binding.btnAddNewChat.setOnClickListener { showCreateChatDialog() }
@@ -150,7 +148,6 @@ class NewsFragment : Fragment() {
                     is Result.Success -> {
                         binding.noInternetLayout.visibility = View.GONE
 
-                        // Filter out any news item whose title contains "[Removed]"
                         val filteredNews = result.data.filter { newsItem ->
                             !(newsItem.title?.contains("[Removed]", ignoreCase = true) == true)
                         }
@@ -172,29 +169,6 @@ class NewsFragment : Fragment() {
         }
     }
 
-    private fun handleNewsResult(result: Result<List<NewsItem>>?) {
-        if (result == null) return
-        when (result) {
-            is Result.Loading -> {
-                binding.newsProgressBar.isVisible = true
-                binding.noInternetLayout.isVisible = false
-            }
-            is Result.Success -> {
-                binding.newsProgressBar.isVisible = false
-                binding.noInternetLayout.isVisible = false
-                newsAdapter.submitList(result.data)
-                binding.rvNews.apply {
-                    layoutManager = LinearLayoutManager(requireActivity())
-                    adapter = newsAdapter
-                }
-            }
-            is Result.Error -> {
-                binding.newsProgressBar.isVisible = false
-                binding.noInternetLayout.isVisible = true
-            }
-        }
-    }
-
     private fun showGreetings(userId: String) {
         settingsViewModel.getUserProfileData(userId).observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -205,7 +179,7 @@ class NewsFragment : Fragment() {
                 }
                 is Result.Error -> {
                     binding.progressBar.isVisible = false
-                    // Optionally show an error message or fallback
+                    Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -222,7 +196,6 @@ class NewsFragment : Fragment() {
 
     private fun setupChatObserver() {
         chatViewModel.getSession().observe(viewLifecycleOwner) { user ->
-            // Fetch chat history whenever user session data is updated
             getHistoryChat(user.userId)
         }
     }
@@ -252,7 +225,7 @@ class NewsFragment : Fragment() {
                 }
                 is Result.Error -> {
                     binding.progressBar.isVisible = false
-                    // Optionally show error or toast
+                    Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -277,6 +250,7 @@ class NewsFragment : Fragment() {
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun deleteChat(chatId: String) {
         chatViewModel.deleteChatById(chatId).observe(viewLifecycleOwner) { result ->
             when (result) {

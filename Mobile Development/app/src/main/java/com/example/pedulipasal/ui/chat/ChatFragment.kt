@@ -120,7 +120,6 @@ class ChatFragment : Fragment() {
                             }
                             is Result.Success -> {
                                 chatAdapter.deleteItem(chatId)
-//                                Toast.makeText(requireActivity(), "Berhasil menghapus chat", Toast.LENGTH_SHORT).show()
                                 binding.progressBar.visibility = View.GONE
                             }
                             is Result.Error -> {

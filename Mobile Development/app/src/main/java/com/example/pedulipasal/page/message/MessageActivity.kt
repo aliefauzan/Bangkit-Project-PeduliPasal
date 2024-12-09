@@ -137,12 +137,10 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun setupAction(chatId: String) {
-        // Send button click listener
         binding.btnSendMessage.setOnClickListener {
             sendMessage(chatId)
         }
 
-        // Handle 'Done' action in the keyboard
         binding.etMessageInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEND || actionId == EditorInfo.IME_ACTION_DONE) {
                 sendMessage(chatId)
@@ -168,10 +166,8 @@ class MessageActivity : AppCompatActivity() {
             content = content
         )
 
-        // Clear the input field
         binding.etMessageInput.text?.clear()
 
-        // Add the new message to the adapter
         messageAdapter.addMessage(
             MessageItem(
                 messageId = "",
@@ -182,7 +178,6 @@ class MessageActivity : AppCompatActivity() {
             )
         )
 
-        // Scroll to the last message
         scrollToLastMessage()
 
         messageViewModel.addMessageToChat(chatId, addMessageRequest).observe(this) { result ->
@@ -300,7 +295,7 @@ class MessageActivity : AppCompatActivity() {
         return if (file.exists()) {
             FileProvider.getUriForFile(
                 context,
-                "${context.packageName}.fileprovider", // Must match the authority in manifest
+                "${context.packageName}.fileprovider",
                 file
             )
         } else {

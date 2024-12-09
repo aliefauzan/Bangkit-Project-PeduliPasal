@@ -61,13 +61,13 @@ class CloudRepository(
         } catch (e: Exception) {
             emit(Result.Error(e.toString()))
         }
-        val localData = userDao.getUserProfileData() // LiveData<UserResponse?>
+        val localData = userDao.getUserProfileData()
         emitSource(
             localData.map { userResponse ->
                 if (userResponse != null) {
-                    Result.Success(userResponse) // Wrap in Result.Success
+                    Result.Success(userResponse)
                 } else {
-                    Result.Error("No data found in the database") // Handle null case
+                    Result.Error("No data found in the database")
                 }
             }
         )

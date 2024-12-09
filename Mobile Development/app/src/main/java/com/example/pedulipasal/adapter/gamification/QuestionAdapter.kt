@@ -77,7 +77,7 @@ class QuestionAdapter(
         question.apply {
             alreadyAnswer = true
             selectedOption = chosenOption
-            answerCorrect = chosenOption == correctAnswer // Persist correct answer state
+            answerCorrect = chosenOption == correctAnswer
         }
 
         onItemSelectedCallback.onOptionClicked(

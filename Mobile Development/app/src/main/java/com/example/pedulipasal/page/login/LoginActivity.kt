@@ -147,7 +147,6 @@ class LoginActivity : AppCompatActivity() {
         when (val credential = result.credential) {
             is CustomCredential -> {
                 if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                    // Process Login dengan Firebase Auth
                     try {
                         val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                         firebaseAuthWithGoogle(googleIdTokenCredential.idToken)
@@ -155,12 +154,10 @@ class LoginActivity : AppCompatActivity() {
                         Log.e(TAG, "Received an invalid google id token response", e)
                     }
                 } else {
-                    // Catch any unrecognized custom credential type here.
                     Log.e(TAG, "Unexpected type of credential")
                 }
             }
             else -> {
-                // Catch any unrecognized credential type here.
                 Log.e(TAG, "Unexpected type of credential")
             }
         }
@@ -176,35 +173,12 @@ class LoginActivity : AppCompatActivity() {
                     user?.getIdToken(false)?.addOnSuccessListener { tokenResult ->
                         val header = tokenResult.token?.split(".")
                         Log.d(TAG, "${header?.get(0)} \n ${user.email} \n ${user.uid} \n ${user.displayName}")
-//                        val loggedIn = UserModel(
-//                            userId = user.uid,
-//                            token = header?.get(0) ?: "4013",
-//                            isLogin = true
-//                        )
-                        // updateUI(loggedIn)
                     }
-                    //updateUI(user)
                 } else {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
-                    //updateUI(null)
                 }
             }
     }
-
-//    private fun updateUI(user: UserModel) {
-//
-//            loginViewModel.saveSession(
-//                UserModel(
-//                    userId = user.userId,
-//                    token = user.token,
-//                    isLogin = true
-//                )
-//            )
-//            val intent = Intent(this, MainActivity::class.java)
-//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-//            startActivity(intent)
-//            finish()
-//    }
 
     private fun successDialog() {
         AlertDialog.Builder(this).apply {

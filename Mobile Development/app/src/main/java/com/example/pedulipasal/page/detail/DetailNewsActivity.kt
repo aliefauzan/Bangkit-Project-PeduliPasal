@@ -61,15 +61,13 @@ class DetailNewsActivity : AppCompatActivity() {
         }
         WebView.setWebContentsDebuggingEnabled(true)
 
-
-        // Track loading progress
         webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 progressBar.progress = newProgress
                 if (newProgress == 100) {
-                    progressBar.visibility = android.view.View.GONE // Hide when fully loaded
+                    progressBar.visibility = android.view.View.GONE
                 } else {
-                    progressBar.visibility = android.view.View.VISIBLE // Show while loading
+                    progressBar.visibility = android.view.View.VISIBLE
                 }
             }
         }

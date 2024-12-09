@@ -28,7 +28,7 @@ class NewsCategoryAdapter(
 
             binding.categoryItemContainer.setOnClickListener {
                 selectedCategory = category
-                notifyDataSetChanged() // Refresh all items to update their background
+                notifyDataSetChanged()
                 onCategorySelected(category)
             }
         }

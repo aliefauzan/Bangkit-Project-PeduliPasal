@@ -12,6 +12,4 @@ class MainViewModel(private val cloudRepository: CloudRepository): ViewModel() {
     fun getSession(): LiveData<UserModel> {
         return cloudRepository.getSession().asLiveData()
     }
-
-    // val stories: LiveData<PagingData<Story>> = repository.getStories().cachedIn(viewModelScope)
 }

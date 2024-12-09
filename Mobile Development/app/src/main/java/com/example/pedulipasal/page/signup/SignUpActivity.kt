@@ -118,9 +118,8 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun playAnimation() {
-        var startDelay = 200L // Match the login animation start delay
+        var startDelay = 200L
 
-        // Set initial alpha to 0 (invisible)
         binding.tvSignup.alpha = 0f
         binding.tvSignupText.alpha = 0f
         binding.tilSignupName.alpha = 0f
@@ -128,7 +127,6 @@ class SignUpActivity : AppCompatActivity() {
         binding.tilSignupPassword.alpha = 0f
         binding.btnSignup.alpha = 0f
 
-        // Create animators with similar duration pattern as login
         val title = ObjectAnimator.ofFloat(binding.tvSignup, View.ALPHA, 1f).setDuration(200)
         val message = ObjectAnimator.ofFloat(binding.tvSignupText, View.ALPHA, 1f).setDuration(200)
         val nameInputLayout = ObjectAnimator.ofFloat(binding.tilSignupName, View.ALPHA, 1f).setDuration(100)
@@ -136,7 +134,6 @@ class SignUpActivity : AppCompatActivity() {
         val passwordInputLayout = ObjectAnimator.ofFloat(binding.tilSignupPassword, View.ALPHA, 1f).setDuration(100)
         val signupButton = ObjectAnimator.ofFloat(binding.btnSignup, View.ALPHA, 1f).setDuration(100)
 
-        // Play animations in sequence
         AnimatorSet().apply {
             playSequentially(
                 title,
