@@ -39,7 +39,7 @@
     <string name="create">Buat</string>
     <string name="cancel">Batalkan</string>
     <string name="delete">Delete</string>
-    <string name="type_your_message">type your message</string>
+    <string name="type_your_message">ketik pesan anda disini</string>
     <string name="send">Send</string>
     <string name="empty_message_warning">There is no message</string>
     <string name="success_title_login">Berhasil</string>

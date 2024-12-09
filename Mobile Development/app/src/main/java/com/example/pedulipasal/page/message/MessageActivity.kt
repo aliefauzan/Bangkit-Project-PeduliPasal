@@ -280,7 +280,7 @@ class MessageActivity : AppCompatActivity() {
 
     private fun shareChats(context: Context, fileName: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
-        val uri = getFileUri(this, fileName)
+        val uri = getFileUri(this, "$fileName.txt")
 
         if (uri != null) {
             shareIntent.type = "text/plain"
