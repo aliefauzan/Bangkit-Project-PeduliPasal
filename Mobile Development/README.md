@@ -27,7 +27,7 @@ For Login Purpose, you can directly use our user testing email and password
 Email : peduli@gmail.com
 Password : 123
 ```
-#### [Download PeduliPasal App Latest Version](https://drive.google.com/file/d/164_uX6OiKKtJAt0fjaBmedKoPYH9cNRI/view?usp=drive_link)
+#### [Download PeduliPasal App Latest Version](https://drive.google.com/drive/folders/1PYVyKpRRpH3omVUw5pbj9VTx81LZES5h?usp=drive_link)
 #### [Older Version PeduliPasal App List](https://drive.google.com/drive/folders/1FxXx9DQosYBmdD18VRxT5UrKXvOvEkwN?usp=drive_link)
 
 
