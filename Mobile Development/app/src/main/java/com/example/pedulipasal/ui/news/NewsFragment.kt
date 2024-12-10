@@ -97,14 +97,8 @@ class NewsFragment : Fragment() {
 
     private fun setupThemeObserver() {
         settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive ->
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                AppCompatDelegate.setDefaultNightMode(
-                    if (isDarkModeActive) AppCompatDelegate.MODE_NIGHT_YES
-                    else AppCompatDelegate.MODE_NIGHT_NO
-                )
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
+            // DO NOT call setDefaultNightMode() here
+            // Just update any UI elements if needed (most likely unnecessary)
         }
     }
 

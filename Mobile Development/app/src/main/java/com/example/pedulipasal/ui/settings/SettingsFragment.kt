@@ -1,7 +1,6 @@
 package com.example.pedulipasal.ui.settings
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +9,7 @@ import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import com.example.pedulipasal.R
 import com.example.pedulipasal.databinding.FragmentSettingsBinding
 import com.example.pedulipasal.helper.Result
@@ -34,16 +29,13 @@ class SettingsFragment : Fragment() {
     private lateinit var workManager: WorkManager
     private var periodicWorkRequest: PeriodicWorkRequest? = null
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,27 +69,23 @@ class SettingsFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupView () {
+    private fun setupView() {
         settingsViewModel.getSession().observe(viewLifecycleOwner) { user ->
-            //Log.d("ProfileActivity", "${user.token}")
             showProfile(user.userId)
         }
 
+        // Apply theme based on stored preference
         settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean ->
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                if (isDarkModeActive) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    binding.switchTheme.isChecked = true
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    binding.switchTheme.isChecked = false
-                }
+            val nightMode = if (isDarkModeActive) {
+                AppCompatDelegate.MODE_NIGHT_YES
             } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                binding.switchTheme.isEnabled = false
+                AppCompatDelegate.MODE_NIGHT_NO
             }
+            AppCompatDelegate.setDefaultNightMode(nightMode)
+            binding.switchTheme.isChecked = isDarkModeActive
         }
 
+        // Apply notifications based on stored preference
         settingsViewModel.getNotificationSettings().observe(viewLifecycleOwner) { isNotificationsEnabled: Boolean ->
             if (isNotificationsEnabled) {
                 startPeriodicTask()
@@ -124,28 +112,24 @@ class SettingsFragment : Fragment() {
     }
 
     private fun showProfile(userId: String) {
-        settingsViewModel.getUserProfileData(userId).observe(viewLifecycleOwner) {result ->
-            if (result != null) {
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        //Log.d("ProfileActivity", "${result.data.name} ${result.data.email}")
-                        binding.tvEmail.text = result.data.email
-                        binding.tvName.text = result.data.name
-                        binding.progressBar.visibility = View.GONE
-                    }
-                    is Result.Error -> {
-                        //Log.d("ProfileActivity", "${result.error} ${result.error}")
-                        binding.progressBar.visibility = View.GONE
-                    }
+        settingsViewModel.getUserProfileData(userId).observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is Result.Success -> {
+                    binding.tvEmail.text = result.data.email
+                    binding.tvName.text = result.data.name
+                    binding.progressBar.visibility = View.GONE
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
                 }
             }
         }
     }
 
-    private fun logout () {
+    private fun logout() {
         cancelPeriodicTask()
         settingsViewModel.logout()
         val intent = Intent(requireActivity(), WelcomeActivity::class.java)

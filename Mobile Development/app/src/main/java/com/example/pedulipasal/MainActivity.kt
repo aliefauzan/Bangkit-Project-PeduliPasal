@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.pedulipasal.databinding.ActivityMainBinding
@@ -20,20 +21,32 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
 
+        // Inflate the layout once here, unconditionally
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setupView()
+
+        // Observe theme setting
+        mainViewModel.getThemeSettings().observe(this) { isDarkModeActive ->
+            val desiredMode = if (isDarkModeActive) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            if (AppCompatDelegate.getDefaultNightMode() != desiredMode) {
+                AppCompatDelegate.setDefaultNightMode(desiredMode)
+            }
+        }
+
+        // Observe session
         mainViewModel.getSession().observe(this) { user ->
             if (!user.isLogin) {
                 val intent = Intent(this, WelcomeActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
                 finish()
-            } else {
-                setContentView(binding.root)
-                setupView()
             }
+            // If user is logged in, just do nothing; layout is already set.
         }
     }
+
 
     private fun setupView() {
         val navView: BottomNavigationView = binding.navView
