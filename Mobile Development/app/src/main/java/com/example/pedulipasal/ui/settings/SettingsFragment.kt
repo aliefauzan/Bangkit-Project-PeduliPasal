@@ -94,7 +94,11 @@ class SettingsFragment : Fragment() {
                 }
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                binding.switchTheme.isEnabled = false
+                binding.apply {
+                    tvDarkMode.visibility = View.GONE
+                    tvEnableDarkMode.visibility = View.GONE
+                    switchTheme.visibility = View.GONE
+                }
             }
         }
 
