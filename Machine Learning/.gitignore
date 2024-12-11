@@ -39,3 +39,7 @@ local.settings.json
 venv/
 *.env  # Environment files
 Pipfile.lock
+
+models/
+
+*.http

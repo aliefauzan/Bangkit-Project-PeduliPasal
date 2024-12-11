@@ -12,6 +12,7 @@ scikit-learn = "*"
 matplotlib = "*"
 flask = "*"
 tf-keras = "*"
+nltk = "*"
 
 [dev-packages]
 ipykernel = "*"
