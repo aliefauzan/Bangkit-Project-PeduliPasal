@@ -28,6 +28,7 @@ import com.example.pedulipasal.helper.filteredString
 import com.example.pedulipasal.helper.getDateFormat
 import com.example.pedulipasal.helper.getDayOfWeek
 import com.example.pedulipasal.helper.getTimeFormat
+import com.example.pedulipasal.helper.removeNewLine
 import com.example.pedulipasal.helper.showLocalTime
 import java.io.File
 import java.io.FileOutputStream
@@ -79,9 +80,9 @@ class MessageActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         listSuggestion = listOf(
-            "Sebutkan 5 sila Pancasila",
-            "Jelaskan secara singkat pembentukan UUD 1945",
-            "Sebutkan suku yang terkenal di indonesia"
+            "Apa pasal yang sesuai dengan kasus pencurian motor",
+            "Sengketa tanah termasuk dalam pasal apa",
+            "Jelaskan pasal yang mengatur tentang kasus harta warisan"
         )
 
         messageAdapter = MessageAdapter()
@@ -267,7 +268,7 @@ class MessageActivity : AppCompatActivity() {
                     prevDate = getDateFormat(it.timestamp)
                 }
                 val username = if (it.isHuman) "Human" else "AI"
-                val message = "${getTimeFormat(it.timestamp)}\t${username}\t${it.content} \n"
+                val message = "${getTimeFormat(it.timestamp)}\t${username}\t${removeNewLine(it.content)} \n"
                 fos.write(message.toByteArray())
             }
             fos.close()

@@ -33,3 +33,7 @@ fun filteredString(input: String): String {
     return filteredInput
 }
 
+fun removeNewLine(input: String): String {
+    return input.replace("\n", " ")
+}
+
