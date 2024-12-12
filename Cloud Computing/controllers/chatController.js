@@ -2,6 +2,7 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const { nanoid } = require('nanoid');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require('axios');
 
 const createChat = async (req, res) => {
   try {
@@ -47,6 +48,7 @@ const addMessageToChat = async (req, res) => {
       return res.status(404).json({ error: "Chat not found" });
     }
 
+    // Save user message
     const userMessage = {
       userMessageId,
       messageId,
@@ -57,31 +59,51 @@ const addMessageToChat = async (req, res) => {
     const userMessageRef = chatRef.collection("messages").doc();
     await userMessageRef.set(userMessage);
 
+    // Update chat timestamp
     await chatRef.update({
       updatedAt: new Date().toISOString(),
     });
 
-    // Integrasi dengan Google Generative AI
+    // Call ML model endpoint first
+    const mlModelResponse = await axios.post(process.ENV.API_MODEL_RESPONSE, {
+      text: content
+    });
+
+    const { pasal, text } = mlModelResponse.data;
+
+    // Prepare prompt for Gemini with ML model output
     const genAI = new GoogleGenerativeAI(process.env.API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `Anda adalah asisten hukum yang dirancang untuk membantu pengacara dan mahasiswa hukum memahami dan menavigasi pasal hukum serta peraturan yang relevan. Ketika diberikan deskripsi kasus atau masalah hukum, tugas Anda adalah:
-                    1. Mengidentifikasi undang-undang, pasal, dan peraturan yang berlaku
-                    2. Memberikan penjelasan singkat tentang implikasi hukum, termasuk hukuman atau konsekuensi
-                    3. Gunakan bahasa yang jelas dan ringkas agar mudah dipahami oleh profesional hukum maupun mahasiswa
-                    Contoh: Jika pengguna memberikan input, "pelanggaran UU ITE terkait pornografi," jawaban Anda harus mengidentifikasi pasal yang spesifik, seperti:
-                    Melanggar Pasal 45 Ayat 1. Pasal 27 Ayat 1 UU RI No. 1 Tahun 2024, dengan ancaman hukuman berupa penjara hingga 12 tahun atau denda sebesar Rp 6 miliar
-                    Berikan jawaban hanya dalam bentuk teks biasa tanpa simbol, format markdown, atau karakter spesial. Jika input pengguna ambigu, tanyakan pertanyaan klarifikasi untuk memberikan informasi hukum yang paling akurat
-                    Input pengguna: ${content}`;
-    
-
+    const prompt = `Anda adalah asisten hukum berbasis AI yang dirancang untuk membantu pengacara dan mahasiswa hukum memahami serta menavigasi pasal-pasal hukum dan peraturan terkait.
+                    Input dari pengguna: ${content},
+                    Pasal yang teridentifikasi oleh model ML: ${pasal.join(', ')},
+                    Tugas Anda:
+                    1. Konfirmasi atau tambahkan pasal yang relevan: Berdasarkan masukan pengguna dan pasal yang telah diidentifikasi oleh model machine learning, pastikan pasal yang sesuai atau tambahkan pasal lainnya jika diperlukan.
+                    2. Berikan penjelasan singkat: Sampaikan implikasi hukum dari pasal-pasal yang relevan menggunakan bahasa yang jelas, ringkas, dan mudah dipahami.
+                    3. Tampilkan daftar pasal terkait: Berikan daftar pasal-pasal pidana Indonesia yang relevan beserta ancaman pidananya (tahun penjara dan/atau denda), dalam format berikut:
+                      - Pasal X: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
+                      - Pasal Y: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
+                    4. Kategorisasi sub-klasifikasi: Jika sub-klasifikasi hukum tidak dapat ditentukan, tanyakan lebih lanjut kepada pengguna untuk mendapatkan rincian yang lebih spesifik.
+                    5. Tangani input ambigu:
+                      - Jika input ambigu atau model machine learning gagal memberikan pasal yang spesifik, jangan tampilkan output model sebelumnya.
+                      - Langsung hubungkan input dengan pasal yang relevan berdasarkan pemahaman Anda, lalu ajukan pertanyaan tambahan untuk memperjelas konteks atau kebutuhan pengguna.  
+                      - Hindari menyebutkan bahwa output model machine learning tidak informatif. Sebagai gantinya, beri respons berdasarkan pemahaman hukum Anda dan tanyakan informasi tambahan yang diperlukan dari pengguna.
+                    Catatan:
+                      - Jawaban harus dalam teks biasa tanpa simbol atau format khusus.
+                      - Jangan tampilkan input pengguna dalam output.
+                    Contoh output:
+                      - Pasal X: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
+                      - Pasal Y: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
+                    Jika Anda memiliki pertanyaan tambahan, sertakan pertanyaan di bagian akhir respons.`;
+                      
     const result = await model.generateContent(prompt);
     let aiContent = result.response.text();
-    
-    // Hapus simbol atau format dari teks
-    aiContent = aiContent.replace(/[\n\r\t*_*]/g, "").trim();
-                    
-    // Simpan balasan AI ke subkoleksi "messages"
+
+    // Remove special characters
+    aiContent = aiContent.replace(/[*_*]/g, "").trim();
+
+    // Save AI message
     const aiMessage = {
       aiMessageId,
       messageId,
@@ -97,9 +119,10 @@ const addMessageToChat = async (req, res) => {
       userMessage,
       aiMessage,
     });
+
   } catch (error) {
     console.error("Error adding message to chat:", error);
-    res.status(500).json({ error: "Failed to add message to chat" });
+    res.status(500).json({ error: "Failed to add message to chat", details: error.message });
   }
 };
 
