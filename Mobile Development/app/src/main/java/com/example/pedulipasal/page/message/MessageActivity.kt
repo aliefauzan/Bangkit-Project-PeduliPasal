@@ -42,6 +42,7 @@ class MessageActivity : AppCompatActivity() {
     private var lastClickTime = 0L
     private lateinit var chatId: String
     private lateinit var title: String
+    private lateinit var messages: MutableList<MessageItem>
 
     private val messageViewModel by viewModels<MessageViewModel> {
         ViewModelFactory.getInstance(this)
@@ -112,22 +113,17 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
-    private fun showListMessages(chatId: String, title: String, isShared: Boolean = false) {
+    private fun showListMessages(chatId: String, title: String) {
         messageViewModel.getChatMessageById(chatId).observe(this) { result ->
             when (result) {
                 is Result.Loading -> toggleProgressBarVisibility(true)
                 is Result.Success -> {
-                    if (isShared) {
-                        writeToFile(this, title, result.data)
-                        shareChats(this, title)
-                    } else {
-                        supportActionBar?.title = title
-                        result.data.let {
-                            messageAdapter.setMessages(it)
-                        }
-                        scrollToLastMessage()
-                        setupAction(chatId)
+                    supportActionBar?.title = title
+                    result.data.let {
+                        messageAdapter.setMessages(it)
                     }
+                    scrollToLastMessage()
+                    setupAction(chatId)
                     toggleProgressBarVisibility(false)
                 }
                 is Result.Error -> {
@@ -243,8 +239,9 @@ class MessageActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_share -> {
-                if (this.title.isNotEmpty() && this.chatId.isNotEmpty()) {
-                    showListMessages(chatId = this.chatId, title = this.title, true)
+                if (this.title.isNotEmpty()) {
+                    writeToFile(this, title, messageAdapter.messageItems)
+                    shareChats(this, title)
                     return true
                 }
                 true

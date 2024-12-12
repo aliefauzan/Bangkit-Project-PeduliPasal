@@ -185,7 +185,6 @@ class NewsFragment : Fragment() {
                 }
                 is Result.Error -> {
                     binding.progressBar.isVisible = false
-                    Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -231,7 +230,6 @@ class NewsFragment : Fragment() {
                 }
                 is Result.Error -> {
                     binding.progressBar.isVisible = false
-                    Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
