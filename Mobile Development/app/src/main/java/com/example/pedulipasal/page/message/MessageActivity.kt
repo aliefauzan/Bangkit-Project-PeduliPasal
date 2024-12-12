@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,6 +24,7 @@ import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.databinding.ActivityMessageBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
+import com.example.pedulipasal.helper.filteredString
 import com.example.pedulipasal.helper.getDateFormat
 import com.example.pedulipasal.helper.getDayOfWeek
 import com.example.pedulipasal.helper.getTimeFormat
@@ -40,6 +40,8 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var messageSuggestionAdapter: MessageSuggestionAdapter
     private lateinit var listSuggestion: List<String>
     private var lastClickTime = 0L
+    private lateinit var chatId: String
+    private lateinit var title: String
 
     private val messageViewModel by viewModels<MessageViewModel> {
         ViewModelFactory.getInstance(this)
@@ -63,9 +65,9 @@ class MessageActivity : AppCompatActivity() {
 
         setupView()
 
-        val chatId = intent.getStringExtra(CHAT_ID_KEY)
-        val title = intent.getStringExtra(TITLE_KEY)
-        if (!chatId.isNullOrEmpty() && !title.isNullOrEmpty()) {
+        this.chatId = intent.getStringExtra(CHAT_ID_KEY) ?: ""
+        this.title = intent.getStringExtra(TITLE_KEY) ?: ""
+        if (chatId.isNotEmpty() && title.isNotEmpty()) {
             showListMessages(chatId = chatId, title = title)
         }
     }
@@ -189,7 +191,7 @@ class MessageActivity : AppCompatActivity() {
                         MessageItem(
                             messageId = "",
                             isHuman = false,
-                            content = result.data.aiMessage?.content ?: "Error message",
+                            content = filteredString(result.data.aiMessage?.content ?: "Error message"),
                             timestamp = showLocalTime(Date()),
                             chatId = chatId,
                         )
@@ -198,16 +200,7 @@ class MessageActivity : AppCompatActivity() {
                 }
                 is Result.Error -> {
                     toggleProgressBarVisibility(false)
-                    messageAdapter.addMessage(
-                        MessageItem(
-                            messageId = "",
-                            isHuman = false,
-                            content = result.error,
-                            timestamp = showLocalTime(Date()),
-                            chatId = chatId,
-                            isError = true
-                        )
-                    )
+                    Toast.makeText(this, getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                     scrollToLastMessage()
                 }
             }
@@ -250,10 +243,8 @@ class MessageActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_share -> {
-                val filename = intent.getStringExtra(TITLE_KEY)
-                val chatId = intent.getStringExtra(CHAT_ID_KEY)
-                if (filename != null && chatId != null) {
-                    showListMessages(chatId, filename, true)
+                if (this.title.isNotEmpty() && this.chatId.isNotEmpty()) {
+                    showListMessages(chatId = this.chatId, title = this.title, true)
                     return true
                 }
                 true
@@ -268,7 +259,7 @@ class MessageActivity : AppCompatActivity() {
         try {
             var prevDate = ""
             val fos = FileOutputStream(file)
-            val textHeader = "[PeduliPasal] Chat history in title ${fileName} \n"
+            val textHeader = "[PeduliPasal] Chat history in title $fileName \n"
             fos.write(textHeader.toByteArray())
             val savedOn = "Saved on: ${getDateFormat(Date())} ${getTimeFormat(Date())} \n"
             fos.write(savedOn.toByteArray())
