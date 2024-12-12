@@ -96,15 +96,21 @@ class NewsFragment : Fragment() {
     }
 
     private fun setupThemeObserver() {
-        settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive ->
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                AppCompatDelegate.setDefaultNightMode(
-                    if (isDarkModeActive) AppCompatDelegate.MODE_NIGHT_YES
-                    else AppCompatDelegate.MODE_NIGHT_NO
-                )
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean? ->
+            val selectedIndex = when (isDarkModeActive) {
+                true -> 1
+                false -> 0
+                null -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) 2 else 0
             }
+
+            AppCompatDelegate.setDefaultNightMode(
+                when (selectedIndex) {
+                    0 -> AppCompatDelegate.MODE_NIGHT_NO
+                    1 -> AppCompatDelegate.MODE_NIGHT_YES
+                    2 -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    else -> AppCompatDelegate.MODE_NIGHT_NO // Default case
+                }
+            )
         }
     }
 
@@ -149,7 +155,8 @@ class NewsFragment : Fragment() {
                         binding.noInternetLayout.visibility = View.GONE
 
                         val filteredNews = result.data.filter { newsItem ->
-                            !(newsItem.title?.contains("[Removed]", ignoreCase = true) == true)
+                            !(newsItem.title?.contains("[Removed]", ignoreCase = true) == true) &&
+                                    newsItem.urlToImage != null
                         }
 
                         newsAdapter.submitList(filteredNews)
@@ -179,7 +186,6 @@ class NewsFragment : Fragment() {
                 }
                 is Result.Error -> {
                     binding.progressBar.isVisible = false
-                    Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -225,7 +231,6 @@ class NewsFragment : Fragment() {
                 }
                 is Result.Error -> {
                     binding.progressBar.isVisible = false
-                    Toast.makeText(requireActivity(), getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
                 }
             }
         }
