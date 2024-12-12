@@ -5,13 +5,12 @@ const { errorHandler }  = require('./middleware/errorMiddleware')
 
 const app = express();
 
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 8080;
 
 admin.initializeApp({
     credential : admin.credential.cert('./serviceAccount.json'),
     databaseURL : 'https://pedulipasal.firebaseio.com'
 });
-const db = admin.firestore();
 
 app.use(express.json());
 app.use('/api/users', require('./routes/userRoutes'))
