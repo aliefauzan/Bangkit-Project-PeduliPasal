@@ -155,7 +155,8 @@ class NewsFragment : Fragment() {
                         binding.noInternetLayout.visibility = View.GONE
 
                         val filteredNews = result.data.filter { newsItem ->
-                            !(newsItem.title?.contains("[Removed]", ignoreCase = true) == true)
+                            !(newsItem.title?.contains("[Removed]", ignoreCase = true) == true) &&
+                                    newsItem.urlToImage != null
                         }
 
                         newsAdapter.submitList(filteredNews)

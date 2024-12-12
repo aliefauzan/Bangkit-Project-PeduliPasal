@@ -17,6 +17,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.example.pedulipasal.MainActivity
 import com.example.pedulipasal.R
 import com.example.pedulipasal.databinding.FragmentSettingsBinding
 import com.example.pedulipasal.helper.Result
@@ -179,7 +180,7 @@ class SettingsFragment : Fragment() {
     private fun logout () {
         cancelPeriodicTask()
         settingsViewModel.logout()
-        val intent = Intent(requireActivity(), WelcomeActivity::class.java)
+        val intent = Intent(requireActivity(), MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         requireActivity().finish()
