@@ -9,6 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 import java.security.cert.X509Certificate
+import java.util.concurrent.TimeUnit
 
 class ApiConfig {
     companion object{
@@ -40,6 +41,9 @@ class ApiConfig {
             val client = OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .addInterceptor(authInterceptor)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build()
             val retrofit = Retrofit.Builder()
                 .baseUrl(BuildConfig.CLOUD_BASE_URL)

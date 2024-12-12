@@ -36,7 +36,9 @@ data class MessageItem (
     @Ignore
     var aiMessageId: String? = null,
     @Ignore
-    var userMessageId: String? = null
+    var userMessageId: String? = null,
+    @Ignore
+    var isError: Boolean? = null
 ) {
     constructor() : this(messageId = "", isHuman = false, content = "", timestamp = null, chatId = "")
 }

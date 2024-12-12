@@ -198,7 +198,17 @@ class MessageActivity : AppCompatActivity() {
                 }
                 is Result.Error -> {
                     toggleProgressBarVisibility(false)
-                    Toast.makeText(this, getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
+                    messageAdapter.addMessage(
+                        MessageItem(
+                            messageId = "",
+                            isHuman = false,
+                            content = result.error,
+                            timestamp = showLocalTime(Date()),
+                            chatId = chatId,
+                            isError = true
+                        )
+                    )
+                    scrollToLastMessage()
                 }
             }
         }

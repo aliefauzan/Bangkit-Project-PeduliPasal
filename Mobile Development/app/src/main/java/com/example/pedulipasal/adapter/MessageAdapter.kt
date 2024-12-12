@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.R
@@ -42,6 +43,10 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.ViewHolder>() {
         val message = messageItems[position]
         holder.userMessageText.text = message.content
         holder.tvTime.text = getTimeFormat(message.timestamp)
+        if (message.isError == true) {
+            holder.userMessageText.setBackgroundResource(R.drawable.rounded_red_background)
+            holder.userMessageText.setTextColor(holder.itemView.context.getColor(R.color.md_theme_onTertiary_highContrast))
+        }
     }
 
     fun setMessages(newMessages: List<MessageItem>) {
