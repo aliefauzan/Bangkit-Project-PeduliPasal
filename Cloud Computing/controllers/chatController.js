@@ -65,11 +65,11 @@ const addMessageToChat = async (req, res) => {
     });
 
     // Call ML model endpoint first
-    const mlModelResponse = await axios.post(process.ENV.API_MODEL_RESPONSE, {
+    const mlModelResponse = await axios.post(process.env.API_MODEL_RESPONSE, {
       text: content
     });
 
-    const { pasal, text } = mlModelResponse.data;
+    const { pasal=[], text } = mlModelResponse.data;
 
     // Prepare prompt for Gemini with ML model output
     const genAI = new GoogleGenerativeAI(process.env.API_KEY);
