@@ -263,7 +263,8 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun writeToFile(context: Context, fileName: String, listMessage: List<MessageItem>) {
-        val file = File(context.filesDir, fileName)
+        val textFileFilename = "$fileName.txt"
+        val file = File(context.filesDir, textFileFilename)
         try {
             var prevDate = ""
             val fos = FileOutputStream(file)
@@ -283,7 +284,6 @@ class MessageActivity : AppCompatActivity() {
             }
             fos.close()
         } catch (e: Exception) {
-            Log.d("MessageActivity", "writeToFile: ${e.message}")
             e.printStackTrace()
         }
     }
@@ -291,7 +291,6 @@ class MessageActivity : AppCompatActivity() {
     private fun shareChats(context: Context, fileName: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         val uri = getFileUri(this, "$fileName.txt")
-
         if (uri != null) {
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)
