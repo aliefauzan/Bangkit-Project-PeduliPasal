@@ -1,0 +1,8 @@
+@baseUrl = http://127.0.0.1:5000/
+
+POST {{baseUrl}}/predict_pasal
+Content-Type: application/json
+
+{
+   "text": "terdakwa [Nama Lengkap Terdakwa] dengan sengaja dan tanpa hak mengambil barang milik [Nama Korban], yaitu [Deskripsi Barang yang Dicuri]. Sebelumnya, terdakwa telah merencanakan aksi pencurian dengan membawa peralatan untuk membobol pintu. Setelah berhasil masuk, terdakwa mengambil barang curian dan langsung melarikan diri. Perbuatan terdakwa ini didukung oleh keterangan saksi [Nama Saksi] yang melihat terdakwa keluar dari rumah korban serta barang bukti berupa [Deskripsi Barang Bukti]. Berdasarkan fakta-fakta tersebut, Jaksa Penuntut Umum berpendapat bahwa terdakwa terbukti secara sah dan meyakinkan melakukan tindak pidana pencurian sebagaimana diatur dalam Pasal 362 KUHP dan menuntut pidana penjara selama [Lama Hukuman] tahun, denda sebesar [Jumlah Denda], dan biaya perkara."
+}
