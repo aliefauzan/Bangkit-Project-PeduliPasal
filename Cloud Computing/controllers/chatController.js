@@ -64,39 +64,38 @@ const addMessageToChat = async (req, res) => {
       updatedAt: new Date().toISOString(),
     });
 
-    // Call ML model endpoint first
-    const mlModelResponse = await axios.post(process.env.API_MODEL_RESPONSE, {
-      text: content
+    // Call Flask API for ML model output
+    const flaskResponse = await axios.post(process.env.API_MODEL_RESPONSE, {
+      text: content,
     });
 
-    const { pasal=[], text } = mlModelResponse.data;
+    const { generative_result = [], text: userInput } = flaskResponse.data;
 
-    // Prepare prompt for Gemini with ML model output
+    // Prepare prompt for Gemini with Flask API output
     const genAI = new GoogleGenerativeAI(process.env.API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `Anda adalah asisten hukum berbasis AI yang dirancang untuk membantu pengacara dan mahasiswa hukum memahami serta menavigasi pasal-pasal hukum dan peraturan terkait.
-                    Input dari pengguna: ${content},
-                    Pasal yang teridentifikasi oleh model ML: ${pasal.join(', ')},
+    const prompt = `Anda adalah asisten hukum berbasis AI yang dirancang untuk membantu pengacara dan mahasiswa hukum memahami pasal-pasal hukum yang relevan di Indonesia. Berdasarkan masukan pengguna dan pasal yang diidentifikasi oleh model machine learning, lakukan hal berikut:
+                    Input dari pengguna: ${userInput}
+                    Pasal yang teridentifikasi oleh model ML: ${generative_result}
                     Tugas Anda:
-                    1. Konfirmasi atau tambahkan pasal yang relevan: Berdasarkan masukan pengguna dan pasal yang telah diidentifikasi oleh model machine learning, pastikan pasal yang sesuai atau tambahkan pasal lainnya jika diperlukan.
-                    2. Berikan penjelasan singkat: Sampaikan implikasi hukum dari pasal-pasal yang relevan menggunakan bahasa yang jelas, ringkas, dan mudah dipahami.
-                    3. Tampilkan daftar pasal terkait: Berikan daftar pasal-pasal pidana Indonesia yang relevan beserta ancaman pidananya (tahun penjara dan/atau denda), dalam format berikut:
-                      - Pasal X: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
-                      - Pasal Y: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
-                    4. Kategorisasi sub-klasifikasi: Jika sub-klasifikasi hukum tidak dapat ditentukan, tanyakan lebih lanjut kepada pengguna untuk mendapatkan rincian yang lebih spesifik.
-                    5. Tangani input ambigu:
-                      - Jika input ambigu atau model machine learning gagal memberikan pasal yang spesifik, jangan tampilkan output model sebelumnya.
-                      - Langsung hubungkan input dengan pasal yang relevan berdasarkan pemahaman Anda, lalu ajukan pertanyaan tambahan untuk memperjelas konteks atau kebutuhan pengguna.  
-                      - Hindari menyebutkan bahwa output model machine learning tidak informatif. Sebagai gantinya, beri respons berdasarkan pemahaman hukum Anda dan tanyakan informasi tambahan yang diperlukan dari pengguna.
+                    Identifikasi pasal-pasal yang relevan dan berikan penjelasan singkat tentang implikasi hukumnya.
+                    Jika generative_result tidak sesuai dengan userInput, langsung berikan pasal yang tepat tanpa menyebutkan kesalahan atau ketidaksesuaian.
+                    Format Output:
+
+                    Pasal X: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
                     Catatan:
-                      - Jawaban harus dalam teks biasa tanpa simbol atau format khusus.
-                      - Jangan tampilkan input pengguna dalam output.
-                    Contoh output:
-                      - Pasal X: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
-                      - Pasal Y: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
-                    Jika Anda memiliki pertanyaan tambahan, sertakan pertanyaan di bagian akhir respons.`;
-                      
+
+                    Jangan menyebutkan kesalahan atau ketidaksesuaian ${generative_result}.
+                    Jangan memberikan informasi yang tidak relevan.
+                    Gunakan bahasa yang jelas, ringkas, dan langsung pada inti permasalahan.
+                    Jika informasi dari pengguna tidak cukup, ajukan pertanyaan tambahan untuk memperjelas konteks.
+                    Cukup berikan jawaban singkat
+                    Contoh Output:
+
+                    Pasal 362: Barang siapa mengambil barang milik orang lain dengan maksud untuk dimiliki secara melawan hukum, diancam dengan pidana penjara paling lama 5 tahun atau denda paling banyak Rp900.000.
+                    Pasal 363: Pencurian yang disertai pemberatan (misalnya dilakukan pada malam hari atau oleh dua orang atau lebih), Ancaman: 7 Tahun Penjara.`;
+
     const result = await model.generateContent(prompt);
     let aiContent = result.response.text();
 
@@ -119,7 +118,6 @@ const addMessageToChat = async (req, res) => {
       userMessage,
       aiMessage,
     });
-
   } catch (error) {
     console.error("Error adding message to chat:", error);
     res.status(500).json({ error: "Failed to add message to chat", details: error.message });
