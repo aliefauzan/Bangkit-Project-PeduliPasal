@@ -1,7 +1,6 @@
 package com.example.pedulipasal.adapter.gamification
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pedulipasal.data.model.gamification.QuestionsItem
 import com.example.pedulipasal.databinding.ItemQuestionBinding
 import com.example.pedulipasal.helper.Result
-import com.example.pedulipasal.helper.removeAsterisk
+import com.example.pedulipasal.helper.filteredString
 import com.google.ai.client.generativeai.type.GenerateContentResponse
 
 class QuestionAdapter(
@@ -124,7 +123,7 @@ class QuestionAdapter(
                 is Result.Success -> {
                     progressBar.visibility = View.GONE
                     tvGeminiAnswer.visibility = View.VISIBLE
-                    tvGeminiAnswer.text = removeAsterisk(result.data.text ?: "No Answer")
+                    tvGeminiAnswer.text = filteredString(result.data.text ?: "No Answer")
                     question.isAskingGemini = true
                     question.isLoadingGeminiResponse = false
                 }

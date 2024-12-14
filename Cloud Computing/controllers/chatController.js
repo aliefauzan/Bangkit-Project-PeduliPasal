@@ -2,6 +2,7 @@ const admin = require("firebase-admin");
 const db = admin.firestore();
 const { nanoid } = require('nanoid');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const axios = require('axios');
 
 const createChat = async (req, res) => {
   try {
@@ -47,6 +48,7 @@ const addMessageToChat = async (req, res) => {
       return res.status(404).json({ error: "Chat not found" });
     }
 
+    // Save user message
     const userMessage = {
       userMessageId,
       messageId,
@@ -57,31 +59,50 @@ const addMessageToChat = async (req, res) => {
     const userMessageRef = chatRef.collection("messages").doc();
     await userMessageRef.set(userMessage);
 
+    // Update chat timestamp
     await chatRef.update({
       updatedAt: new Date().toISOString(),
     });
 
-    // Integrasi dengan Google Generative AI
+    // Call Flask API for ML model output
+    const flaskResponse = await axios.post(process.env.API_MODEL_RESPONSE, {
+      text: content,
+    });
+
+    const { generative_result = [], text: userInput } = flaskResponse.data;
+
+    // Prepare prompt for Gemini with Flask API output
     const genAI = new GoogleGenerativeAI(process.env.API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `Anda adalah asisten hukum yang dirancang untuk membantu pengacara dan mahasiswa hukum memahami dan menavigasi pasal hukum serta peraturan yang relevan. Ketika diberikan deskripsi kasus atau masalah hukum, tugas Anda adalah:
-                    1. Mengidentifikasi undang-undang, pasal, dan peraturan yang berlaku
-                    2. Memberikan penjelasan singkat tentang implikasi hukum, termasuk hukuman atau konsekuensi
-                    3. Gunakan bahasa yang jelas dan ringkas agar mudah dipahami oleh profesional hukum maupun mahasiswa
-                    Contoh: Jika pengguna memberikan input, "pelanggaran UU ITE terkait pornografi," jawaban Anda harus mengidentifikasi pasal yang spesifik, seperti:
-                    Melanggar Pasal 45 Ayat 1. Pasal 27 Ayat 1 UU RI No. 1 Tahun 2024, dengan ancaman hukuman berupa penjara hingga 12 tahun atau denda sebesar Rp 6 miliar
-                    Berikan jawaban hanya dalam bentuk teks biasa tanpa simbol, format markdown, atau karakter spesial. Jika input pengguna ambigu, tanyakan pertanyaan klarifikasi untuk memberikan informasi hukum yang paling akurat
-                    Input pengguna: ${content}`;
-    
+    const prompt = `Anda adalah asisten hukum berbasis AI yang dirancang untuk membantu pengacara dan mahasiswa hukum memahami pasal-pasal hukum yang relevan di Indonesia. Berdasarkan masukan pengguna dan pasal yang diidentifikasi oleh model machine learning, lakukan hal berikut:
+                    Input dari pengguna: ${userInput}
+                    Pasal yang teridentifikasi oleh model ML: ${generative_result}
+                    Tugas Anda:
+                    Identifikasi pasal-pasal yang relevan dan berikan penjelasan singkat tentang implikasi hukumnya.
+                    Jika generative_result tidak sesuai dengan userInput, langsung berikan pasal yang tepat tanpa menyebutkan kesalahan atau ketidaksesuaian.
+                    Format Output:
+
+                    Pasal X: [Deskripsi singkat], Ancaman: [Tahun Penjara], Denda: [Jumlah Denda].
+                    Catatan:
+
+                    Jangan menyebutkan kesalahan atau ketidaksesuaian ${generative_result}.
+                    Jangan memberikan informasi yang tidak relevan.
+                    Gunakan bahasa yang jelas, ringkas, dan langsung pada inti permasalahan.
+                    Jika informasi dari pengguna tidak cukup, ajukan pertanyaan tambahan untuk memperjelas konteks.
+                    Cukup berikan jawaban singkat
+                    Contoh Output:
+
+                    Pasal 362: Barang siapa mengambil barang milik orang lain dengan maksud untuk dimiliki secara melawan hukum, diancam dengan pidana penjara paling lama 5 tahun atau denda paling banyak Rp900.000.
+                    Pasal 363: Pencurian yang disertai pemberatan (misalnya dilakukan pada malam hari atau oleh dua orang atau lebih), Ancaman: 7 Tahun Penjara.`;
 
     const result = await model.generateContent(prompt);
     let aiContent = result.response.text();
-    
-    // Hapus simbol atau format dari teks
-    aiContent = aiContent.replace(/[\n\r\t*_*]/g, "").trim();
-                    
-    // Simpan balasan AI ke subkoleksi "messages"
+
+    // Remove special characters
+    aiContent = aiContent.replace(/[*_*]/g, "").trim();
+
+    // Save AI message
     const aiMessage = {
       aiMessageId,
       messageId,
@@ -99,7 +120,7 @@ const addMessageToChat = async (req, res) => {
     });
   } catch (error) {
     console.error("Error adding message to chat:", error);
-    res.status(500).json({ error: "Failed to add message to chat" });
+    res.status(500).json({ error: "Failed to add message to chat", details: error.message });
   }
 };
 

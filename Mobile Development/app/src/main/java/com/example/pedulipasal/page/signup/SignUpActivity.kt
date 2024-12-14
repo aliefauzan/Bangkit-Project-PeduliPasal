@@ -17,6 +17,7 @@ import com.example.pedulipasal.databinding.ActivitySignUpBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
 import com.example.pedulipasal.page.login.LoginActivity
+import com.example.pedulipasal.page.welcome.WelcomeActivity
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -95,7 +96,7 @@ class SignUpActivity : AppCompatActivity() {
             setTitle(R.string.success_title_signup)
             setMessage(R.string.success_signup_message)
             setPositiveButton(R.string.positive_reply) { _, _ ->
-                val intent = Intent(context, LoginActivity::class.java)
+                val intent = Intent(context, WelcomeActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 finish()

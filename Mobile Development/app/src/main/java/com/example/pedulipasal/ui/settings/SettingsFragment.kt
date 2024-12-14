@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
@@ -15,6 +17,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
+import com.example.pedulipasal.MainActivity
 import com.example.pedulipasal.R
 import com.example.pedulipasal.databinding.FragmentSettingsBinding
 import com.example.pedulipasal.helper.Result
@@ -34,6 +37,8 @@ class SettingsFragment : Fragment() {
     private lateinit var workManager: WorkManager
     private var periodicWorkRequest: PeriodicWorkRequest? = null
 
+    val items = mutableListOf("Light", "Dark", "System")
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +53,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initializeDropDown()
         setupView()
         setupAction()
     }
@@ -77,25 +83,40 @@ class SettingsFragment : Fragment() {
         _binding = null
     }
 
+    private fun initializeDropDown() {
+        val themeSpinner = binding.themeSpinner
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            // Remove system option if android version is lower than  android 10
+            items.removeAt(2)
+        }
+
+        val adapter = ArrayAdapter(requireActivity(), R.layout.item_dropdown, items)
+        themeSpinner.adapter = adapter
+    }
+
     private fun setupView () {
         settingsViewModel.getSession().observe(viewLifecycleOwner) { user ->
             //Log.d("ProfileActivity", "${user.token}")
             showProfile(user.userId)
         }
 
-        settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean ->
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                if (isDarkModeActive) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    binding.switchTheme.isChecked = true
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    binding.switchTheme.isChecked = false
-                }
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                binding.switchTheme.isEnabled = false
+        settingsViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive: Boolean? ->
+            val selectedIndex = when (isDarkModeActive) {
+                true -> 1
+                false -> 0
+                null -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) 2 else 0
             }
+
+            binding.themeSpinner.setSelection(selectedIndex)
+            AppCompatDelegate.setDefaultNightMode(
+                when (selectedIndex) {
+                    0 -> AppCompatDelegate.MODE_NIGHT_NO
+                    1 -> AppCompatDelegate.MODE_NIGHT_YES
+                    2 -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    else -> AppCompatDelegate.MODE_NIGHT_NO // Default case
+                }
+            )
         }
 
         settingsViewModel.getNotificationSettings().observe(viewLifecycleOwner) { isNotificationsEnabled: Boolean ->
@@ -112,8 +133,19 @@ class SettingsFragment : Fragment() {
     private fun setupAction() {
         workManager = WorkManager.getInstance(requireActivity())
 
-        binding.switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            settingsViewModel.saveThemeSetting(isChecked)
+        binding.themeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedCategory = items[position]
+                when (selectedCategory) {
+                    "Light" -> { settingsViewModel.saveThemeSetting(false) }
+                    "Dark" -> { settingsViewModel.saveThemeSetting(true) }
+                    "System" -> { settingsViewModel.saveThemeSetting(null) }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Do nothing
+            }
         }
 
         binding.switchNotifications.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
@@ -148,7 +180,7 @@ class SettingsFragment : Fragment() {
     private fun logout () {
         cancelPeriodicTask()
         settingsViewModel.logout()
-        val intent = Intent(requireActivity(), WelcomeActivity::class.java)
+        val intent = Intent(requireActivity(), MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         requireActivity().finish()

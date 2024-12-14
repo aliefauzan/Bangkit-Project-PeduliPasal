@@ -10,11 +10,11 @@ import com.example.pedulipasal.data.user.UserModel
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(private val pref: SettingsPreferences, private val cloudRepository: CloudRepository) : ViewModel() {
-    fun getThemeSettings(): LiveData<Boolean> {
+    fun getThemeSettings(): LiveData<Boolean?> {
         return pref.getThemeSetting().asLiveData()
     }
 
-    fun saveThemeSetting(isDarkModeActive: Boolean) {
+    fun saveThemeSetting(isDarkModeActive: Boolean? = null) {
         viewModelScope.launch {
             pref.saveThemeSetting(isDarkModeActive)
         }

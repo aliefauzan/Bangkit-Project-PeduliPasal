@@ -3,14 +3,12 @@ package com.example.pedulipasal.page.login
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.credentials.CredentialManager
@@ -29,7 +27,6 @@ import com.example.pedulipasal.helper.ViewModelFactory
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
-import com.google.android.material.transition.platform.MaterialContainerTransform
 import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
@@ -106,7 +103,7 @@ class LoginActivity : AppCompatActivity() {
                                 isLogin = true
                             )
                         )
-                        successDialog()
+                        moveToMainActivity()
                         binding.progressBar.visibility = View.GONE
                     }
                     is Result.Error -> {
@@ -180,19 +177,11 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    private fun successDialog() {
-        AlertDialog.Builder(this).apply {
-            setTitle(R.string.success_title_login)
-            setMessage(R.string.success_login_message)
-            setPositiveButton(R.string.positive_reply) { _, _ ->
-                val intent = Intent(context, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-                finish()
-            }
-            create()
-            show()
-        }
+    private fun moveToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
     }
 
     private fun failedDialog() {

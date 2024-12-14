@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,9 +24,11 @@ import com.example.pedulipasal.data.model.response.MessageItem
 import com.example.pedulipasal.databinding.ActivityMessageBinding
 import com.example.pedulipasal.helper.Result
 import com.example.pedulipasal.helper.ViewModelFactory
+import com.example.pedulipasal.helper.filteredString
 import com.example.pedulipasal.helper.getDateFormat
 import com.example.pedulipasal.helper.getDayOfWeek
 import com.example.pedulipasal.helper.getTimeFormat
+import com.example.pedulipasal.helper.removeNewLine
 import com.example.pedulipasal.helper.showLocalTime
 import java.io.File
 import java.io.FileOutputStream
@@ -40,6 +41,9 @@ class MessageActivity : AppCompatActivity() {
     private lateinit var messageSuggestionAdapter: MessageSuggestionAdapter
     private lateinit var listSuggestion: List<String>
     private var lastClickTime = 0L
+    private lateinit var chatId: String
+    private lateinit var title: String
+    private lateinit var messages: MutableList<MessageItem>
 
     private val messageViewModel by viewModels<MessageViewModel> {
         ViewModelFactory.getInstance(this)
@@ -63,9 +67,9 @@ class MessageActivity : AppCompatActivity() {
 
         setupView()
 
-        val chatId = intent.getStringExtra(CHAT_ID_KEY)
-        val title = intent.getStringExtra(TITLE_KEY)
-        if (!chatId.isNullOrEmpty() && !title.isNullOrEmpty()) {
+        this.chatId = intent.getStringExtra(CHAT_ID_KEY) ?: ""
+        this.title = intent.getStringExtra(TITLE_KEY) ?: ""
+        if (chatId.isNotEmpty() && title.isNotEmpty()) {
             showListMessages(chatId = chatId, title = title)
         }
     }
@@ -76,9 +80,9 @@ class MessageActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         listSuggestion = listOf(
-            "Sebutkan 5 sila Pancasila",
-            "Jelaskan secara singkat pembentukan UUD 1945",
-            "Sebutkan suku yang terkenal di indonesia"
+            "Apa pasal yang sesuai dengan kasus pencurian motor",
+            "Sengketa tanah termasuk dalam pasal apa",
+            "Jelaskan pasal yang mengatur tentang kasus harta warisan"
         )
 
         messageAdapter = MessageAdapter()
@@ -110,22 +114,17 @@ class MessageActivity : AppCompatActivity() {
         }
     }
 
-    private fun showListMessages(chatId: String, title: String, isShared: Boolean = false) {
+    private fun showListMessages(chatId: String, title: String) {
         messageViewModel.getChatMessageById(chatId).observe(this) { result ->
             when (result) {
                 is Result.Loading -> toggleProgressBarVisibility(true)
                 is Result.Success -> {
-                    if (isShared) {
-                        writeToFile(this, title, result.data)
-                        shareChats(this, title)
-                    } else {
-                        supportActionBar?.title = title
-                        result.data.let {
-                            messageAdapter.setMessages(it)
-                        }
-                        scrollToLastMessage()
-                        setupAction(chatId)
+                    supportActionBar?.title = title
+                    result.data.let {
+                        messageAdapter.setMessages(it)
                     }
+                    scrollToLastMessage()
+                    setupAction(chatId)
                     toggleProgressBarVisibility(false)
                 }
                 is Result.Error -> {
@@ -189,7 +188,7 @@ class MessageActivity : AppCompatActivity() {
                         MessageItem(
                             messageId = "",
                             isHuman = false,
-                            content = result.data.aiMessage?.content ?: "Error message",
+                            content = filteredString(result.data.aiMessage?.content ?: "Error message"),
                             timestamp = showLocalTime(Date()),
                             chatId = chatId,
                         )
@@ -199,6 +198,7 @@ class MessageActivity : AppCompatActivity() {
                 is Result.Error -> {
                     toggleProgressBarVisibility(false)
                     Toast.makeText(this, getString(R.string.offline_message), Toast.LENGTH_SHORT).show()
+                    scrollToLastMessage()
                 }
             }
         }
@@ -240,10 +240,9 @@ class MessageActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_share -> {
-                val filename = intent.getStringExtra(TITLE_KEY)
-                val chatId = intent.getStringExtra(CHAT_ID_KEY)
-                if (filename != null && chatId != null) {
-                    showListMessages(chatId, filename, true)
+                if (this.title.isNotEmpty()) {
+                    writeToFile(this, title, messageAdapter.messageItems)
+                    shareChats(this, title)
                     return true
                 }
                 true
@@ -253,11 +252,12 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private fun writeToFile(context: Context, fileName: String, listMessage: List<MessageItem>) {
-        val file = File(context.filesDir, fileName)
+        val textFileFilename = "$fileName.txt"
+        val file = File(context.filesDir, textFileFilename)
         try {
             var prevDate = ""
             val fos = FileOutputStream(file)
-            val textHeader = "[PeduliPasal] Chat history in title ${fileName} \n"
+            val textHeader = "[PeduliPasal] Chat history in title $fileName \n"
             fos.write(textHeader.toByteArray())
             val savedOn = "Saved on: ${getDateFormat(Date())} ${getTimeFormat(Date())} \n"
             fos.write(savedOn.toByteArray())
@@ -268,12 +268,11 @@ class MessageActivity : AppCompatActivity() {
                     prevDate = getDateFormat(it.timestamp)
                 }
                 val username = if (it.isHuman) "Human" else "AI"
-                val message = "${getTimeFormat(it.timestamp)}\t${username}\t${it.content} \n"
+                val message = "${getTimeFormat(it.timestamp)}\t${username}\t${removeNewLine(it.content)} \n"
                 fos.write(message.toByteArray())
             }
             fos.close()
         } catch (e: Exception) {
-            Log.d("MessageActivity", "writeToFile: ${e.message}")
             e.printStackTrace()
         }
     }
@@ -281,7 +280,6 @@ class MessageActivity : AppCompatActivity() {
     private fun shareChats(context: Context, fileName: String) {
         val shareIntent = Intent(Intent.ACTION_SEND)
         val uri = getFileUri(this, "$fileName.txt")
-
         if (uri != null) {
             shareIntent.type = "text/plain"
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri)

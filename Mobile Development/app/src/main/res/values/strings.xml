@@ -26,8 +26,8 @@
     <string name="user_name">Satriya Wibowo</string>
     <string name="news">News</string>
     <string name="news_api_errror">Error dalam mengambil data berita</string>
-    <string name="dark_mode">Mode gelap</string>
-    <string name="enable_dark_mode">Nyalakan mode gelap</string>
+    <string name="dark_mode">Pengaturan tema</string>
+    <string name="enable_dark_mode">Pilih tema sesuai kriteria anda</string>
     <string name="daily_reminder">Daily news</string>
     <string name="enable_notifications">Nyalakan notifikasi untuk berita harian</string>
     <string name="created_at">Created at</string>
