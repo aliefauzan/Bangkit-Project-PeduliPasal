@@ -42,4 +42,4 @@ Pipfile.lock
 
 models/
 
-*.http
+request.http

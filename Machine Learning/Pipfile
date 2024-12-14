@@ -13,6 +13,8 @@ matplotlib = "*"
 flask = "*"
 tf-keras = "*"
 nltk = "*"
+gunicorn = "*"
+google-cloud-discoveryengine = "*"
 
 [dev-packages]
 ipykernel = "*"
